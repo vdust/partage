@@ -1,0 +1,22 @@
+extends ./layout.jade
+
+block contents
+  div.contents-wrap
+    div.title-box
+      h1= app.get('title')
+    div.fixed-box
+      form.sign-in(method="post")
+        p.note= t("filehub.signin-message")
+        span.input-icon
+          span.fa.fa-user
+        input(name="username", type="text", placeholder=t("filehub.user.name"), autofocus)
+        span.input-icon
+          span.fa.fa-key
+        input(name="password", type="password", placeholder=t("filehub.user.password"))
+        button(type="submit")
+          span.fa.fa-sign-in
+          != "&nbsp;"
+          = t("filehub.signin")
+        p.error= err||''
+    div.padding-box
+    include ./_notice.jade

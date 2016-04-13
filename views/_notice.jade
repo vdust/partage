@@ -1,0 +1,11 @@
+if poweredBy || contact
+  div.footer-notice
+    p.note
+      if poweredBy
+        a(href="#")
+          = t("filehub.powered-by")
+      if contact
+        if poweredBy
+          != '&nbsp;&nbsp;&ndash;&nbsp;&nbsp;'
+        a(href='mailto:'+contact)
+          = t("filehub.contact")

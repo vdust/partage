@@ -1,0 +1,64 @@
+doctype html
+html
+  head
+    - var stDir = baseUrl + '/static';
+    - var ggFont='https://fonts.googleapis.com/css?family=Roboto:400,400italic,700,700italic&subset=latin,latin-ext';
+    block title
+      title= app.get('title')
+    link(rel="stylesheet", type="text/css", href=ggFont)
+    link(rel="stylesheet", type="text/css", href=stDir+'/css/font-awesome.css')
+    link(rel="stylesheet", type="text/css", href=stDir+'/css/filehub.css')
+    if req.isAuthenticated() && req.user.is("admin")
+      link(rel="stylesheet", type="text/css", href=stDir+'/css/filehub-admin.css')
+    script(type="text/javascript", src=stDir+'/js/jquery-2.2.1.min.js')
+    script(type"text/javascript").
+      (function(w){
+        w.FILEHUB_BASEURL="#{baseUrl}";
+        w.FILEHUB_CTX="#{menuCtx}";
+      })(window);
+    - var isdev = app.get('env') === 'development';
+    - var jsmin = function(path){return isdev ? path : path.replace(/\.js$/,'.min.js');};
+    if isdev
+      script(type="text/javascript", src=stDir+jsmin('/js/filehub.js'))
+      if req.isAuthenticated() && req.user.is("admin")
+        script(type="text/javascript", src=stDir+jsmin('/js/filehub-admin.js'))
+  body
+    div#filehub_container
+      nav
+        ul#menu
+          li
+            include ./filehub_ico.jade
+          if req.isAuthenticated()
+            block menuAuth
+              li(class=menuCtx === "browse" ? "active" : "")
+                a(href=baseUrl+"/folders" title=t("filehub.folders"))
+                  span.fa(class=menuCtx === "browse" ? "fa-folder-open" : "fa-folder")
+                  != "&nbsp;"
+                  = t("filehub.folders")
+              if req.user.is("admin")
+                li(class=menuCtx === "users" ? "active" : "")
+                  a(href=baseUrl+"/users", title=t("filehub.users"))
+                    span.fa.fa-users
+                    != "&nbsp;"
+                    = t("filehub.users")
+              li(class=menuCtx === "profile" ? "active" : "")
+                a(href=baseUrl+"/profile", title=t("filehub.profile"))
+                  span.fa.fa-user
+                  != "&nbsp;"
+                  = t("filehub.profile")
+              li.alt
+                form.logout(action=baseUrl+"/logout", method="post")
+                  button(title=t("filehub.signout"))
+                    span.fa.fa-sign-out
+                    != "&nbsp;"
+                    = t("filehub.signout")
+              li.alt.menu-info
+                span= req.user.name
+          else
+            block menuSignIn
+              li.alt
+                span.fa.fa-sign-in
+                != "&nbsp;"
+                = t("filehub.signin")
+      div.contents
+        block contents

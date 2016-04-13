@@ -1,0 +1,10 @@
+extends ./layout.jade
+
+block contents
+  div.contents-wrap
+    div.padding-box1
+    div.fixed-box
+      div.info-box
+        h1= t('filehub.error.'+res.statusCode+'.title')
+        p.note= t('filehub.error.'+res.statusCode+'.message')
+    div.padding-box2

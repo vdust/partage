@@ -1,0 +1,52 @@
+{
+  "favicon": "favicon.ico",
+  "footer": {
+    "powered-by": true,
+    "email": false
+  },
+  "i18n": {
+    "backend": {
+      "addPath": "locales/{{lng}}/{{ns}}.missing.json",
+      "jsonIndent": 2,
+      "loadPath": "locales/{{lng}}/{{ns}}.json"
+    },
+    "debug": false,
+    "defaultNS": "filehub",
+    "detection": {
+      "caches": false,
+      "order": [ "header" ]
+    },
+    "fallbackLng": "en",
+    "ns": [ "filehub" ],
+    "saveMissing": false
+  },
+  "log": {
+    "format": "combined"
+  },
+  "robots.txt": "robots.txt",
+  "run": {
+    "port": 8080
+  },
+  "session": {
+    "name": "fhconnect.sid",
+    "resave": false,
+    "saveUninitialized": false,
+    "store": {}
+  },
+  "specials": {
+    "trash": {
+      "path": ".trash",
+      "clean": true,
+      "cleanInterval": 60,
+      "maxAge": 720
+    },
+    "uploads": {
+      "path": ".uploads",
+      "clean": true,
+      "cleanInterval": 60,
+      "maxAge": 1,
+      "sizeLimit": 104857600
+    }
+  },
+  "title": "File Hub"
+}

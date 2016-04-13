@@ -1,0 +1,86 @@
+extends ./layout.jade
+
+include ./_mixins.jade
+
+block contents
+  - var istrash = typeof trash !== 'undefined'
+  div.view-wrap
+    div.nav-out
+      div.nav-in
+        div.nav#nav
+          div.nav-padding#nav-padding
+          div.nav-wrap
+            ul#nav-path
+              +navitem(t('filehub.'+(istrash ? 'trash.label' : 'folders')), '', true)
+              if folder
+                - var p = folder.name
+                +navitem(p, p)
+                each d in path||[]
+                  - p += "/" + d
+                  +navitem(d, p)
+          div.nav-toolbox
+            div.view-tools#nav-tools
+              if req.user.is('admin')
+                +action('multi', 'folder|#f-0', 'folderAccessList', 'folder.access', 'user-plus', 'none')
+                +action('multi', 'folder|#f-0', 'itemDelete', 'folder.delete', 'trash-o', 'none')
+              if req.user.is('contributor')
+                +action('multi', '*|:not(#f-trash,#f-0)', 'itemDelete', 'folder.delete', 'trash-o', 'none')
+                +action('multi', 'trash|#f-trash', 'trashRestore', 'trash.restore', 'reply', 'none')
+                +action('multi', 'trash|#f-trash', 'trashRemove', 'trash.remove', 'remove', 'none')
+    div.view-wrap-in
+      div.view-wrap-in-2
+        div.view
+          div.view-aside#view-aside(style='width:0')
+            - var cond = req.user.is('admin') ? ':not(#f-trash)' : ':not(#f-trash,#f-0,.read-only)'
+            - var canadd = req.user.is('admin') || (folder && folder.canwrite(req.user))
+            div.button-box(data-cond="", style=canadd?false:"display: none")
+              button(type="button", disabled=!canadd, data-handler='folderAdd')
+                span.fa.fa-plus
+                = t("filehub.folder.new")
+            div.tree-box.view-drop-target(data-on-drop='itemDrop')
+              - var attrs = {'data-handler':'folderQuery', 'class':{}}
+              div.tree.tree-large
+                - attrs['data-target'] = 'f-0'
+                - attrs['id'] = 't-' + attrs['data-target']
+                - attrs['class']['active'] = !folder && !istrash
+                - attrs['class']['tree-item-subtree'] = true;
+                div.tree-item(data-url='folders')&attributes(attrs)
+                  div.tree-expand
+                    span.fa(class='fa-caret-'+(folder ? 'down' : 'right'))
+                  div.tree-icon
+                    span.fa(class='fa-folder'+(folder ? '' : '-open'))
+                  div.tree-label
+                    = t('filehub.folders')
+                - delete attrs['class']['tree-item-subtree']
+                - attrs['class']['view-droppable'] = true
+                div.tree(style=!folder && 'display: none')
+                  each f in folders
+                    - var active = !!(folder && f.name === folder.name)
+                    - attrs['data-target'] = 'f-'+f.uid
+                    - attrs['id'] = 't-' + attrs['data-target']
+                    - attrs['class']['active'] = active
+                    div.tree-item(data-url='folders/'+encodeURIComponent(f.name))&attributes(attrs)
+                      div.tree-pad
+                      div.tree-expand
+                        span
+                      div.tree-icon
+                        span.fa(class='fa-folder'+(active ? '-open' : ''))
+                      div.tree-label
+                        = f.name
+                if req.user && req.user.is('contributor')
+                  - attrs['data-target'] = 'f-trash'
+                  - attrs['id'] = 't-f-trash'
+                  - attrs['class']['active'] = istrash
+                  div.tree-item(data-url='folders/.trash')&attributes(attrs)
+                    div.tree-expand
+                      span
+                    div.tree-icon
+                      span.fa.fa-trash
+                    div.tree-label
+                      = t('filehub.trash.label')
+
+          div.view-resize#view-resize
+            div.view-handle
+          div.view-contents#view-contents
+            include ./loader.jade
+            include ./folder.jade

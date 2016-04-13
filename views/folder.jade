@@ -1,0 +1,35 @@
+include ./_mixins.jade
+
+- var istrash = typeof trash !== 'undefined'
+- var folderName = istrash ? '.trash' : (folder ? folder.name : '')
+div.list-box.folders-list(id='f-'+pathid, data-folder=folderName, data-path=path.join('/'))
+  div.list(data-row-activate='rowActivate')
+    div.list-header
+      div.list-cell.folder-name
+        div.list-cell-content
+          span= t('filehub.folder.name')
+      if istrash
+        div.list-cell.folder-origin
+          div.list-cell-content
+            span= t('filehub.folder.origin')
+      else
+        div.list-cell.folder-mtime
+          div.list-cell-content
+            span= t('filehub.folder.mtime')
+        div.list-cell.folder-size
+          div.list-cell-content
+            span= t('filehub.folder.size')
+    div.list-group
+      if istrash
+        each t in trash
+          +trash-row(t)
+      else
+        each d in dirs
+          +folder-row(d, folder)
+        each f in files
+          +file-row(f, folder)
+  - var empty = (istrash && !trash.length) || (!istrash && !dirs.length && !files.length)
+  - var msgkey = istrash ? 'trash' : (folder ? 'folder' : 'root')
+  - msgkey += (msgkey === 'root' && req.is('admin')) ? '-admin' : ''
+  if empty
+    div.empty= t('filehub.folder.empty-'+msgkey)

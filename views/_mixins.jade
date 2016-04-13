@@ -1,0 +1,78 @@
+mixin navitem(name, path, first)
+  li
+    if !first
+      span.fa.fa-chevron-right
+    span.navitem.subdir(data-path=path, data-base-url=baseUrl+'/folders')
+      = name
+
+mixin action(select, type, action, i18n, icon, display)
+  div.view-action(data-select=select, data-type=type, data-handler=action, title=t("filehub."+i18n), style=display ? "display: "+display : false)
+    span.fa(class="fa-"+icon)
+
+mixin mimeicon(mime)
+  - var _mime = mime||'';
+  - var _mimegp = _mime.split('/')[0];
+  - var _mimenm = _mime.split('/')[1];
+  if _mime === 'inode/directory'
+    span.fa.fa-folder
+  else if _mime === 'application/pdf'
+    span.fa.fa-file-pdf-o
+  else if _mimegp === 'text'
+    span.fa.fa-file-text-o
+  else if _mimegp === 'audio'
+    span.fa.fa-file-audio-o
+  else if _mimegp === 'video'
+    span.fa.fa-file-video-o
+  else if _mimegp === 'image'
+    span.fa.fa-file-image-o
+  else if _mimegp === 'application' && /^zip|gzip|zlib|x-rar-compressed|$/.test(_mimenm)
+    span.fa.fa-file-archive-o
+  else
+    span.fa.fa-file-o
+
+mixin folder-row(d, folder)
+  - var mtime = dateformat(d.stats.mtime, t('filehub.date-format'))
+  - var dpath = path.join('/') + '/' + d.name
+  - var dirUid = 'f-' + (folder ? folder.getPathUid(dpath) : d.getPathUid())
+  - var url = path.slice();
+  - if (folder) url.unshift(folder.name)
+  - url.unshift('folders')
+  - url.push(d.name)
+  - url = url.map(function (a) { return encodeURIComponent(a); }).join('/')
+  div.list-row.folder-entry.view-droppable(data-target=dirUid, data-url=url, data-path=dpath, data-type=d.type)
+    div.list-cell.folder-name
+      div.list-cell-content
+        +mimeicon(d.mime)
+        span.folder-name= d.name
+    div.list-cell.folder-mtime
+      div.list-cell-content
+        span.folder-mtime= mtime
+    div.list-cell.folder-size
+      div.list-cell-content
+        span.folder-size
+          != '&mdash;'
+
+mixin file-row(f, folder)
+  - var mtime = dateformat(f.stats.mtime, t('filehub.date-format'))
+  div.list-row.file-entry(data-path=path.join('/')+'/'+f.name, data-type=f.type)
+    div.list-cell.folder-name
+      div.list-cell-content
+        +mimeicon(f.mime)
+        span.folder-name= f.name
+    div.list-cell.folder-mtime
+      div.list-cell-content
+        span.folder-mtime= mtime
+    div.list-cell.folder-size
+      div.list-cell-content
+        span.folder-size
+          = formatSize(f.stats.size)
+
+mixin trash-row(i)
+  div.list-row.trash-entry(data-trash-id=i.uid, data-type='trash')
+    div.list-cell.folder-name(class=i.isFolder?'folder-root':false)
+      div.list-cell-content
+        +mimeicon(i.mime)
+        span.folder-name= i.name
+    div.list-cell.folder-origin
+      div.list-cell-content
+        span.folder-orig= i.origin

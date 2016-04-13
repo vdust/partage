@@ -1,0 +1,19 @@
+extends ./layout.jade
+
+block contents
+  div.contents-wrap
+    div.home-contents
+      div.contents-box
+        h1= t("filehub.your-folders")
+        ul.folders
+          if !folders.length
+            li.empty= t("filehub.no-folders")
+          else
+            each f in folders
+              li.folder
+                a(href=baseUrl+'/browse/'+f.name, title=t("filehub.browse-message", { name: f.name }))
+                  div.fa.fa-folder
+                  div.folder-info
+                    div.folder-title= f.name
+                    div.folder-description= f.description
+    include ./_notice.jade

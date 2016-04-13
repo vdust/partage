@@ -1,0 +1,7 @@
+@import 'mixins';
+@import 'colors';
+
+.users-list .list .list-cell.user-email {
+  min-width: 300px;
+  width: auto;
+}

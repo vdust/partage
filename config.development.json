@@ -1,0 +1,20 @@
+{
+  "foldersRoot": "_dev/folders",
+  "footer": {
+    "contact": "contact@example.com"
+  },
+  "i18n": {
+    "debug": true,
+    "saveMissing": true
+  },
+  "log": {
+    "format": "dev"
+  },
+  "session": {
+    "secret": "filehub-123",
+    "store": {
+      "path": "_dev/sessions"
+    }
+  },
+  "usersFile": "_dev/users.pwd"
+}

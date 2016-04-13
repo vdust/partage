@@ -1,0 +1,77 @@
+@charset "UTF-8";
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-size: 100%;
+}
+
+@import 'colors';
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: bold;
+  padding: 0;
+  margin: 0;
+  span {
+    font-weight: normal;
+    &.fa {
+      margin: 0 0.5em;
+      opacity: 0.8;
+    }
+  }
+}
+h1 {
+  font-size: 1.8em;
+}
+h2 {
+  font-size: 1.4em;
+}
+h3 {
+  font-size: 1.2em;
+}
+h4 {
+  font-size: 1.1em;
+}
+h5 {
+  font-size: 1em;
+}
+h6 {
+  font-size: 0.86em;
+}
+
+ul {
+  list-style-type: none;
+}
+li {
+  line-height: 2;
+}
+
+.note {
+  font-size: 1em;
+  color: lighten($main-color, 20%);
+}
+p.note {
+  padding: 1em 0;
+  line-height: 1;
+}
+.empty {
+  @extend .note;
+}
+
+.error {
+  font-size: 1em;
+  color: $error-color;
+}
+p.error {
+  padding: 1em 0;
+  line-height: 1;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}

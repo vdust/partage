@@ -1,0 +1,24 @@
+@mixin user-select-none {
+  -ms-user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+@mixin flexbox {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+}
+@mixin flexdir($dir) {
+  -webkit-flex-direction: $dir;
+  flex-direction: $dir;
+}
+
+@mixin flex($spec) {
+  -webkit-box-flex: $spec;
+  -webkit-flex: $spec;
+  flex: $spec;
+}

@@ -1,0 +1,35 @@
+{
+  "name": "filehub",
+  "version": "0.1.0",
+  "description": "A web-based HTML 5 file sharing application with basic ACLs",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Raphaël Bois Rousseau <virtualdust@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "async": "^1.5.2",
+    "body-parser": "^1.15.0",
+    "crypt3": "^0.2.0",
+    "dateformat": "^1.0.12",
+    "express": "^4.13.4",
+    "express-session": "^1.13.0",
+    "fs-extra": "^0.26.7",
+    "i18next": "^2.5.1",
+    "i18next-express-middleware": "^0.3.2",
+    "i18next-node-fs-backend": "0.0.6",
+    "isemail": "^2.1.0",
+    "jade": "^1.11.0",
+    "mime-types": "^2.1.10",
+    "minimatch": "^3.0.0",
+    "morgan": "^1.7.0",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0",
+    "path-to-regexp": "^1.2.1",
+    "session-file-store": "^0.2.0"
+  },
+  "devDependencies": {
+    "mocha": "^2.4.5"
+  }
+}

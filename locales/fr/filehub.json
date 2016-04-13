@@ -1,0 +1,68 @@
+{
+  "filehub": {
+    "access": {
+      "admin": "Administrateur",
+      "admin_plural": "Administrateurs",
+      "contributor": "Collaborateur",
+      "contributor_plural": "Collaborateurs",
+      "visitor": "Visiteur",
+      "visitor_plural": "Visiteurs"
+    },
+    "contact": "Nous contacter",
+    "date-format": "dd/mm/yyyy",
+    "error": {
+      "404": {
+        "title": "Resource introuvable",
+        "message": "La resource demandée n'existe pas ou vous n'avez pas les droits suffisants pour la charger."
+      },
+      "403": {
+        "title": "Accès interdit",
+        "message": "Vous n'avez pas les droits suffisants pour charger la resource demandée."
+      }
+    },
+    "folder": {
+      "access": "Modifier la liste d'accès",
+      "delete": "Supprimer",
+      "empty-folder": "Le dossier est vide. Glissez-déposez des fichiers pour les ajouter.",
+      "empty-root": "Vous n'avez actuellement accès à aucun dossier.",
+      "empty-root-admin": "Aucun dossier racine n'existe. Utilisez le boutton NOUVEAU pour en créer.",
+      "empty-trash": "The trash is empty.",
+      "origin": "Emplacement d'origine",
+      "rename": "Renommer",
+      "mtime": "Dernière modification",
+      "name": "Nom",
+      "new": "Nouveau",
+      "size": "Taille du fichier"
+    },
+    "folders": "Dossiers",
+    "loading": "Chargement en cours...",
+    "login-failure": "Les nom d'utilisateur et mot de passe ne correspondent pas.",
+    "powered-by": "FileHub",
+    "profile": "Profile",
+    "save": "Enregistrer",
+    "signin": "Se connecter",
+    "signin-message": "Connectez-vous pour accéder à vos fichiers.",
+    "signout": "Se déconnecter",
+    "size": {
+      "u": "o",
+      "k": "Ko",
+      "m": "Mo",
+      "g": "Go",
+      "t": "To"
+    },
+    "trash": "Corbeille",
+    "user": {
+      "add": "Ajouter un utilisateur",
+      "delete": "Supprimer un utilisateur",
+      "edit": "Modifier un utilisateur",
+      "edit-profile": "Modifiez vos informations.",
+      "email": "E-mail",
+      "name": "Nom d'utilisateur",
+      "password": "Mot de passe",
+      "password-new": "Nouveau mot de passe",
+      "password-confirm": "Confirmer mot de passe"
+    },
+    "users": "Utilisateurs"
+  }
+}
+

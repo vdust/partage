@@ -1,0 +1,16 @@
+*~
+\#*
+*.bak
+*.old
+*.mo
+*.bz2
+*.gz
+*.tgz
+*.tbz2
+*.patch
+
+node_modules
+.sass-cache
+
+# dev env files
+_dev

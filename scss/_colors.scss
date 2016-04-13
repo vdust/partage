@@ -1,0 +1,17 @@
+$nav-color: #dadada;
+$nav-bg-color: #104850;
+$nav-bg-hl-color: lighten($nav-bg-color, 18%);
+$main-color: #222;
+$main-bg-color: #fff;
+$contents-bg-color: #f8f8f8;
+$view-hl-color: $nav-bg-hl-color;
+$view-sel-bg-color: lighten($nav-bg-color, 10%);
+$view-sel-color: #fff;
+
+$input-border-color: #c0c0c0;
+$button-bg-color: #d0d0d0;
+$button-color: #333;
+$button-hl-bg-color: #0a5860;
+$button-hl-color: #fff;
+
+$error-color: #b01000;
