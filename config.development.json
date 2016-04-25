@@ -4,7 +4,7 @@
     "contact": "contact@example.com"
   },
   "i18n": {
-    "debug": true,
+    "debug": false,
     "saveMissing": true
   },
   "log": {
