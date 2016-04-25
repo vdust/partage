@@ -4,7 +4,7 @@
   "description": "A web-based HTML 5 file sharing application with basic ACLs",
   "main": "lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "author": "Raphaël Bois Rousseau <virtualdust@gmail.com>",
   "license": "MIT",
@@ -30,6 +30,8 @@
     "session-file-store": "^0.2.0"
   },
   "devDependencies": {
-    "mocha": "^2.4.5"
+    "expect": "^1.18.0",
+    "mocha": "^2.4.5",
+    "supertest": "^1.2.0"
   }
 }
