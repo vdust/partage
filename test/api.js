@@ -11,7 +11,8 @@ var expect = require('expect');
 describe('REST api:', function () {
   [
     'auth',
-    'users'
+    'users',
+    'repo'
   ].forEach(function (a) {
     if (!a) return;
     require('./_api/'+a);

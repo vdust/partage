@@ -10,7 +10,14 @@ var api = require('./_common').api;
 var async = require('async');
 
 api('POST /api/login', function (agent) {
-  it("should fail to sign in as unknown user", function (done) {
+  it("should fail to sign in as unknown user", function (_done) {
+    function done(err, res) {
+      if (err) {
+        console.log(err);
+        console.log(res.body);
+      }
+      _done.apply(this, arguments);
+    }
     agent.post('/api/login')
       .type('json')
       .send({ username: 'unknown', password: 'unknown' })

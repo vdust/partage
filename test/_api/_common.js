@@ -54,10 +54,14 @@ exports.test = function test(desc, requests) {
   if (!requests || !requests.length) return it(desc);
 
   it(desc, function (done) {
-    async.waterfall(requests.map(function (r) {
-      return function (next) {
-        r().end(function (err) { next(err); });
-      };
-    }), done);
+    async.eachSeries(requests, function (r, next) {
+      r().end(function (err, res) {
+        if (err) {
+          console.log(err);
+          if (res.body) console.log(res.body);
+        }
+        next(err);
+      });
+    }, done);
   });
 };

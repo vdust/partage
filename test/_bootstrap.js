@@ -14,6 +14,7 @@ var crypt = require('crypt3');
 var testRoot = '/tmp/filehub-tests-'+process.pid;
 
 var app = require('../lib/app');
+var resetUidGenerator = require('../lib/manager/folder')._resetUidGenerator;
 
 module.exports = function _bootstrap() { 
   var config = {
@@ -35,22 +36,25 @@ module.exports = function _bootstrap() {
     [ 'super', pwd, 'su', '0', 'su@example.com' ]
   ]).map(function (r) { return r.join(':') }).join("\n");
 
-  var rwConf = JSON.stringify({
-    description: 'Read-write folder',
-    accessList: [ 'visitor', 'contrib' ]
-  });
-  var rwPath = path.join(config.foldersRoot, 'readwrite');
   var roConf = JSON.stringify({
     description: 'Read-only folder',
     accessList: [ 'visitor', '!contrib' ]
   });
   var roPath = path.join(config.foldersRoot, 'readonly');
 
+  var rwConf = JSON.stringify({
+    description: 'Read-write folder',
+    accessList: [ 'visitor', 'contrib' ]
+  });
+  var rwPath = path.join(config.foldersRoot, 'readwrite');
+
   var _app = app();
 
   before(function (done) {
     process.env.NODE_ENV = 'test';
     var cnfile = process.env.FILEHUB_CONFIG = path.join(testRoot, 'config.json');
+
+    resetUidGenerator();
 
     /* Create test env
      *
