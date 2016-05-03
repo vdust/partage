@@ -12,5 +12,7 @@
 node_modules
 .sass-cache
 
+npm-debug*
+
 # dev env files
 _dev
