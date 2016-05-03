@@ -55,6 +55,9 @@ exports.test = function test(desc, requests) {
 
   it(desc, function (done) {
     async.eachSeries(requests, function (r, next) {
+      /* Not a supertest test builder. */
+      if (r.length === 1) return r(next);
+
       r().end(function (err, res) {
         if (err) {
           console.log(err);

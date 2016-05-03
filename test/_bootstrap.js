@@ -36,6 +36,8 @@ module.exports = function _bootstrap() {
     [ 'super', pwd, 'su', '0', 'su@example.com' ]
   ]).map(function (r) { return r.join(':') }).join("\n");
 
+  var admPath = path.join(config.foldersRoot, 'adminonly');
+
   var roConf = JSON.stringify({
     description: 'Read-only folder',
     accessList: [ 'visitor', '!contrib' ]
@@ -56,11 +58,15 @@ module.exports = function _bootstrap() {
 
     resetUidGenerator();
 
+    var mtimeRef = Math.floor((new Date('01-01-2016 00:00:00 GMT')).getTime() / 1000);
+
     /* Create test env
      *
      * /tmp/filehub-test-NNN/
      *   + folders/
      *   |  + adminonly/
+     *   |  |  + subdir/
+     *   |  |  + test.txt
      *   |  + readonly/
      *   |  |  + subdir/
      *   |  |  + .fhconfig
@@ -74,11 +80,15 @@ module.exports = function _bootstrap() {
     async.waterfall([
       function (next) { fs.emptyDir(testRoot, function(err) { next(err); }); },
         fs.mkdir.bind(null, config.foldersRoot),
-          fs.mkdir.bind(null, path.join(config.foldersRoot, 'adminonly')),
+          fs.mkdir.bind(null, admPath),
+            fs.mkdir.bind(null, path.join(admPath, 'subdir')),
+            fs.writeFile.bind(null, path.join(admPath, 'test.txt'), 'test', 'utf-8'),
+            fs.utimes.bind(null, path.join(admPath, 'test.txt'), mtimeRef, mtimeRef),
           fs.mkdir.bind(null, roPath),
             fs.mkdir.bind(null, path.join(roPath, 'subdir')),
             fs.writeFile.bind(null, path.join(roPath, '.fhconfig'), roConf, 'utf-8'),
             fs.writeFile.bind(null, path.join(roPath, 'test.txt'), 'test', 'utf-8'),
+            fs.utimes.bind(null, path.join(roPath, 'test.txt'), mtimeRef, mtimeRef),
           fs.mkdir.bind(null, rwPath),
             fs.writeFile.bind(null, path.join(rwPath, '.fhconfig'), rwConf, 'utf-8'),
         fs.mkdir.bind(null, config.session.store.path),
@@ -97,3 +107,5 @@ module.exports = function _bootstrap() {
 
   return _app;
 };
+
+module.exports.testRoot = testRoot;

@@ -12,7 +12,8 @@ describe('REST api:', function () {
   [
     'auth',
     'users',
-    'repo'
+    'repo',
+    'repo-folder'
   ].forEach(function (a) {
     if (!a) return;
     require('./_api/'+a);

@@ -253,3 +253,186 @@ api("POST /api/repo/", function (agent, test, as) {
     ]);
   });
 });
+
+api("GET /api/repo/stat", function (agent, test, as) {
+  test("should get 401 (unauthorized) response if unauthenticated", [
+    () => agent.get('/api/repo/stat?path=unknown').expect(401),
+    () => agent.get('/api/repo/stat?path=readonly').expect(401)
+  ]);
+
+  as('visitor', function () {
+    test("should get shared folder infos", [
+      () => agent.get('/api/repo/stat?path=readonly')
+        .expect('Content-Type', /json/)
+        .expect(200, {
+          name: 'readonly',
+          uid: '2',
+          description: 'Read-only folder',
+          type: 'folder',
+          mime: 'inode/directory',
+          path: 'readonly',
+          canread: true,
+          canwrite: false,
+          canedit: false
+        }),
+      () => agent.get('/api/repo/stat?path=readonly/')
+        .expect('Content-Type', /json/)
+        .expect(200, {
+          name: 'readonly',
+          uid: '2',
+          description: 'Read-only folder',
+          type: 'folder',
+          mime: 'inode/directory',
+          path: 'readonly',
+          canread: true,
+          canwrite: false,
+          canedit: false
+        })
+    ]);
+
+    test("should get subdirectory infos", [
+      () => agent.get('/api/repo/stat?path=readonly/subdir/')
+        .expect('Content-Type', /json/)
+        .expect(200, {
+          folder: 'readonly',
+          dirname: '.',
+          name: 'subdir',
+          uid: '2-37db6403631f80ea309d8b6c30580c1b73f4b8a9',
+          path: 'readonly/subdir',
+          type: 'folder',
+          mime: 'inode/directory'
+        })
+    ]);
+
+    test("should not require trailing slash on folder resource", [
+      () => agent.get('/api/repo/stat?path=readonly/subdir')
+        .expect('Content-Type', /json/)
+        .expect(200, {
+          folder: 'readonly',
+          dirname: '.',
+          name: 'subdir',
+          uid: '2-37db6403631f80ea309d8b6c30580c1b73f4b8a9',
+          path: 'readonly/subdir',
+          type: 'folder',
+          mime: 'inode/directory'
+        }),
+    ]);
+
+    test("should get file infos", [
+      () => agent.get('/api/repo/stat?path=readonly/test.txt')
+        .expect('Content-Type', /json/)
+        .expect(200, {
+          folder: 'readonly',
+          dirname: '.',
+          name: 'test.txt',
+          uid: '2-4b6fcb2d521ef0fd442a5301e7932d16cc9f375a',
+          path: 'readonly/test.txt',
+          type: 'file',
+          mime: 'text/plain',
+          mtime: (new Date('01-01-2016 00:00:00 GMT')).toJSON(),
+          size: 4
+        }),
+    ]);
+
+    test("should ignore trailing slash on file resource", [
+      () => agent.get('/api/repo/stat?path=readonly/test.txt/')
+        .expect('Content-Type', /json/)
+        .expect(200, {
+          folder: 'readonly',
+          dirname: '.',
+          name: 'test.txt',
+          uid: '2-4b6fcb2d521ef0fd442a5301e7932d16cc9f375a',
+          path: 'readonly/test.txt',
+          type: 'file',
+          mime: 'text/plain',
+          mtime: (new Date('01-01-2016 00:00:00 GMT')).toJSON(),
+          size: 4
+        }),
+    ]);
+
+    test("should get 404 response on missing resources", [
+      () => agent.get('/api/repo/stat?path=unknown').expect(404),
+      () => agent.get('/api/repo/stat?path=readonly/unknown').expect(404)
+    ]);
+
+    test("should get 404 response on folders with no read access", [
+      () => agent.get('/api/repo/stat?path=adminonly').expect(404),
+      () => agent.get('/api/repo/stat?path=adminonly/subdir').expect(404),
+      () => agent.get('/api/repo/stat?path=adminonly/test.txt').expect(404),
+      () => agent.get('/api/repo/stat?path=adminonly/unknown').expect(404)
+    ]);
+  });
+
+  as('admin', function () {
+    test("should get any shared folder infos with access list", [
+      () => agent.get('/api/repo/stat?path=adminonly')
+        .expect('Content-Type', /json/)
+        .expect(200, {
+          name: 'adminonly',
+          uid: '1',
+          description: '',
+          type: 'folder',
+          mime: 'inode/directory',
+          path: 'adminonly',
+          canread: true,
+          canwrite: true,
+          canedit: true,
+          access: {}
+        }),
+      () => agent.get('/api/repo/stat?path=readonly')
+        .expect('Content-Type', /json/)
+        .expect(200, {
+          name: 'readonly',
+          uid: '2',
+          description: 'Read-only folder',
+          type: 'folder',
+          mime: 'inode/directory',
+          path: 'readonly',
+          canread: true,
+          canwrite: true,
+          canedit: true,
+          access: {
+            visitor: true,
+            contrib: 'readonly'
+          }
+        })
+    ]);
+
+    test("should get any subdirectory infos", [
+      () => agent.get('/api/repo/stat?path=adminonly/subdir')
+        .expect('Content-Type', /json/)
+        .expect(200, {
+          folder: 'adminonly',
+          dirname: '.',
+          name: 'subdir',
+          uid: '1-37db6403631f80ea309d8b6c30580c1b73f4b8a9',
+          path: 'adminonly/subdir',
+          type: 'folder',
+          mime: 'inode/directory'
+        })
+    ]);
+
+    test("should get any file infos", [
+      () => agent.get('/api/repo/stat?path=adminonly/test.txt')
+        .expect('Content-Type', /json/)
+        .expect(200, {
+          folder: 'adminonly',
+          dirname: '.',
+          name: 'test.txt',
+          uid: '1-4b6fcb2d521ef0fd442a5301e7932d16cc9f375a',
+          path: 'adminonly/test.txt',
+          type: 'file',
+          mime: 'text/plain',
+          mtime: (new Date('01-01-2016 00:00:00 GMT')).toJSON(),
+          size: 4
+        })
+    ]);
+
+    test("should get 400 response with dotted names in path", [
+      () => agent.get('/api/repo/stat?path=readonly/.fhconfig').expect(400),
+      () => agent.get('/api/repo/stat?path=readonly/subdir/.unknown').expect(400),
+      () => agent.get('/api/repo/stat?path=readonly/.unknown/unknown.txt').expect(400),
+      () => agent.get('/api/repo/stat?path=.trash').expect(400)
+    ]);
+  });
+});
