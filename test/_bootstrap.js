@@ -72,7 +72,9 @@ module.exports = function _bootstrap() {
      *   |  |  + .fhconfig
      *   |  |  + test.txt
      *   |  + readwrite/
+     *   |     + existdir/
      *   |     + .fhconfig
+     *   |     + exist.txt
      *   + sessions/
      *   + config.json
      *   + users.pwd
@@ -90,7 +92,10 @@ module.exports = function _bootstrap() {
             fs.writeFile.bind(null, path.join(roPath, 'test.txt'), 'test', 'utf-8'),
             fs.utimes.bind(null, path.join(roPath, 'test.txt'), mtimeRef, mtimeRef),
           fs.mkdir.bind(null, rwPath),
+            fs.mkdir.bind(null, path.join(rwPath, 'existdir')),
             fs.writeFile.bind(null, path.join(rwPath, '.fhconfig'), rwConf, 'utf-8'),
+            fs.writeFile.bind(null, path.join(rwPath, 'exist.txt'), 'test', 'utf-8'),
+            fs.utimes.bind(null, path.join(rwPath, 'exist.txt'), mtimeRef, mtimeRef),
         fs.mkdir.bind(null, config.session.store.path),
         fs.writeFile.bind(null, cnfile, JSON.stringify(config), 'utf-8'),
         fs.writeFile.bind(null, config.usersFile, users+"\n", 'utf-8'),

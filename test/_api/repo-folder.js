@@ -6,13 +6,8 @@
 
 'use strict';
 
-var fs = require('fs-extra');
-var path = require('path');
-
 var expect = require('expect');
 
-var testRoot = require('../_bootstrap').testRoot;
-var trashDir = path.join(testRoot, 'folders', '.trash');
 var api = require('./_common').api;
 var merge = require('../../lib/utils').merge;
 
@@ -261,17 +256,11 @@ api("DELETE /api/repo/folder", function (agent, test, as) {
         .expect(200)
         .type('json')
         .expect(function (res) {
-          expect(res.body).toBeAn('object');
-          expect(res.body.trashUid).toBeA('string');
-          trashUid = res.body.trashUid;
-          delete res.body.trashUid;
-        }).expect({ origin: 'readonly' }),
-      (next) => fs.stat(path.join(trashDir, trashUid), function (err, stats) {
-        expect(err).toNotExist();
-        expect(stats).toBeAn('object');
-        expect(stats.isDirectory()).toBe(true);
-        next();
-      })
+          expect(res.body).toContain({
+            origin: 'readonly'
+          });
+          expect(res.body).toContainKey('trashUid');
+        })
     ]);
 
     test("should get 404 response on unknown folder", [

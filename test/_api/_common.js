@@ -30,6 +30,7 @@ exports.asUserHooks = function asUserHooks(agent, user) {
     agent.post('/api/login')
          .type('json')
          .send({ username: user, password: 'test' })
+         .expect(200)
          .end(done);
   });
   after(function (done) {
