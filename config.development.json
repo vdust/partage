@@ -1,5 +1,21 @@
 {
   "foldersRoot": "_dev/folders",
+  "foldersDevTree": {
+    "test1/": {
+      ".fhconfig": { "description": "Test directory 1" },
+      "subdir/": {},
+      "subdir2/": {},
+      "file.txt": "Some text file",
+      "data.ini": "[data]\nkey1=value\nkey2=42"
+    },
+    "test2/": {
+      ".fhconfig": { "description": "Test directory 2" },
+      "subdir/": {},
+      "subdir2/": {},
+      "file.txt": "Some text file",
+      "image.svg": "<svg></svg>"
+    }
+  },
   "footer": {
     "contact": "contact@example.com"
   },

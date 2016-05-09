@@ -50,21 +50,21 @@ function queryFile(agent, path, contents, type) {
 }
 
 api("GET /api/repo/:folder/path+", function (agent, test, as) {
-  as('visitor', function () {
+  as('user', function () {
     test("should get file contents", [
       queryFile(agent, '/readonly/test.txt', "test")
     ]);
 
-    test("should get 404 response on unknown folder", [
-      () => agent.get('/api/repo/unknown/target.txt').expect(404)
+    test("should get 404 response on unknown files", [
+      () => agent.get('/api/repo/readwrite/unknown').expect(404)
     ]);
 
     test("should get 404 response on folders with no access", [
       () => agent.get('/api/repo/adminonly/test.txt').expect(404)
     ]);
 
-    test("should get 404 response on unknown files", [
-      () => agent.get('/api/repo/readwrite/unknown').expect(404)
+    test("should get 404 response on unknown folder", [
+      () => agent.get('/api/repo/unknown/target.txt').expect(404)
     ]);
 
     test("should get 409 response if target is a directory (no trailing slash)", [
@@ -78,13 +78,9 @@ api("GET /api/repo/:folder/path+", function (agent, test, as) {
 });
 
 api("HEAD /api/repo/:folder/path+", function (agent, test, as) {
-  as('visitor', function () {
+  as('user', function () {
     test("should get 204 response", [
       () => agent.head('/api/repo/readonly/test.txt').expect(204)
-    ]);
-
-    test("should get 404 response on unknown folder", [
-      () => agent.head('/api/repo/unknown/target.txt').expect(404)
     ]);
 
     test("should get 404 response on folders with no access", [
@@ -93,6 +89,10 @@ api("HEAD /api/repo/:folder/path+", function (agent, test, as) {
 
     test("should get 404 response on unknown files", [
       () => agent.head('/api/repo/readwrite/unknown.txt').expect(404)
+    ]);
+
+    test("should get 404 response on unknown folder", [
+      () => agent.head('/api/repo/unknown/target.txt').expect(404)
     ]);
 
     test("should get 409 response if target is a directory (no trailing slash)", [
@@ -106,20 +106,7 @@ api("HEAD /api/repo/:folder/path+", function (agent, test, as) {
 });
 
 api("PUT /api/repo/:folder/path+", function (agent, test, as) {
-  as('visitor', function () {
-    test("should get 403 response on any attempt to send a file", [
-      () => agent.put('/api/repo/readwrite/forbidden.txt')
-        .set('Content-Type', 'text/plain; charset=utf-8')
-        .send('epic fail')
-        .expect(403),
-      () => agent.put('/api/repo/adminonly/forbidden.txt')
-        .set('Content-Type', 'text/plain; charset=utf-8')
-        .send('epic fail')
-        .expect(403)
-    ]);
-  });
-
-  as('contrib', function () {
+  as('user', function () {
     test("should write a new file", [
       () => agent.put('/api/repo/readwrite/new.txt')
         .set('Content-Type', 'text/plain; charset=utf-8')
@@ -213,15 +200,7 @@ api("PUT /api/repo/:folder/path+", function (agent, test, as) {
 });
 
 api("DELETE /api/repo/:folder/path+", function (agent, test, as) {
-  as('visitor', function () {
-    test("should get 403 response on any attempt", [
-      () => agent.del('/api/repo/readwrite/exist.txt').expect(403),
-      () => agent.del('/api/repo/adminonly/test.txt').expect(403),
-      () => agent.del('/api/repo/unknown/test.txt').expect(403)
-    ]);
-  });
-
-  as('contrib', function () {
+  as('user', function () {
     function trashItemPayload(res) {
       expect(res.body).toContain({
         origin: 'readwrite/garbage.txt'

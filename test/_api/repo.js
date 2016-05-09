@@ -17,38 +17,7 @@ api("* /api/repo/", function (agent, test, as) {
 });
 
 api("GET /api/repo/", function (agent, test, as) {
-  as('visitor', function () {
-    test("should get list of readable shared folders", [
-      () => agent.get('/api/repo/')
-        .expect('Content-Type', /json/)
-        .expect(200, [
-          {
-            name: 'readonly',
-            uid: '2',
-            description: 'Read-only folder',
-            type: 'folder',
-            mime: 'inode/directory',
-            path: 'readonly',
-            canread: true,
-            canwrite: false,
-            canedit: false
-          },
-          {
-            name: 'readwrite',
-            uid: '3',
-            description: 'Read-write folder',
-            type: 'folder',
-            mime: 'inode/directory',
-            path: 'readwrite',
-            canread: true,
-            canwrite: false,
-            canedit: false
-          }
-        ])
-    ]);
-  });
-
-  as('contrib', function () {
+  as('user', function () {
     test("should get list of readable and writable shared folders", [
       () => agent.get('/api/repo/')
         .set('Accept', 'application/json')
@@ -96,7 +65,7 @@ api("GET /api/repo/", function (agent, test, as) {
             canread: true,
             canwrite: true,
             canedit: true,
-            access: {}
+            accessList: {}
           },
           {
             name: 'readonly',
@@ -108,9 +77,8 @@ api("GET /api/repo/", function (agent, test, as) {
             canread: true,
             canwrite: true,
             canedit: true,
-            access: {
-              visitor: true,
-              contrib: 'readonly'
+            accessList: {
+              user: 'ro'
             }
           },
           {
@@ -123,9 +91,8 @@ api("GET /api/repo/", function (agent, test, as) {
             canread: true,
             canwrite: true,
             canedit: true,
-            access: {
-              visitor: true,
-              contrib: true
+            accessList: {
+              user: 'rw'
             }
           }
         ])
@@ -134,22 +101,10 @@ api("GET /api/repo/", function (agent, test, as) {
 });
 
 api("POST /api/repo/", function (agent, test, as) {
-  as('visitor', function () {
+  as('user', function () {
     test("should get 403 (forbidden) response", [
       () => agent.post('/api/repo/')
-        .send({
-          name: "test"
-        })
-        .expect(403)
-    ]);
-  });
-
-  as('contrib', function () {
-    test("should get 403 (forbidden) response", [
-      () => agent.post('/api/repo/')
-        .send({
-          name: "test"
-        })
+        .send({ name: "test" })
         .expect(403)
     ]);
   });
@@ -180,7 +135,7 @@ api("POST /api/repo/", function (agent, test, as) {
             canread: true,
             canwrite: true,
             canedit: true,
-            access: {}
+            accessList: {}
           }, mergeBody||{}));
         }
 
@@ -202,32 +157,32 @@ api("POST /api/repo/", function (agent, test, as) {
     test("should create shared folder with accessList", [
       query({
         name: 'test-access Array',
-        accessList: [ 'visitor', '!contrib' ]
+        accessList: [ 'user', '+user2' ]
       }, 200, {
-        access: {
-          visitor: true,
-          contrib: 'readonly'
+        accessList: {
+          user: 'ro',
+          user2: 'rw'
         }
       }),
       query({
         name: 'test-access String',
-        accessList: 'visitor, !contrib'
+        accessList: 'user, +user2'
       }, 200, {
-        access: {
-          visitor: true,
-          contrib: 'readonly'
+        accessList: {
+          user: 'ro',
+          user2: 'rw'
         }
       }),
       query({
         name: 'test-access Object',
         accessList: {
-          visitor: true,
-          contrib: 'readonly'
+          user: 'ro',
+          user2: 'rw'
         }
       }, 200, {
-        access: {
-          visitor: true,
-          contrib: 'readonly'
+        accessList: {
+          user: 'ro',
+          user2: 'rw'
         }
       })
     ]);
@@ -249,7 +204,7 @@ api("POST /api/repo/", function (agent, test, as) {
     test("should get 400 (bad request) response if accessList is invalid", [
       query({ name: 'test-invalid-access1', accessList: 42 }, 400),
       query({ name: 'test-invalid-access2', accessList: 'not a valid user' }, 400),
-      query({ name: 'test-invalid-access3', accessList: { visitor: 'garbage' }}, 400)
+      query({ name: 'test-invalid-access3', accessList: { user: 'garbage' }}, 400)
     ]);
   });
 });
@@ -260,7 +215,7 @@ api("GET /api/repo/stat", function (agent, test, as) {
     () => agent.get('/api/repo/stat?path=readonly').expect(401)
   ]);
 
-  as('visitor', function () {
+  as('user', function () {
     test("should get shared folder infos", [
       () => agent.get('/api/repo/stat?path=readonly')
         .expect('Content-Type', /json/)
@@ -377,7 +332,7 @@ api("GET /api/repo/stat", function (agent, test, as) {
           canread: true,
           canwrite: true,
           canedit: true,
-          access: {}
+          accessList: {}
         }),
       () => agent.get('/api/repo/stat?path=readonly')
         .expect('Content-Type', /json/)
@@ -391,9 +346,8 @@ api("GET /api/repo/stat", function (agent, test, as) {
           canread: true,
           canwrite: true,
           canedit: true,
-          access: {
-            visitor: true,
-            contrib: 'readonly'
+          accessList: {
+            user: 'ro'
           }
         })
     ]);

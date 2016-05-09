@@ -39,7 +39,7 @@ api("* /api/repo/:folder/", function (agent, test, as) {
 });
 
 api("GET /api/repo/:folder/", function (agent, test, as) {
-  as('contrib', function () {
+  as('user', function () {
     test("should get folder infos, files and subdirectories", [
       () => agent.get('/api/repo/readonly/')
         .expect(200, {
@@ -106,7 +106,7 @@ api("GET /api/repo/:folder/", function (agent, test, as) {
           canread: true,
           canwrite: true,
           canedit: true,
-          access: {},
+          accessList: {},
           dirs: [
             {
               folder: 'adminonly',
@@ -141,7 +141,7 @@ api("GET /api/repo/:folder/", function (agent, test, as) {
 });
 
 api("HEAD /api/repo/:folder/", function (agent, test, as) {
-  as('contrib', function () {
+  as('user', function () {
     test("should get 204 response on folder with read access", [
       () => agent.head('/api/repo/readonly/').expect(204)
     ]);
@@ -167,7 +167,7 @@ api("HEAD /api/repo/:folder/", function (agent, test, as) {
 });
 
 api("PUT /api/repo/:folder/", function (agent, test, as) {
-  as('contrib', function () {
+  as('user', function () {
     test("should get 403 response on any folder", [
       () => agent.put('/api/repo/readonly/')
         .send({
@@ -199,7 +199,7 @@ api("PUT /api/repo/:folder/", function (agent, test, as) {
       canread: true,
       canwrite: true,
       canedit: true,
-      access: {}
+      accessList: {}
     };
 
     test("should update description only", [
@@ -218,13 +218,13 @@ api("PUT /api/repo/:folder/", function (agent, test, as) {
     test("should update access only", [
       () => agent.put('/api/repo/adminonly/')
         .send({
-          accessList: [ 'visitor', '!contrib' ]
+          accessList: [ 'user', '+user2' ]
         }).expect(200, merge({}, infos, {
-          access: { visitor: true, contrib: 'readonly' }
+          accessList: { user: 'ro', user2: 'rw' }
         })),
       () => agent.get('/api/repo/stat?path=adminonly')
         .expect(200, merge({}, infos, {
-          access: { visitor: true, contrib: 'readonly' }
+          accessList: { user: 'ro', user2: 'rw' }
         })),
       () => agent.put('/api/repo/adminonly/')
         .send({
@@ -239,8 +239,8 @@ api("PUT /api/repo/:folder/", function (agent, test, as) {
   });
 });
 
-api("DELETE /api/repo/folder", function (agent, test, as) {
-  as('contrib', function () {
+api("DELETE /api/repo/folder/", function (agent, test, as) {
+  as('user', function () {
     test("should get 403 response on any folder", [
       () => agent.del('/api/repo/readonly/').expect(403),
       () => agent.del('/api/repo/readwrite/').expect(403),

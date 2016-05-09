@@ -39,7 +39,7 @@ api("* /api/repo/:folder/path+/", function (agent, test, as) {
 });
 
 api("GET /api/repo/:folder/path+/", function (agent, test, as) {
-  as('visitor', function () {
+  as('user', function () {
     test("should get directory infos with files and subdirectories", [
       () => agent.get('/api/repo/readonly/subdir/')
         .expect(200, {
@@ -78,7 +78,7 @@ api("GET /api/repo/:folder/path+/", function (agent, test, as) {
 });
 
 api("HEAD /api/repo/:folder/path+/", function (agent, test, as) {
-  as('visitor', function () {
+  as('user', function () {
     test("should get 204 response", [
       () => agent.head('/api/repo/readonly/subdir/').expect(204)
     ]);
@@ -106,15 +106,7 @@ api("HEAD /api/repo/:folder/path+/", function (agent, test, as) {
 });
 
 api("PUT /api/repo/:folder/path+/", function (agent, test, as) {
-  as('visitor', function () {
-    test("should get 403 response on aly attempt to create a directory", [
-      () => agent.put('/api/repo/readwrite/forbidden/').expect(403),
-      () => agent.put('/api/repo/adminonly/forbidden/').expect(403),
-      () => agent.put('/api/repo/unknown/forbidden/?parents=1').expect(403)
-    ])
-  });
-
-  as('contrib', function () {
+  as('user', function () {
     test("should create a new directory", [
       () => agent.put('/api/repo/readwrite/newdir/')
         .expect(200, {
@@ -185,18 +177,25 @@ api("PUT /api/repo/:folder/path+/", function (agent, test, as) {
       () => agent.put('/api/repo/readwrite/exist.txt/newdir/').expect(409)
     ]);
   });
+
+  as('admin', function () {
+    test("should create a new directory in any folder", [
+      () => agent.put('/api/repo/adminonly/newdir/')
+        .expect(200, {
+          folder: 'adminonly',
+          dirname: '.',
+          name: 'newdir',
+          uid: '1-475e437cbb1da01a8ccf52ef3b1192c5bac9f165',
+          path: 'adminonly/newdir',
+          type: 'folder',
+          mime: 'inode/directory'
+        })
+    ]);
+  });
 });
 
 api("DELETE /api/repo/:folder/path+/", function (agent, test, as) {
-  as('visitor', function () {
-    test("should get 403 response on any attempt", [
-      () => agent.del('/api/repo/readwrite/existdir/').expect(403),
-      () => agent.del('/api/repo/adminonly/subdir/').expect(403),
-      () => agent.del('/api/repo/unknown/subdir/').expect(403)
-    ]);
-  });
-
-  as('contrib', function () {
+  as('user', function () {
     function trashItemPayload(res) {
       expect(res.body).toContain({
         origin: 'readwrite/garbage'
@@ -237,4 +236,3 @@ api("DELETE /api/repo/:folder/path+/", function (agent, test, as) {
     ]);
   });
 });
-

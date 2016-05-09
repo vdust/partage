@@ -7,49 +7,38 @@
 'use strict';
 
 var api = require('./_common').api;
-var async = require('async');
 
-api('POST /api/login', function (agent) {
-  it("should fail to sign in as unknown user", function (_done) {
-    function done(err, res) {
-      if (err) {
-        console.log(err);
-        console.log(res.body);
-      }
-      _done.apply(this, arguments);
-    }
-    agent.post('/api/login')
-      .type('json')
+api('POST /api/login', function (agent, test) {
+  test("should fail to sign in as unknown user", [
+    () => agent.post('/api/login')
       .send({ username: 'unknown', password: 'unknown' })
-      .expect(401, done);
-  });
+      .expect(401)
+  ]);
 
-  it("should fail to sign in as known user with wrong password", function (done) {
-    agent.post('/api/login')
-      .type('json')
-      .send({ username: 'visitor', password: 'wrongpassword' })
-      .expect(401, done);
-  });
+  test("should fail to sign in as known user with wrong password", [
+    () => agent.post('/api/login')
+      .send({ username: 'user', password: 'wrongpassword' })
+      .expect(401)
+  ]);
 
-  it("should sign in as known user with correct password", function (done) {
-    agent.post('/api/login')
-      .type('json')
-      .send({ username: 'visitor', password: 'test' })
+  test("should sign in as known user with correct password", [
+    () => agent.post('/api/login')
+      .send({ username: 'user', password: 'test' })
       .expect('Content-Type', /json/)
       .expect(200, {
-        username: 'visitor',
-        email: 'visitor@example.com',
-        accessLevel: 'visitor'
-      }, done);
-  });
+        username: 'user',
+        email: 'user@example.com',
+        accessLevel: 'user'
+      })
+  ]);
 });
 
 api('POST /api/logout', function (agent, test) {
-  it("should not fail if no user is signed in", function (done) {
-    agent.post('/api/logout')
+  test("should not fail if no user is signed in", [
+    () => agent.post('/api/logout')
       .expect('Content-Type', /json/)
-      .expect(200, {}, done);
-  });
+      .expect(200, {})
+  ]);
 
   test("should sign user out", [
     () => agent.post('/api/login')
@@ -63,4 +52,3 @@ api('POST /api/logout', function (agent, test) {
       .expect(401)
   ]);
 });
-

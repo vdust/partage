@@ -15,4 +15,4 @@ node_modules
 npm-debug*
 
 # dev env files
-_dev
+_dev*

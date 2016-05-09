@@ -14,9 +14,10 @@ var crypt = require('crypt3');
 var testRoot = '/tmp/filehub-tests-'+process.pid;
 
 var app = require('../lib/app');
+var Trash = require('../lib/manager/trash');
 var resetUidGenerator = require('../lib/manager/folder')._resetUidGenerator;
 
-module.exports = function _bootstrap() { 
+module.exports = function _bootstrap(options) { 
   var config = {
     foldersRoot: path.join(testRoot, 'folders'),
     i18n: { debug: false, saveMissing: true },
@@ -28,10 +29,12 @@ module.exports = function _bootstrap() {
     usersFile: path.join(testRoot, 'users.pwd')
   };
 
+  options = options || {};
+
   var pwd = crypt('test', '$6$abc123');
   var users = ([
-    [ 'visitor', pwd, 'visitor', '0', 'visitor@example.com' ],
-    [ 'contrib', pwd, 'contributor', '0', 'contrib@example.com' ],
+    [ 'user', pwd, 'user', '0', 'user@example.com' ],
+    [ 'user2', pwd, 'user2', '0', 'user2@example.com' ],
     [ 'admin', pwd, 'admin', '0', 'admin@example.com' ],
     [ 'super', pwd, 'su', '0', 'su@example.com' ]
   ]).map(function (r) { return r.join(':') }).join("\n");
@@ -40,13 +43,13 @@ module.exports = function _bootstrap() {
 
   var roConf = JSON.stringify({
     description: 'Read-only folder',
-    accessList: [ 'visitor', '!contrib' ]
+    accessList: [ 'user' ]
   });
   var roPath = path.join(config.foldersRoot, 'readonly');
 
   var rwConf = JSON.stringify({
     description: 'Read-write folder',
-    accessList: [ 'visitor', 'contrib' ]
+    accessList: [ '+user' ]
   });
   var rwPath = path.join(config.foldersRoot, 'readwrite');
 
@@ -58,7 +61,7 @@ module.exports = function _bootstrap() {
 
     resetUidGenerator();
 
-    var mtimeRef = Math.floor((new Date('01-01-2016 00:00:00 GMT')).getTime() / 1000);
+    var mtimeRef = Math.floor((new Date('2016-01-01 00:00:00 GMT')).getTime() / 1000);
 
     /* Create test env
      *
@@ -105,6 +108,36 @@ module.exports = function _bootstrap() {
       done();
     });
   });
+
+  if (Array.isArray(options.trash) && options.trash.length) {
+    var trashDir = path.join(config.foldersRoot, '.trash');
+
+    var trashActions = [
+      (next) => fs.emptyDir(trashDir, (err) => next(err)),
+    ];
+
+    var trashDate = new Date('2016-01-01 00:00:00 GMT');
+
+    options.trash.forEach(function (p) {
+      if (!p) return;
+
+      var isDir = p.substr(-1) === '/';
+
+      p = p.replace(/\/+$/, '');
+
+      var dest = path.join(trashDir, Trash.buildUid(isDir, trashDate, p));
+
+      if (isDir) {
+        trashActions.push(fs.mkdir.bind(null, dest));
+      } else {
+        trashActions.push(fs.writeFile.bind(null, dest, p, 'utf-8'));
+      }
+    });
+
+    beforeEach(function (done) {
+      async.waterfall(trashActions, done);
+    });
+  }
 
   after(function (done) {
     fs.remove(testRoot, done);

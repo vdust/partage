@@ -11,16 +11,14 @@ var request = require('supertest');
 
 var bootApp = require('../_bootstrap.js');
 
-exports.api = function api(target, setupFn) {
+exports.api = function api(target, opts, setupFn) {
+  if (typeof opts === 'function') {
+    setupFn = opts;
+    opts = {};
+  }
+
   describe(target, function () {
-    var agent;
-
-    if (process.env.FILEHUB_TEST_ADDR) {
-      agent = request.agent(process.env.FILEHUB_TEST_ADDR);
-    } else {
-      agent = request.agent(bootApp());
-    }
-
+    var agent = request.agent(bootApp(opts));
     setupFn(agent, exports.test, exports.describeAs.bind(agent));
   });
 }
@@ -30,8 +28,7 @@ exports.asUserHooks = function asUserHooks(agent, user) {
     agent.post('/api/login')
          .type('json')
          .send({ username: user, password: 'test' })
-         .expect(200)
-         .end(done);
+         .expect(200, done);
   });
   after(function (done) {
     agent.post('/api/logout').end(done);
@@ -62,6 +59,7 @@ exports.test = function test(desc, requests) {
       r().end(function (err, res) {
         if (err) {
           console.log(err);
+          if (res.headers) console.log(res.headers);
           if (res.body) console.log(res.body);
         }
         next(err);
