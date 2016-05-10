@@ -38,9 +38,9 @@ var apiOpts = {
     'readwrite/trashed.txt',
     'adminonly/trashed/',
     'adminonly/trashed.txt',
-    'unknown/',
-    'unknown/trashed/',
-    'unknown/trashed.txt'
+    'deleted/',
+    'deleted/trashed/',
+    'deleted/trashed.txt'
   ]
 };
 
@@ -69,12 +69,12 @@ api('GET /api/trash', apiOpts, function (agent, test, as) {
           trashInfos('folder', 'adminonly', 'trashed', 'adminonly'),
           trashInfos('folder', 'readonly', 'trashed', 'readonly'),
           trashInfos('folder', 'readwrite', 'trashed', 'readwrite'),
-          trashInfos('folder', 'unknown', 'trashed', 'unknown'),
+          trashInfos('folder', 'deleted', 'trashed', 'deleted'),
           trashInfos('file', 'adminonly', 'trashed.txt', 'adminonly'),
           trashInfos('file', 'readonly', 'trashed.txt', 'readonly'),
           trashInfos('file', 'readwrite', 'trashed.txt', 'readwrite'),
-          trashInfos('file', 'unknown', 'trashed.txt', 'unknown'),
-          trashInfos('folder', 'unknown')
+          trashInfos('file', 'deleted', 'trashed.txt', 'deleted'),
+          trashInfos('folder', 'deleted')
         ])
     ]);
   });
@@ -90,11 +90,11 @@ api('DELETE /api/trash', apiOpts, function (agent, test, as) {
         .expect(200, [
           trashInfos('folder', 'adminonly', 'trashed', 'adminonly'),
           trashInfos('folder', 'readonly', 'trashed', 'readonly'),
-          trashInfos('folder', 'unknown', 'trashed', 'unknown'),
+          trashInfos('folder', 'deleted', 'trashed', 'deleted'),
           trashInfos('file', 'adminonly', 'trashed.txt', 'adminonly'),
           trashInfos('file', 'readonly', 'trashed.txt', 'readonly'),
-          trashInfos('file', 'unknown', 'trashed.txt', 'unknown'),
-          trashInfos('folder', 'unknown')
+          trashInfos('file', 'deleted', 'trashed.txt', 'deleted'),
+          trashInfos('folder', 'deleted')
         ])
     ]);
   });
@@ -107,7 +107,7 @@ api('DELETE /api/trash', apiOpts, function (agent, test, as) {
   });
 });
 
-api('* /api/trash/:ItemId', function (agent, test, as) {
+api('* /api/trash/:itemId', function (agent, test, as) {
   test("should get 401 response if unauthenticated", [
     () => agent.get('/api/trash/'+uid('readwrite/trashed.txt')).expect(401),
     () => agent.del('/api/trash/'+uid('readwrite/trashed.txt')).expect(401)
@@ -119,8 +119,129 @@ api('* /api/trash/:ItemId', function (agent, test, as) {
   ]);
 });
 
-api('GET /api/trash/:itemId', function (agent, test, as) {
-  test("TODO");
+api('GET /api/trash/:itemId', apiOpts, function (agent, test, as) {
+  as('user', function () {
+    test("should get trashed file infos", [
+      () => agent.get('/api/trash/'+uid('readwrite/trashed.txt'))
+        .expect(200, {
+          uid: uid('readwrite/trashed.txt'),
+          name: 'trashed.txt',
+          type: 'file',
+          mime: 'text/plain',
+          timestamp: (new Date('2016-01-01 00:00:00 GMT')).getTime(),
+          folder: 'readwrite',
+          isFolder: false,
+          origin: 'readwrite'
+        })
+    ]);
+
+    test("should get trashed directory infos", [
+      () => agent.get('/api/trash/'+uid('readwrite/trashed', true))
+        .expect(200, {
+          uid: uid('readwrite/trashed', true),
+          name: 'trashed',
+          type: 'folder',
+          mime: 'inode/directory',
+          timestamp: (new Date('2016-01-01 00:00:00 GMT')).getTime(),
+          folder: 'readwrite',
+          isFolder: false,
+          origin: 'readwrite'
+        })
+    ]);
+
+    test("should get 404 response with items from non writable folders", [
+      () => agent.get('/api/trash/'+uid('readonly/trashed.txt')).expect(404),
+      () => agent.get('/api/trash/'+uid('readonly/trashed', true)).expect(404),
+      () => agent.get('/api/trash/'+uid('adminonly/trashed.txt')).expect(404),
+    ]);
+
+    test("should get 404 response with items in deleted folders", [
+      () => agent.get('/api/trash/'+uid('deleted', true)).expect(404),
+      () => agent.get('/api/trash/'+uid('deleted/trashed.txt')).expect(404)
+    ]);
+
+    test("should get 404 response on non existing item", [
+      () => agent.get('/api/trash/'+uid('readwrite/unknown.txt')).expect(404),
+      () => agent.get('/api/trash/'+uid('readwrite/unknown', true)).expect(404),
+      () => agent.get('/api/trash/'+uid('unknown', true)).expect(404),
+      () => agent.get('/api/trash/'+uid('unknown/trashed', true)).expect(404),
+      () => agent.get('/api/trash/'+uid('unknown/trashed.txt')).expect(404)
+    ]);
+  });
+
+  as('admin', function () {
+    test("should get any trashed file infos", [
+      () => agent.get('/api/trash/'+uid('adminonly/trashed.txt'))
+        .expect(200, {
+          uid: uid('adminonly/trashed.txt'),
+          name: 'trashed.txt',
+          type: 'file',
+          mime: 'text/plain',
+          timestamp: (new Date('2016-01-01 00:00:00 GMT')).getTime(),
+          folder: 'adminonly',
+          isFolder: false,
+          origin: 'adminonly'
+        }),
+      () => agent.get('/api/trash/'+uid('deleted/trashed.txt'))
+        .expect(200, {
+          uid: uid('deleted/trashed.txt'),
+          name: 'trashed.txt',
+          type: 'file',
+          mime: 'text/plain',
+          timestamp: (new Date('2016-01-01 00:00:00 GMT')).getTime(),
+          folder: 'deleted',
+          isFolder: false,
+          origin: 'deleted'
+        })
+    ]);
+
+    test("should get any trashed directory infos", [
+      () => agent.get('/api/trash/'+uid('adminonly/trashed', true))
+        .expect(200, {
+          uid: uid('adminonly/trashed', true),
+          name: 'trashed',
+          type: 'folder',
+          mime: 'inode/directory',
+          timestamp: (new Date('2016-01-01 00:00:00 GMT')).getTime(),
+          folder: 'adminonly',
+          isFolder: false,
+          origin: 'adminonly'
+        }),
+      () => agent.get('/api/trash/'+uid('deleted/trashed', true))
+        .expect(200, {
+          uid: uid('deleted/trashed', true),
+          name: 'trashed',
+          type: 'folder',
+          mime: 'inode/directory',
+          timestamp: (new Date('2016-01-01 00:00:00 GMT')).getTime(),
+          folder: 'deleted',
+          isFolder: false,
+          origin: 'deleted'
+        })
+    ]);
+
+    test("should get trashed folder infos", [
+      () => agent.get('/api/trash/'+uid('deleted', true))
+        .expect(200, {
+          uid: uid('deleted', true),
+          name: 'deleted',
+          type: 'folder',
+          mime: 'inode/directory',
+          timestamp: (new Date('2016-01-01 00:00:00 GMT')).getTime(),
+          folder: 'deleted',
+          isFolder: true,
+          origin: ''
+        })
+    ]);
+
+    test("should get 404 response on non existing item", [
+      () => agent.get('/api/trash/'+uid('readwrite/unknown.txt')).expect(404),
+      () => agent.get('/api/trash/'+uid('readwrite/unknown', true)).expect(404),
+      () => agent.get('/api/trash/'+uid('unknown', true)).expect(404),
+      () => agent.get('/api/trash/'+uid('unknown/trashed', true)).expect(404),
+      () => agent.get('/api/trash/'+uid('unknown/trashed.txt')).expect(404)
+    ]);
+  });
 });
 
 api('DELETE /api/trash/:itemId', apiOpts, function (agent, test, as) {
@@ -152,9 +273,9 @@ api('DELETE /api/trash/:itemId', apiOpts, function (agent, test, as) {
     ]);
 
     test("should get 404 response on trashed folder or resource from deleted folder", [
-      () => agent.del('/api/trash/'+uid('unknown', true)).expect(404),
-      () => agent.del('/api/trash/'+uid('unknown/trashed', true)).expect(404),
-      () => agent.del('/api/trash/'+uid('unknown/trashed.txt')).expect(404)
+      () => agent.del('/api/trash/'+uid('deleted', true)).expect(404),
+      () => agent.del('/api/trash/'+uid('deleted/trashed', true)).expect(404),
+      () => agent.del('/api/trash/'+uid('deleted/trashed.txt')).expect(404)
     ]);
 
     test("should silently ignore non existing uid if origin is from writable folder", [
@@ -181,12 +302,12 @@ api('DELETE /api/trash/:itemId', apiOpts, function (agent, test, as) {
     ]);
 
     test("should delete trashed resource from deleted folder", [
-      () => agent.del('/api/trash/'+uid('unknown/trashed.txt')).expect(204),
-      () => agent.del('/api/trash/'+uid('unknown/trashed', true)).expect(204)
+      () => agent.del('/api/trash/'+uid('deleted/trashed.txt')).expect(204),
+      () => agent.del('/api/trash/'+uid('deleted/trashed', true)).expect(204)
     ]);
 
     test("should delete trashed folder", [
-      () => agent.del('/api/trash/'+uid('unknown')).expect(204)
+      () => agent.del('/api/trash/'+uid('deleted')).expect(204)
     ]);
   });
 });
