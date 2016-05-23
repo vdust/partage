@@ -13,9 +13,14 @@ var crypt = require('crypt3');
 
 var testRoot = '/tmp/filehub-tests-'+process.pid;
 
+var utils = require('../lib/utils');
 var app = require('../lib/app');
 var Trash = require('../lib/manager/trash');
 var resetUidGenerator = require('../lib/manager/folder')._resetUidGenerator;
+
+function mkTree(root, files) {
+  
+}
 
 module.exports = function _bootstrap(options) { 
   var config = {
@@ -61,60 +66,50 @@ module.exports = function _bootstrap(options) {
 
     resetUidGenerator();
 
-    var mtimeRef = Math.floor((new Date('2016-01-01 00:00:00 GMT')).getTime() / 1000);
+    var mtime = new Date('2016-01-01 00:00:00 GMT');
 
-    /* Create test env
-     *
-     * /tmp/filehub-test-NNN/
-     *   + folders/
-     *   |  + adminonly/
-     *   |  |  + subdir/
-     *   |  |  + test.txt
-     *   |  + readonly/
-     *   |  |  + subdir/
-     *   |  |  + .fhconfig
-     *   |  |  + test.txt
-     *   |  + readwrite/
-     *   |     + existdir/
-     *   |     + .fhconfig
-     *   |     + exist.txt
-     *   + sessions/
-     *   + config.json
-     *   + users.pwd
-     */
+    // Create test env under /tmp/filehub-test-NNN/
+    var tree = {
+      'folders/': {
+        'adminonly/': {
+          'subdir/': {},
+          'test.txt': { mtime: mtime, data: 'test' }
+        },
+        'readonly/': {
+          'subdir/': {},
+          '.fhconfig': roConf,
+          'test.txt': { mtime: mtime, data: 'test' }
+        },
+        'readwrite/': {
+          'existdir/': {},
+          '.fhconfig': rwConf,
+          'exist.txt': { mtime: mtime, data: 'test' }
+        }
+      },
+      'sessions/': {},
+      'config.json': { data: config },
+      'users.pwd': users+"\n"
+    };
+
     async.waterfall([
       function (next) { fs.emptyDir(testRoot, function(err) { next(err); }); },
-        fs.mkdir.bind(null, config.foldersRoot),
-          fs.mkdir.bind(null, admPath),
-            fs.mkdir.bind(null, path.join(admPath, 'subdir')),
-            fs.writeFile.bind(null, path.join(admPath, 'test.txt'), 'test', 'utf-8'),
-            fs.utimes.bind(null, path.join(admPath, 'test.txt'), mtimeRef, mtimeRef),
-          fs.mkdir.bind(null, roPath),
-            fs.mkdir.bind(null, path.join(roPath, 'subdir')),
-            fs.writeFile.bind(null, path.join(roPath, '.fhconfig'), roConf, 'utf-8'),
-            fs.writeFile.bind(null, path.join(roPath, 'test.txt'), 'test', 'utf-8'),
-            fs.utimes.bind(null, path.join(roPath, 'test.txt'), mtimeRef, mtimeRef),
-          fs.mkdir.bind(null, rwPath),
-            fs.mkdir.bind(null, path.join(rwPath, 'existdir')),
-            fs.writeFile.bind(null, path.join(rwPath, '.fhconfig'), rwConf, 'utf-8'),
-            fs.writeFile.bind(null, path.join(rwPath, 'exist.txt'), 'test', 'utf-8'),
-            fs.utimes.bind(null, path.join(rwPath, 'exist.txt'), mtimeRef, mtimeRef),
-        fs.mkdir.bind(null, config.session.store.path),
-        fs.writeFile.bind(null, cnfile, JSON.stringify(config), 'utf-8'),
-        fs.writeFile.bind(null, config.usersFile, users+"\n", 'utf-8'),
+      (next) => utils.makeTree(testRoot, tree, next),
       _app.bootstrap.bind(_app)
     ], function (err) {
-      if (err) throw err;
+      if (err) {
+        throw err;
+      }
       done();
     });
   });
 
+  var beforeEachActions = [];
+  var afterEachActions = [];
+
   if (Array.isArray(options.trash) && options.trash.length) {
     var trashDir = path.join(config.foldersRoot, '.trash');
 
-    var trashActions = [
-      (next) => fs.emptyDir(trashDir, (err) => next(err)),
-    ];
+    beforeEachActions.push((next) => fs.emptyDir(trashDir, (err) => next(err)));
 
     var trashDate = new Date('2016-01-01 00:00:00 GMT');
 
@@ -128,15 +123,19 @@ module.exports = function _bootstrap(options) {
       var dest = path.join(trashDir, Trash.buildUid(isDir, trashDate, p));
 
       if (isDir) {
-        trashActions.push(fs.mkdir.bind(null, dest));
+        beforeEachActions.push(fs.mkdir.bind(null, dest));
       } else {
-        trashActions.push(fs.writeFile.bind(null, dest, p, 'utf-8'));
+        beforeEachActions.push(fs.writeFile.bind(null, dest, p, 'utf-8'));
       }
     });
+  }
 
-    beforeEach(function (done) {
-      async.waterfall(trashActions, done);
-    });
+  if (beforeEachActions.length) {
+    beforeEach((done) => async.waterfall(beforeEachActions, done));
+  }
+
+  if (afterEachActions.length) {
+    afterEach((done) => async.waterfall(afterEachActions, done));
   }
 
   after(function (done) {

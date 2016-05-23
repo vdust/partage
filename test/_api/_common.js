@@ -11,6 +11,57 @@ var request = require('supertest');
 
 var bootApp = require('../_bootstrap.js');
 
+function populateAgent(agent) {
+  agent.putDir = function putDir(encoded, path) {
+    if (typeof encoded === 'string') {
+      path = encoded;
+      encoded = false;
+    }
+
+    if (path.substr(-1) !== '/') {
+      throw new Error("Expected directory path. got file path: %s", path);
+    }
+
+    if (!encoded) path = path.split('/').map(encodeURIComponent).join('/');
+
+    return agent.put('/api/repo/'+path).query({ parents: 1 }).expect(200);
+  };
+
+  agent.putFile = function putFile(encoded, path, contents) {
+    var p = path;
+
+    if (typeof encoded === 'string') {
+      path = encoded;
+      encoded = false;
+    }
+
+    if (path.substr(-1) === '/') {
+      throw new Error("Expected file path. got directory path: %s", path);
+    }
+
+    if (!encoded) p = path.split('/').map(encodeURIComponent).join('/');
+
+    return agent.put('/api/repo/'+p)
+      .query({ replace: 1 })
+      .set('Content-Type', 'text/plain; charset=utf-8')
+      .send(contents || ("File " + path))
+      .expect(200);
+  }
+
+  agent.delPath = function delPath(encoded, path) {
+    if (typeof encoded === 'string') {
+      path = encoded;
+      encoded = false;
+    }
+
+    if (!encoded) path = path.split('/').map(encodeURIComponent).join('/');
+    
+    return agent.del('/api/repo/'+path).expect(200);
+  }
+
+  return agent;
+}
+
 exports.api = function api(target, opts, setupFn) {
   if (typeof opts === 'function') {
     setupFn = opts;
@@ -19,6 +70,9 @@ exports.api = function api(target, opts, setupFn) {
 
   describe(target, function () {
     var agent = request.agent(bootApp(opts));
+
+    if (opts.edit) populateAgent(agent);
+
     setupFn(agent, exports.test, exports.describeAs.bind(agent));
   });
 }

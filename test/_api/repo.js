@@ -6,6 +6,8 @@
 
 'use strict';
 
+var expect = require('expect');
+
 var api = require('./_common').api;
 var merge = require('../../lib/utils').merge;
 
@@ -387,6 +389,418 @@ api("GET /api/repo/stat", function (agent, test, as) {
       () => agent.get('/api/repo/stat?path=readonly/subdir/.unknown').expect(400),
       () => agent.get('/api/repo/stat?path=readonly/.unknown/unknown.txt').expect(400),
       () => agent.get('/api/repo/stat?path=.trash').expect(400)
+    ]);
+  });
+});
+
+api("POST /api/repo/rename", { edit: true}, function (agent, test, as) {
+  test("should get 401 response if unauthorized", [
+    () => agent.post('/api/repo/rename')
+      .send({
+        src: 'readwrite/test.txt',
+        dest: 'readwrite/test2.txt'
+      })
+      .expect(401)
+  ]);
+
+  as('user', function () {
+    test("should rename file", [
+      () => agent.putFile('readwrite/to-rename.txt'),
+      () => agent.post('/api/repo/rename')
+        .send({
+          src: 'readwrite/to-rename.txt',
+          dest: 'readwrite/renamed.txt'
+        })
+        .expect(200)
+        .expect(function (res) {
+          expect(res.body).toBeAn('object');
+          expect(res.body).toContain({
+            dirname: '.',
+            folder: 'readwrite',
+            mime: 'text/plain',
+            name: 'renamed.txt',
+            path: 'readwrite/renamed.txt',
+            type: 'file',
+            uid: '3-70fa072ee1968882441a966ed2bb8fd0b07c2eea'
+          });
+          expect(res.body).toContainKey('mtime');
+        }),
+      () => agent.delPath('readwrite/renamed.txt')
+    ]);
+
+    test("should rename file and move it to another location", [
+      () => agent.putFile('readwrite/to-move.txt'),
+      () => agent.post('/api/repo/rename')
+        .send({
+          src: 'readwrite/to-move.txt',
+          dest: 'readwrite/existdir/moved.txt'
+        })
+        .expect(200)
+        .expect(function (res) {
+          expect(res.body).toBeAn('object');
+          expect(res.body).toContain({
+            dirname: 'existdir',
+            folder: 'readwrite',
+            mime: 'text/plain',
+            name: 'moved.txt',
+            path: 'readwrite/existdir/moved.txt',
+            type: 'file',
+            uid: '3-d00971357e953335d239b51e2f6b90b62246665c'
+          });
+          expect(res.body).toContainKey('mtime');
+        }),
+      () => agent.delPath('readwrite/existdir/moved.txt')
+    ]);
+
+    test("should rename directory", [
+      () => agent.putDir('readwrite/to-rename/'),
+      () => agent.post('/api/repo/rename')
+        .send({
+          src: 'readwrite/to-rename',
+          dest: 'readwrite/renamed'
+        })
+        .expect(200, {
+          dirname: '.',
+          folder: 'readwrite',
+          mime: 'inode/directory',
+          name: 'renamed',
+          path: 'readwrite/renamed',
+          type: 'folder',
+          uid: '3-876207095ef6ea1315316230f0e9afb23f003c11'
+        }),
+      () => agent.delPath('readwrite/renamed/')
+    ]);
+
+    test("should rename file and replace existing target", [
+      () => agent.putFile('readwrite/to-rename.txt'),
+      () => agent.putFile('readwrite/replace.txt'),
+      () => agent.post('/api/repo/rename')
+        .send({
+          src: 'readwrite/to-rename.txt',
+          dest: 'readwrite/replace.txt',
+          replace: 1
+        })
+        .expect(200)
+        .expect(function (res) {
+          expect(res.body).toBeAn('object');
+          expect(res.body).toContain({
+            dirname: '.',
+            folder: 'readwrite',
+            mime: 'text/plain',
+            name: 'replace.txt',
+            path: 'readwrite/replace.txt',
+            type: 'file',
+            uid: '3-5e0e3b0db2344111e3eb830122ac4fb0c973ddd9',
+            replaced: {
+              origin: 'readwrite/replace.txt'
+            }
+          });
+          expect(res.body).toContainKey('mtime');
+          expect(res.body.replaced).toContainKey('itemUid');
+        }),
+      () => agent.delPath('readwrite/replace.txt')
+    ]);
+
+    test("should rename directory and replace existing target", [
+      () => agent.putDir('readwrite/to-rename/'),
+      () => agent.putDir('readwrite/replace/'),
+      () => agent.post('/api/repo/rename')
+        .send({
+          src: 'readwrite/to-rename',
+          dest: 'readwrite/replace',
+          replace: 1
+        })
+        .expect(200)
+        .expect(function (res) {
+          expect(res.body).toBeAn('object');
+          expect(res.body).toContain({
+            dirname: '.',
+            folder: 'readwrite',
+            mime: 'inode/directory',
+            name: 'replace',
+            path: 'readwrite/replace',
+            type: 'folder',
+            uid: '3-3cacc7bfac0a382c669a884c953d0401a689785d',
+            replaced: {
+              origin: 'readwrite/replace'
+            }
+          });
+          expect(res.body.replaced).toContainKey('itemUid');
+        }),
+      () => agent.delPath('readwrite/replace/')
+    ]);
+
+    test("should succeed and return file infos if src and dest are the same", [
+      () => agent.post('/api/repo/rename')
+        .send({
+          src: 'readwrite/exist.txt',
+          dest: 'readwrite/exist.txt'
+        })
+        .expect(200)
+        .expect(function (res) {
+          expect(res.body).toBeAn('object');
+          expect(res.body).toContain({
+            dirname: '.',
+            folder: 'readwrite',
+            mime: 'text/plain',
+            name: 'exist.txt',
+            path: 'readwrite/exist.txt',
+            type: 'file',
+            uid: '3-88bccd56a14d64683ecec50d2e2d7387ad7761db'
+          });
+          expect(res.body).toContainKey('mtime');
+        })
+    ]);
+
+    test("should get 400 response if src is missing in body", [
+      () => agent.post('/api/repo/rename')
+        .send({
+          dest: 'readwrite/renamed.txt'
+        })
+        .expect(400)
+    ]);
+
+    test("should get 400 response if dest is missing in body", [
+      () => agent.post('/api/repo/rename')
+        .send({
+          src: 'readwrite/to-rename.txt'
+        })
+        .expect(400)
+    ]);
+
+    test("should get 400 response if src or dest are invalid path", [
+      () => agent.post('/api/repo/rename')
+        .send({
+          src: 'readwrite/invalid\nname.txt',
+          dest: 'readwrite/renamed.txt'
+        })
+        .expect(400),
+      () => agent.post('/api/repo/rename')
+        .send({
+          src: 'readwrite/.fhconfig',
+          dest: 'readwrite/renamed.txt'
+        })
+        .expect(400),
+      () => agent.post('/api/repo/rename')
+        .send({
+          src: 'readwrite/to-rename.txt',
+          dest: 'readwrite/invalid\nname.txt'
+        })
+        .expect(400),
+      () => agent.post('/api/repo/rename')
+        .send({
+          src: 'readwrite/to-rename.txt',
+          dest: 'readwrite/.fhconfig'
+        })
+        .expect(400)
+    ]);
+
+    test("should get 403 response when renaming a shared folder", [
+      () => agent.post('/api/repo/rename')
+        .send({
+          src: 'readwrite',
+          dest: 'renamed'
+        })
+        .expect(403)
+    ]);
+
+    test("should get 403 response if the source is readable but not writable", [
+      () => agent.post('/api/repo/rename')
+        .send({
+          src: 'readonly/test.txt',
+          dest: 'readwrite/renamed.txt'
+        })
+        .expect(403)
+    ]);
+
+    test("should get 403 response if the target shared folder is not writable", [
+      () => agent.post('/api/repo/rename')
+        .send({
+          src: 'readwrite/test.txt',
+          dest: 'readonly/renamed.txt'
+        })
+        .expect(403),
+      () => agent.post('/api/repo/rename')
+        .send({
+          src: 'readwrite/test.txt',
+          dest: 'adminonly/renamed.txt'
+        })
+        .expect(403),
+      () => agent.post('/api/repo/rename')
+        .send({
+          src: 'readwrite/test.txt',
+          dest: 'unknown/renamed.txt'
+        })
+        .expect(403)
+    ]);
+
+    test("should get 404 response if src file is missing", [
+      () => agent.post('/api/repo/rename')
+        .send({
+          src: 'readwrite/unknown.txt',
+          dest: 'readwrite/renamed.txt'
+        })
+        .expect(404)
+    ]);
+
+    test("should get 404 response if the parent of the target doesn't exist", [
+      () => agent.post('/api/repo/rename')
+        .send({
+          src: 'readwrite/exist.txt',
+          dest: 'readwrite/unknown/renamed.txt'
+        })
+        .expect(404)
+    ]);
+
+    test("should get 409 response if the target exists and the 'replace' flag isn't set", [
+      () => agent.putFile('readwrite/to-replace.txt'),
+      () => agent.post('/api/repo/rename')
+        .send({
+          src: 'readwrite/to-replace.txt',
+          dest: 'readwrite/exist.txt'
+        })
+        .expect(409),
+      () => agent.delPath('readwrite/to-replace.txt')
+    ]);
+
+    test("should get 409 response if the target is in the source directory", [
+      () => agent.post('/api/repo/rename')
+        .send({
+          src: 'readwrite/existdir',
+          dest: 'readwrite/existdir/fail'
+        })
+        .expect(409)
+    ]);
+
+    test("should get 409 response if source is a sub-directory of target", [
+      () => agent.putDir('readwrite/renamed/to-rename/'),
+      () => agent.post('/api/repo/rename')
+        .send({
+          src: 'readwrite/renamed/to-rename',
+          dest: 'readwrite/renamed'
+        })
+        .expect(409),
+      () => agent.delPath('readwrite/renamed/')
+    ]);
+
+    test("should get 409 response if target has not the same resource type", [
+      () => agent.putFile('readwrite/to-replace.txt'),
+      () => agent.putDir('readwrite/to-replace/'),
+      () => agent.post('/api/repo/rename')
+        .send({
+          src: 'readwrite/to-replace.txt',
+          dest: 'readwrite/to-replace',
+          replace: 1
+        })
+        .expect(409),
+      () => agent.post('/api/repo/rename')
+        .send({
+          src: 'readwrite/to-replace',
+          dest: 'readwrite/to-replace.txt',
+          replace: 1
+        })
+        .expect(409),
+      () => agent.delPath('readwrite/to-replace.txt'),
+      () => agent.delPath('readwrite/to-replace/')
+    ]);
+
+    test("should get 409 response if the parent of the source is a file", [
+      () => agent.post('/api/repo/rename')
+        .send({
+          src: 'readwrite/exist.txt/source.txt',
+          dest: 'readwrite/renamed.txt'
+        })
+        .expect(409)
+    ]);
+
+    test("should get 409 response if the parent of the target is a file", [
+      () => agent.putFile('readwrite/to-rename.txt'),
+      () => agent.post('/api/repo/rename')
+        .send({
+          src: 'readwrite/to-rename.txt',
+          dest: 'readwrite/exist.txt/renamed.txt'
+        })
+        .expect(409),
+      () => agent.delPath('readwrite/to-rename.txt')
+    ]);
+  });
+
+  as('admin', function () {
+    test("should rename a shared folder", [
+      () => agent.post('/api/repo/').send({ name: 'to-rename' }).expect(200),
+      () => agent.post('/api/repo/rename')
+        .send({
+          src: 'to-rename',
+          dest: 'renamed'
+        })
+        .expect(200)
+        .expect(function (res) {
+          expect(res.body).toContainKey('uid');
+          delete res.body.uid;
+        })
+        .expect({
+          name: 'renamed',
+          path: 'renamed',
+          type: 'folder',
+          mime: 'inode/directory',
+          description: '',
+          accessList: {},
+          canread: true,
+          canwrite: true,
+          canedit: true
+        }),
+      () => agent.delPath('renamed/')
+    ]);
+
+    test("should rename a shared folder, replacing existing target", [
+      () => agent.post('/api/repo/').send({ name: 'to-rename' }).expect(200),
+      () => agent.post('/api/repo/').send({ name: 'to-replace' }).expect(200),
+      () => agent.post('/api/repo/rename')
+        .send({
+          src: 'to-rename',
+          dest: 'to-replace',
+          replace: 1
+        })
+        .expect(200)
+        .expect(function (res) {
+          expect(res.body).toContainKey('uid');
+          delete res.body.uid;
+          expect(res.body.replaced).toContainKey('itemUid');
+          delete res.body.replaced.itemUid;
+        })
+        .expect({
+          name: 'to-replace',
+          path: 'to-replace',
+          type: 'folder',
+          mime: 'inode/directory',
+          description: '',
+          accessList: {},
+          canread: true,
+          canwrite: true,
+          canedit: true,
+          replaced: {
+            origin: 'to-replace'
+          }
+        }),
+      () => agent.delPath('to-replace/')
+    ]);
+
+    test("should get 409 response if any path is a shared folder and the other isn't", [
+      () => agent.post('/api/repo/rename')
+        .send({
+          src: 'readwrite',
+          dest: 'adminonly/renamed'
+        })
+        .expect(409)
+    ]);
+
+    test("should get 404 response if source shared folder doesn't exist", [
+      () => agent.post('/api/repo/rename')
+        .send({
+          src: 'readwrite/existdir',
+          dest: 'renamed'
+        })
+        .expect(409)
     ]);
   });
 });

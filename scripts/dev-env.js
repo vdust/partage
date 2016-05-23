@@ -14,36 +14,12 @@ var fs = require('fs-extra');
 var async = require('async');
 
 var User = require('../lib/manager/user');
+var makeTree = require('../lib/utils').makeTree;
 
 function setupFolders(root, tree, done) {
-  var actions = [
-    (next) => fs.ensureDir(root, (err) => next(err))
-  ];
-
-  var stack = [ { dir: root, obj: tree, keys: Object.keys(tree) } ];
-  var current, k, obj, p;
-
-  while (stack.length) {
-    current = stack.pop();
-    while (current.keys.length) {
-      k = current.keys.pop();
-      obj = current.obj[k];
-      p = path.join(current.dir, k);
-      if (k.substr(-1) === '/') {
-        actions.push(fs.mkdir.bind(null, p));
-        stack.push(current);
-        current = { dir: p, obj: obj, keys: Object.keys(obj) };
-      } else {
-        if (typeof obj !== 'string') obj = JSON.stringify(obj);
-        actions.push(fs.writeFile.bind(null, p, obj, 'utf-8'));
-      }
-    }
-  }
-
   async.waterfall([
     (next) => fs.stat(root, (err) => next(err ? null : 'skip')),
-    // bootstrap only if root directory doesn't exist already
-    (next) => async.waterfall(actions, next)
+    (next) => makeTree(root, tree, next)
   ], (err) => done(err !== 'skip' ? err : null));
 }
 
