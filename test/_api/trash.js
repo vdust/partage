@@ -656,15 +656,30 @@ api('POST /api/trash/:uid/restore', apiEditOpts, function (agent, test, as) {
     ]);
 
     test("should get 404 response if restoring resource to a non-existing shared folder", [
+      () => restore('readwrite/trashed.txt')
+        .send({ path: 'unknown/restored.txt' })
+        .expect(404),
+      () => restore('readwrite/trashed.txt')
+        .send({ path: 'unknown/subdir/restored.txt', parents: 1 })
+        .expect(404)
     ]);
 
     test("should get 409 response if shared folder already exists and 'rename' is false", [
+      () => restore('deleted', true)
+        .send({ path: 'readonly', rename: false })
+        .expect(409)
     ]);
 
     test("should get 409 response when restoring a subdirectory as a shared folder", [
+      () => restore('readwrite/trashed', true)
+        .send({ path: 'restored' })
+        .expect(409)
     ]);
 
     test("should get 409 response if shared folder targets a subdirectory", [
+      () => restore('deleted', true)
+        .send({ path: 'readwrite/restored' })
+        .expect(409)
     ]);
   });
 });
