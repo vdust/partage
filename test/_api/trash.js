@@ -75,6 +75,7 @@ api('GET /api/trash', apiOpts, function (agent, test, as) {
       () => agent.get('/api/trash')
         .expect(200, [
           trashInfos('folder', 'deleted'),
+          trashInfos('folder', 'readwrite'),
           trashInfos('folder', 'adminonly', 'trashed', 'adminonly'),
           trashInfos('folder', 'deleted', 'trashed', 'deleted'),
           trashInfos('folder', 'readonly', 'trashed', 'readonly'),
@@ -97,6 +98,7 @@ api('DELETE /api/trash', apiOpts, function (agent, test, as) {
       () => agent.get('/api/trash')
         .expect(200, [
           trashInfos('folder', 'deleted'),
+          trashInfos('folder', 'readwrite'),
           trashInfos('folder', 'adminonly', 'trashed', 'adminonly'),
           trashInfos('folder', 'deleted', 'trashed', 'deleted'),
           trashInfos('folder', 'readonly', 'trashed', 'readonly'),

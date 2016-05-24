@@ -14,7 +14,7 @@ var fs = require('fs-extra');
 var async = require('async');
 
 var User = require('../lib/manager/user');
-var makeTree = require('../lib/utils').makeTree;
+var makeTree = require('../lib/utils/fs').makeTree;
 
 function setupFolders(root, tree, done) {
   async.waterfall([

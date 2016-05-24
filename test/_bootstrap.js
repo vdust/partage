@@ -13,7 +13,7 @@ var crypt = require('crypt3');
 
 var testRoot = '/tmp/filehub-tests-'+process.pid;
 
-var utils = require('../lib/utils');
+var makeTree = require('../lib/utils/fs').makeTree;
 var app = require('../lib/app');
 var Trash = require('../lib/manager/trash');
 var resetUidGenerator = require('../lib/manager/folder')._resetUidGenerator;
@@ -93,7 +93,7 @@ module.exports = function _bootstrap(options) {
 
     async.waterfall([
       function (next) { fs.emptyDir(testRoot, function(err) { next(err); }); },
-      (next) => utils.makeTree(testRoot, tree, next),
+      (next) => makeTree(testRoot, tree, next),
       _app.bootstrap.bind(_app)
     ], function (err) {
       if (err) {
