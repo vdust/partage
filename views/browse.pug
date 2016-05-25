@@ -1,6 +1,6 @@
-extends ./layout.jade
+extends ./layout.pug
 
-include ./_mixins.jade
+include ./_mixins.pug
 
 block contents
   - var istrash = typeof trash !== 'undefined'
@@ -82,5 +82,5 @@ block contents
           div.view-resize#view-resize
             div.view-handle
           div.view-contents#view-contents
-            include ./loader.jade
-            include ./folder.jade
+            include ./loader.pug
+            include ./folder.pug

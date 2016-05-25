@@ -27,7 +27,7 @@ html
       nav
         ul#menu
           li
-            include ./filehub_ico.jade
+            include ./filehub_ico.pug
           if req.isAuthenticated()
             block menuAuth
               li(class=menuCtx === "browse" ? "active" : "")

@@ -1,4 +1,4 @@
-extends ./layout.jade
+extends ./layout.pug
 
 block contents
   - var lists = ['admin', 'contributor', 'visitor']
@@ -43,7 +43,7 @@ block contents
           div.view-resize#view-resize
             div.view-handle
           div.view-contents#view-contents
-            include ./loader.jade
+            include ./loader.pug
             each k, i in lists
               div.list-box.users-list(id='users-list-'+k, data-users-list=k, style=i>0 && 'display: none')
                 div.list(data-row-activate='userEdit')

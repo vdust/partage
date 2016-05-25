@@ -1,4 +1,4 @@
-extends ./layout.jade
+extends ./layout.pug
 
 block contents
   div.contents-wrap
@@ -19,4 +19,4 @@ block contents
           = t("filehub.signin")
         p.error= err||''
     div.padding-box
-    include ./_notice.jade
+    include ./_notice.pug
