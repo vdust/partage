@@ -1,3 +1,9 @@
+/**
+ * filehub
+ * Copyright (c) 2016 Raphaël Bois Rousseau
+ * @license MIT
+ */
+
 (function ($, window, undefined) {
   "use strict";
 
@@ -157,7 +163,7 @@
         self.loadTarget(targetId, handler, item);
       });
     },
-    _treeActivate(item) {
+    _treeActivate: function (item) {
       var handler = this._handlers['navUpdate'], p;
       this.treeBox.find('.active').removeClass('active');
       if (item.hasClass('tree-item')) {
@@ -383,16 +389,16 @@
         self.updateTools($());
       });
     },
-    _listHandler(src, data, _default) {
+    _listHandler: function (src, data, _default) {
       var list = src.closest('.list'), handler;
       if (!list.length) return;
       handler = this._handlers[list.data(data) || _default];
       return typeof handler === 'function' ? handler.bind(this) : null;
     },
-    treeItemFromTargetId(targetId) {
+    treeItemFromTargetId: function (targetId) {
       return $(document.getElementById(this.treeIdPrefix+targetId));
     },
-    loadTarget(targetId, handler, activator) {
+    loadTarget: function (targetId, handler, activator) {
       var self = this,
           target = targetId ? $(document.getElementById(targetId)) : null;
       if (target && !target.length) target = null;
@@ -485,10 +491,10 @@
         .children('.list-group')
         .children('.list-row');
     },
-    rowActivateHandler(src) {
+    rowActivateHandler: function (src) {
       return this._listHandler(src, 'row-activate', 'rowActivate');
     },
-    rowDeleteHandler(src) {
+    rowDeleteHandler: function (src) {
       return this._listHandler(src, 'row-delete', 'rowDelete');
     },
     activateSelected: function (forcerow) {

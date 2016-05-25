@@ -1,7 +1,11 @@
 {
-"version": 3,
-"mappings": "AAGA,uCAAwC,GACtC,SAAS,EAAE,KAAK,EAChB,KAAK,EAAE,IAAI",
-"sources": ["../../scss/filehub-admin.scss"],
-"names": [],
-"file": "filehub-admin.css"
+	"version": 3,
+	"file": "filehub-admin.css",
+	"sources": [
+		"../../scss/filehub-admin.scss",
+		"../../scss/_mixins.scss",
+		"../../scss/_colors.scss"
+	],
+	"mappings": "AAGA,AAA4B,WAAjB,CAAC,KAAK,CAAC,UAAU,AAAA,WAAW,CAAC;EACtC,SAAS,EAAE,KAAM;EACjB,KAAK,EAAE,IAAK,GACb",
+	"names": []
 }
