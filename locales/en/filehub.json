@@ -17,7 +17,7 @@
       },
       "403": {
         "title": "Access forbidden",
-        "message": "You don't have enough rights to load the requested resource."
+        "message": "You don't have permissions to access the requested resource."
       }
     },
     "folder": {

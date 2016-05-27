@@ -21,8 +21,8 @@ div.list-box.folders-list(id='f-'+pathid, data-folder=folderName, data-path=path
             span= t('filehub.folder.size')
     div.list-group
       if istrash
-        each t in trash
-          +trash-row(t)
+        each tr in trash
+          +trash-row(tr)
       else
         each d in dirs
           +folder-row(d, folder)

@@ -13,11 +13,11 @@
     "error": {
       "404": {
         "title": "Resource introuvable",
-        "message": "La resource demandée n'existe pas ou vous n'avez pas les droits suffisants pour la charger."
+        "message": "La resource n'existe pas ou vous n'avez pas les droits suffisants pour la charger."
       },
       "403": {
         "title": "Accès interdit",
-        "message": "Vous n'avez pas les droits suffisants pour charger la resource demandée."
+        "message": "Vous n'avez pas les droits suffisants pour accéder à cette resource."
       }
     },
     "folder": {

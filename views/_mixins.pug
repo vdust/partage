@@ -31,10 +31,10 @@ mixin mimeicon(mime)
     span.fa.fa-file-o
 
 mixin folder-row(d, folder)
-  - var mtime = dateformat(d.stats.mtime, t('filehub.date-format'))
+  - var mtime = d.mtime ? dateformat(d.mtime, t('filehub.date-format')) : '\u2014'
   - var dpath = path.join('/') + '/' + d.name
-  - var dirUid = 'f-' + (folder ? folder.getPathUid(dpath) : d.getPathUid())
-  - var url = path.slice();
+  - var dirUid = 'f-' + d.uid
+  - var url = path.slice()
   - if (folder) url.unshift(folder.name)
   - url.unshift('folders')
   - url.push(d.name)
@@ -53,7 +53,7 @@ mixin folder-row(d, folder)
           != '&mdash;'
 
 mixin file-row(f, folder)
-  - var mtime = dateformat(f.stats.mtime, t('filehub.date-format'))
+  - var mtime = f.mtime ? dateformat(f.mtime, t('filehub.date-format')) : '\u2014'
   div.list-row.file-entry(data-path=path.join('/')+'/'+f.name, data-type=f.type)
     div.list-cell.folder-name
       div.list-cell-content
@@ -65,7 +65,7 @@ mixin file-row(f, folder)
     div.list-cell.folder-size
       div.list-cell-content
         span.folder-size
-          = formatSize(f.stats.size)
+          = formatSize(f.size)
 
 mixin trash-row(i)
   div.list-row.trash-entry(data-trash-id=i.uid, data-type='trash')
