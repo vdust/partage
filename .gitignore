@@ -14,5 +14,7 @@ node_modules
 
 npm-debug*
 
+*.missing.json
+
 # dev env files
 _dev*

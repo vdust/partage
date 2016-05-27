@@ -3,10 +3,8 @@
     "access": {
       "admin": "Administrator",
       "admin_plural": "Administrators",
-      "contributor": "Contributor",
-      "contributor_plural": "Contributors",
-      "visitor": "Visitor",
-      "visitor_plural": "Visitors"
+      "user": "User",
+      "user_plural": "Users"
     },
     "contact": "Contact Us",
     "date-format": "ddd d, yyyy",
