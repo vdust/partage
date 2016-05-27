@@ -42,7 +42,7 @@ function setupUsers(file, done) {
   ], (err) => done(err !== 'skip' ? err : null));
 }
 
-var bootstrap = module.exports = function bootstrap(clean, done) {
+var setupEnv = module.exports = function setupEnv(clean, done) {
   if (typeof clean === 'function' ) {
     done = clean;
     clean = false;
@@ -75,7 +75,7 @@ if (require.main === module) {
   var clean = process.argv[2];
 
   console.error("Bootstrapping dev environment (clean: %j)...", !!clean);
-  bootstrap(clean === 'clean', function (err) {
+  setupEnv(clean === 'clean', function (err) {
     if (err) {
       console.error("%s", err);
       return process.exit(1);
