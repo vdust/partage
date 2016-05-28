@@ -1,69 +1,71 @@
 {
-  "filehub": {
-    "access": {
-      "admin": "Administrator",
-      "admin_plural": "Administrators",
-      "user": "User",
-      "user_plural": "Users"
+  "access": {
+    "admin": "Administrator",
+    "admin_plural": "Administrators",
+    "user": "User",
+    "user_plural": "Users"
+  },
+  "contact": "Contact Us",
+  "date-format": "ddd d, yyyy",
+  "error": {
+    "404": {
+      "title": "Resource not found",
+      "message": "The requested resource doesn't exist or you don't have enough rights to load it."
     },
-    "contact": "Contact Us",
-    "date-format": "ddd d, yyyy",
-    "error": {
-      "404": {
-        "title": "Resource not found",
-        "message": "The requested resource doesn't exist or you don't have enough rights to load it."
-      },
-      "403": {
-        "title": "Access forbidden",
-        "message": "You don't have permissions to access the requested resource."
-      }
+    "403": {
+      "title": "Access forbidden",
+      "message": "You don't have permissions to access the requested resource."
     },
-    "folder": {
-      "access": "Edit access list",
-      "delete": "Delete",
-      "empty-folder": "The folder is empty. Drag and drop files here to upload them.",
-      "empty-root": "You have no folder subscription yet.",
-      "empty-root-admin": "There are no root folder yet. Use the NEW button to create some.",
-      "empty-trash": "The trash is empty.",
-      "origin": "Original location",
-      "rename": "Rename",
-      "mtime": "Last modified",
-      "name": "Name",
-      "new": "New",
-      "size": "File size"
-    },
-    "folders": "Folders",
-    "loading": "Loading...",
-    "login-failure": "User name and password don't match.",
-    "powered-by": "Powered by FileHub",
-    "profile": "Profile",
-    "save": "Save",
-    "signin": "Sign in",
-    "signin-message": "Sign in to access your files.",
-    "signout": "Sign out",
-    "size": {
-      "u": "B",
-      "k": "KB",
-      "m": "MB",
-      "g": "GB",
-      "t": "TB"
-    },
-    "trash": {
-      "label": "Trash",
-      "remove": "Delete forever",
-      "restore": "Restore resource"
-    },
-    "user": {
-      "add": "Add user",
-      "delete": "Delete user",
-      "edit": "Edit user",
-      "edit-profile": "Edit your informations.",
-      "email": "Email",
-      "name": "User name",
-      "password": "Password",
-      "password-new": "New password",
-      "password-confirm": "Confirm new password"
-    },
-    "users": "Users"
-  }
+    "500": {
+      "title": "Unexpected error",
+      "message": "An error occured on the server while processing the request"
+    }
+  },
+  "folder": {
+    "access": "Edit access list",
+    "delete": "Delete",
+    "empty-folder": "The folder is empty. Drag and drop files here to upload them.",
+    "empty-root": "You have no folder subscription yet.",
+    "empty-root-admin": "There are no root folder yet. Use the NEW button to create some.",
+    "empty-trash": "The trash is empty.",
+    "origin": "Original location",
+    "rename": "Rename",
+    "mtime": "Last modified",
+    "name": "Name",
+    "new": "New",
+    "size": "File size"
+  },
+  "folders": "Folders",
+  "loading": "Loading...",
+  "login-failure": "User name and password don't match.",
+  "powered-by": "Powered by FileHub",
+  "profile": "Profile",
+  "save": "Save",
+  "signin": "Sign in",
+  "signin-message": "Sign in to access your files.",
+  "signout": "Sign out",
+  "size": {
+    "u": "B",
+    "k": "KB",
+    "m": "MB",
+    "g": "GB",
+    "t": "TB"
+  },
+  "trash": {
+    "label": "Trash",
+    "remove": "Delete forever",
+    "restore": "Restore resource"
+  },
+  "user": {
+    "add": "Add user",
+    "delete": "Delete user",
+    "edit": "Edit user",
+    "edit-profile": "Edit your informations.",
+    "email": "Email",
+    "name": "User name",
+    "password": "Password",
+    "password-new": "New password",
+    "password-confirm": "Confirm new password"
+  },
+  "users": "Users"
 }

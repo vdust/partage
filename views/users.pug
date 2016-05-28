@@ -11,16 +11,16 @@ block contents
             ul#nav-path
               li
                 span.navitem
-                  = t("filehub.users")
+                  = t('users')
               li
                 span.fa.fa-chevron-right
                 span.navitem
-                  = t("filehub.access.admin", { count: 2 })
+                  = t('access.admin', { count: 2 })
           div.nav-toolbox
             div.view-tools#nav-tools
-              div.view-action(data-select="single", data-type='user', data-handler="userEdit", title=t("filehub.user.edit"), style="display: none")
+              div.view-action(data-select="single", data-type='user', data-handler="userEdit", title=t('user.edit'), style="display: none")
                 span.fa.fa-edit
-              div.view-action(data-select="multi", data-type='user', data-handler="userDelete", title=t("filehub.user.delete"), style="display: none")
+              div.view-action(data-select="multi", data-type='user', data-handler="userDelete", title=t('user.delete'), style="display: none")
                 span.fa.fa-trash-o
     div.view-wrap-in
       div.view-wrap-in-2
@@ -29,7 +29,7 @@ block contents
             div.button-box
               button(type="button", data-handler="userAdd")
                 span.fa.fa-user-plus
-                = t("filehub.user.add")
+                = t('user.add')
             div.tree-box.view-drop-target(data-on-drop='userDrop')
               div.tree.tree-large
                 each k, i in lists
@@ -39,7 +39,7 @@ block contents
                     div.tree-icon
                       span.fa.fa-users
                     div.tree-label
-                      = t("filehub.access."+k, { count: 2 })
+                      = t('access.'+k, { count: 2 })
           div.view-resize#view-resize
             div.view-handle
           div.view-contents#view-contents
@@ -50,10 +50,10 @@ block contents
                   div.list-header
                     div.list-cell.user-name
                       div.list-cell-content
-                        span= t('filehub.user.name')
+                        span= t('user.name')
                     div.list-cell.user-email
                       div.list-cell-content
-                        span= t('filehub.user.email')
+                        span= t('user.email')
                   div.list-group
                     each u in users[k]
                       div.list-row.user-entry(data-user=u.name, data-type='user')

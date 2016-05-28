@@ -31,27 +31,27 @@ html
           if req.isAuthenticated()
             block menuAuth
               li(class=menuCtx === "browse" ? "active" : "")
-                a(href=baseUrl+"/folders" title=t("filehub.folders"))
+                a(href=baseUrl+"/folders" title=t("folders"))
                   span.fa(class=menuCtx === "browse" ? "fa-folder-open" : "fa-folder")
                   != "&nbsp;"
-                  = t("filehub.folders")
+                  = t("folders")
               if req.user.is("admin")
                 li(class=menuCtx === "users" ? "active" : "")
-                  a(href=baseUrl+"/users", title=t("filehub.users"))
+                  a(href=baseUrl+"/users", title=t("users"))
                     span.fa.fa-users
                     != "&nbsp;"
-                    = t("filehub.users")
+                    = t("users")
               li(class=menuCtx === "profile" ? "active" : "")
-                a(href=baseUrl+"/profile", title=t("filehub.profile"))
+                a(href=baseUrl+"/profile", title=t("profile"))
                   span.fa.fa-user
                   != "&nbsp;"
-                  = t("filehub.profile")
+                  = t("profile")
               li.alt
                 form.logout(action=baseUrl+"/logout", method="post")
-                  button(title=t("filehub.signout"))
+                  button(title=t("signout"))
                     span.fa.fa-sign-out
                     != "&nbsp;"
-                    = t("filehub.signout")
+                    = t("signout")
               li.alt.menu-info
                 span= req.user.name
           else
@@ -59,6 +59,6 @@ html
               li.alt
                 span.fa.fa-sign-in
                 != "&nbsp;"
-                = t("filehub.signin")
+                = t("signin")
       div.contents
         block contents

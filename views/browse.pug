@@ -11,7 +11,7 @@ block contents
           div.nav-padding#nav-padding
           div.nav-wrap
             ul#nav-path
-              +navitem(t('filehub.'+(istrash ? 'trash.label' : 'folders')), '', true)
+              +navitem(t(istrash ? 'trash.label' : 'folders'), '', true)
               if folder
                 - var p = folder.name
                 +navitem(p, p)
@@ -36,7 +36,7 @@ block contents
             div.button-box(data-cond="", style=canadd?false:"display: none")
               button(type="button", disabled=!canadd, data-handler='folderAdd')
                 span.fa.fa-plus
-                = t("filehub.folder.new")
+                = t("folder.new")
             div.tree-box.view-drop-target(data-on-drop='itemDrop')
               - var attrs = {'data-handler':'folderQuery', 'class':{}}
               div.tree.tree-large
@@ -50,7 +50,7 @@ block contents
                   div.tree-icon
                     span.fa(class='fa-folder'+(folder ? '' : '-open'))
                   div.tree-label
-                    = t('filehub.folders')
+                    = t('folders')
                 - delete attrs['class']['tree-item-subtree']
                 - attrs['class']['view-droppable'] = true
                 div.tree(style=!folder && 'display: none')
@@ -77,7 +77,7 @@ block contents
                     div.tree-icon
                       span.fa.fa-trash
                     div.tree-label
-                      = t('filehub.trash.label')
+                      = t('trash.label')
 
           div.view-resize#view-resize
             div.view-handle

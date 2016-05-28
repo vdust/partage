@@ -4,14 +4,14 @@ block contents
   div.contents-wrap
     div.home-contents
       div.contents-box
-        h1= t("filehub.your-folders")
+        h1= t("your-folders")
         ul.folders
           if !folders.length
-            li.empty= t("filehub.no-folders")
+            li.empty= t("no-folders")
           else
             each f in folders
               li.folder
-                a(href=baseUrl+'/browse/'+f.name, title=t("filehub.browse-message", { name: f.name }))
+                a(href=baseUrl+'/browse/'+f.name, title=t("browse-message", { name: f.name }))
                   div.fa.fa-folder
                   div.folder-info
                     div.folder-title= f.name

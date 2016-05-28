@@ -4,7 +4,7 @@ mixin inputtag(typ, nam, i18n, val, icon)
   if icon
     span.input-icon
       span.fa(class="fa-"+icon)
-  input(type=typ, name=nam, placeholder=t('filehub.user.'+i18n), value=val)
+  input(type=typ, name=nam, placeholder=t('user.'+i18n), value=val)
 
 block contents
   div.contents-wrap
@@ -12,23 +12,23 @@ block contents
       div.contents-box
         form.profile-form#profile(method="post")
           h1
-            = t("filehub.profile")
+            = t('profile')
             span.fa.fa-angle-right
             span= req.user.name
-          p.note= t("filehub.user.edit-profile")
+          p.note= t("user.edit-profile")
           // todo: csrf token
           h3
             span.fa.fa-envelope-o
-            = t("filehub.user.email")
+            = t('user.email')
           +inputtag('email', 'email', 'email', req.user.email)
           h3
             span.fa.fa-key
-            = t("filehub.user.password")
+            = t('user.password')
           +inputtag('password', 'password', 'password-new', '')
           +inputtag('password', 'password2', 'password-confirm', '')
           h3
           button#profile-submit()
             span.fa.fa-upload
             != "&nbsp;"
-            = t('filehub.save')
+            = t('save')
     include ./_notice.pug
