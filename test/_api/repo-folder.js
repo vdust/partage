@@ -9,6 +9,7 @@
 var expect = require('expect');
 
 var api = require('./_common').api;
+var cleanTime = require('./_common').cleanTime;
 var merge = require('../../lib/utils').merge;
 
 api("* /api/repo/:folder/", function (agent, test, as) {
@@ -42,6 +43,7 @@ api("GET /api/repo/:folder/", function (agent, test, as) {
   as('user', function () {
     test("should get folder infos, files and subdirectories", [
       () => agent.get('/api/repo/readonly/')
+        .expect(cleanTime)
         .expect(200, {
           name: 'readonly',
           uid: '2',
@@ -96,6 +98,7 @@ api("GET /api/repo/:folder/", function (agent, test, as) {
   as('admin', function () {
     test("should get infos on any folder", [
       () => agent.get('/api/repo/adminonly/')
+        .expect(cleanTime)
         .expect(200, {
           name: 'adminonly',
           uid: '1',
@@ -206,30 +209,40 @@ api("PUT /api/repo/:folder/", function (agent, test, as) {
       () => agent.put('/api/repo/adminonly/')
         .send({
           description: "admin"
-        }).expect(200, merge({}, infos, { description: 'admin' })),
+        })
+        .expect(cleanTime)
+        .expect(200, merge({}, infos, { description: 'admin' })),
       () => agent.get('/api/repo/stat?path=adminonly')
+        .expect(cleanTime)
         .expect(200, merge({}, infos, { description: 'admin' })),
       () => agent.put('/api/repo/adminonly/')
         .send({
           description: ""
-        }).expect(200, infos)
+        })
+        .expect(cleanTime)
+        .expect(200, infos)
     ]);
 
     test("should update access only", [
       () => agent.put('/api/repo/adminonly/')
         .send({
           accessList: [ 'user', '+user2' ]
-        }).expect(200, merge({}, infos, {
+        })
+        .expect(cleanTime)
+        .expect(200, merge({}, infos, {
           accessList: { user: 'ro', user2: 'rw' }
         })),
       () => agent.get('/api/repo/stat?path=adminonly')
+        .expect(cleanTime)
         .expect(200, merge({}, infos, {
           accessList: { user: 'ro', user2: 'rw' }
         })),
       () => agent.put('/api/repo/adminonly/')
         .send({
           accessList: {}
-        }).expect(200, infos)
+        })
+        .expect(cleanTime)
+        .expect(200, infos)
     ]);
 
     test("should get 404 response on unknown folder", [

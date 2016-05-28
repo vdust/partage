@@ -9,6 +9,7 @@
 var expect = require('expect');
 
 var api = require('./_common').api;
+var cleanTime = require('./_common').cleanTime;
 
 api("* /api/repo/:folder/path+/", function (agent, test, as) {
   test("should get 401 (unauthorized) response if unauthenticated", [
@@ -42,6 +43,7 @@ api("GET /api/repo/:folder/path+/", function (agent, test, as) {
   as('user', function () {
     test("should get directory infos with files and subdirectories", [
       () => agent.get('/api/repo/readonly/subdir/')
+        .expect(cleanTime)
         .expect(200, {
           folder: 'readonly',
           dirname: '.',
@@ -109,6 +111,7 @@ api("PUT /api/repo/:folder/path+/", function (agent, test, as) {
   as('user', function () {
     test("should create a new directory", [
       () => agent.put('/api/repo/readwrite/newdir/')
+        .expect(cleanTime)
         .expect(200, {
           folder: 'readwrite',
           dirname: '.',
@@ -123,6 +126,7 @@ api("PUT /api/repo/:folder/path+/", function (agent, test, as) {
     test("should create a new directory with missing parents", [
       () => agent.put('/api/repo/readwrite/newparent/newdir/')
         .query({ parents: 1 })
+        .expect(cleanTime)
         .expect(200, {
           folder: 'readwrite',
           dirname: 'newparent',
@@ -136,6 +140,7 @@ api("PUT /api/repo/:folder/path+/", function (agent, test, as) {
 
     test("should succeed if directory already exists", [
       () => agent.put('/api/repo/readwrite/existdir/')
+        .expect(cleanTime)
         .expect(200, {
           folder: 'readwrite',
           dirname: '.',
@@ -181,6 +186,7 @@ api("PUT /api/repo/:folder/path+/", function (agent, test, as) {
   as('admin', function () {
     test("should create a new directory in any folder", [
       () => agent.put('/api/repo/adminonly/newdir/')
+        .expect(cleanTime)
         .expect(200, {
           folder: 'adminonly',
           dirname: '.',

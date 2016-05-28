@@ -121,3 +121,20 @@ exports.test = function test(desc, requests) {
     }, done);
   });
 };
+
+function cleanArray(array) {
+  if (!Array.isArray(array)) return;
+  for (var i = 0; i < array.length; i++) {
+    delete array[i].mtime;
+  }
+}
+
+exports.cleanTime = function(res) {
+  if (!res.body) return;
+  if (Array.isArray(res.body)) {
+    cleanArray(res.body);
+  } else {
+    delete res.body.mtime;
+    if (res.body.dirs) cleanArray(res.body.dirs);
+  }
+}

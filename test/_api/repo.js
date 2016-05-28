@@ -9,6 +9,7 @@
 var expect = require('expect');
 
 var api = require('./_common').api;
+var cleanTime = require('./_common').cleanTime;
 var merge = require('../../lib/utils').merge;
 
 api("* /api/repo/", function (agent, test, as) {
@@ -221,6 +222,7 @@ api("GET /api/repo/stat", function (agent, test, as) {
     test("should get shared folder infos", [
       () => agent.get('/api/repo/stat?path=readonly')
         .expect('Content-Type', /json/)
+        .expect(cleanTime)
         .expect(200, {
           name: 'readonly',
           uid: '2',
@@ -234,6 +236,7 @@ api("GET /api/repo/stat", function (agent, test, as) {
         }),
       () => agent.get('/api/repo/stat?path=readonly/')
         .expect('Content-Type', /json/)
+        .expect(cleanTime)
         .expect(200, {
           name: 'readonly',
           uid: '2',
@@ -250,6 +253,7 @@ api("GET /api/repo/stat", function (agent, test, as) {
     test("should get subdirectory infos", [
       () => agent.get('/api/repo/stat?path=readonly/subdir/')
         .expect('Content-Type', /json/)
+        .expect(cleanTime)
         .expect(200, {
           folder: 'readonly',
           dirname: '.',
@@ -264,6 +268,7 @@ api("GET /api/repo/stat", function (agent, test, as) {
     test("should not require trailing slash on folder resource", [
       () => agent.get('/api/repo/stat?path=readonly/subdir')
         .expect('Content-Type', /json/)
+        .expect(cleanTime)
         .expect(200, {
           folder: 'readonly',
           dirname: '.',
@@ -324,6 +329,7 @@ api("GET /api/repo/stat", function (agent, test, as) {
     test("should get any shared folder infos with access list", [
       () => agent.get('/api/repo/stat?path=adminonly')
         .expect('Content-Type', /json/)
+        .expect(cleanTime)
         .expect(200, {
           name: 'adminonly',
           uid: '1',
@@ -338,6 +344,7 @@ api("GET /api/repo/stat", function (agent, test, as) {
         }),
       () => agent.get('/api/repo/stat?path=readonly')
         .expect('Content-Type', /json/)
+        .expect(cleanTime)
         .expect(200, {
           name: 'readonly',
           uid: '2',
@@ -357,6 +364,7 @@ api("GET /api/repo/stat", function (agent, test, as) {
     test("should get any subdirectory infos", [
       () => agent.get('/api/repo/stat?path=adminonly/subdir')
         .expect('Content-Type', /json/)
+        .expect(cleanTime)
         .expect(200, {
           folder: 'adminonly',
           dirname: '.',
@@ -459,6 +467,7 @@ api("POST /api/repo/rename", { edit: true}, function (agent, test, as) {
           src: 'readwrite/to-rename',
           dest: 'readwrite/renamed'
         })
+        .expect(cleanTime)
         .expect(200, {
           dirname: '.',
           folder: 'readwrite',
@@ -735,6 +744,7 @@ api("POST /api/repo/rename", { edit: true}, function (agent, test, as) {
         })
         .expect(200)
         .expect(function (res) {
+          delete res.body.mtime;
           expect(res.body).toContainKey('uid');
           delete res.body.uid;
         })
@@ -763,6 +773,7 @@ api("POST /api/repo/rename", { edit: true}, function (agent, test, as) {
         })
         .expect(200)
         .expect(function (res) {
+          delete res.body.mtime;
           expect(res.body).toContainKey('uid');
           delete res.body.uid;
           expect(res.body.replaced).toContainKey('itemUid');
