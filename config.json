@@ -23,7 +23,6 @@
   "log": {
     "format": "combined"
   },
-  "robots.txt": "robots.txt",
   "run": {
     "port": 8080
   },
