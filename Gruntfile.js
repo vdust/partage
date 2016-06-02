@@ -29,6 +29,10 @@ module.exports = function (grunt) {
       }
     },
     watch: {
+      options: {
+        atBegin: true,
+        debounceDelay: 1000
+      }
       distjs: {
         files: [
           'static/js/filehub.js',
@@ -37,14 +41,14 @@ module.exports = function (grunt) {
         ],
         tasks: [ 'uglify' ],
         options: {
-          events: [ 'added', 'changed' ]
+          events: [ 'changed' ]
         }
       },
       distcss: {
         files: [ 'scss/*.scss' ],
         tasks: [ 'sass' ],
         options: {
-          events: [ 'added', 'changed' ]
+          events: [ 'changed' ]
         }
       }
     },
