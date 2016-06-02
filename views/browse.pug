@@ -23,10 +23,9 @@ block contents
               if req.user.is('admin')
                 +action('multi', 'folder|#f-0', 'folderAccessList', 'folder.access', 'user-plus', 'none')
                 +action('multi', 'folder|#f-0', 'itemDelete', 'folder.delete', 'trash-o', 'none')
-              if req.user.is('contributor')
-                +action('multi', '*|:not(#f-trash,#f-0)', 'itemDelete', 'folder.delete', 'trash-o', 'none')
-                +action('multi', 'trash|#f-trash', 'trashRestore', 'trash.restore', 'reply', 'none')
-                +action('multi', 'trash|#f-trash', 'trashRemove', 'trash.remove', 'remove', 'none')
+              +action('multi', '*|:not(#f-trash,#f-0)', 'itemDelete', 'folder.delete', 'trash-o', 'none')
+              +action('multi', 'trash|#f-trash', 'trashRestore', 'trash.restore', 'reply', 'none')
+              +action('multi', 'trash|#f-trash', 'trashRemove', 'trash.remove', 'remove', 'none')
     div.view-wrap-in
       div.view-wrap-in-2
         div.view
@@ -67,17 +66,17 @@ block contents
                         span.fa(class='fa-folder'+(active ? '-open' : ''))
                       div.tree-label
                         = f.name
-                if req.user && req.user.is('contributor')
-                  - attrs['data-target'] = 'f-trash'
-                  - attrs['id'] = 't-f-trash'
-                  - attrs['class']['active'] = istrash
-                  div.tree-item(data-url='folders/.trash')&attributes(attrs)
-                    div.tree-expand
-                      span
-                    div.tree-icon
-                      span.fa.fa-trash
-                    div.tree-label
-                      = t('trash.label')
+
+                - attrs['data-target'] = 'f-trash'
+                - attrs['id'] = 't-f-trash'
+                - attrs['class']['active'] = istrash
+                div.tree-item(data-url='folders/.trash')&attributes(attrs)
+                  div.tree-expand
+                    span
+                  div.tree-icon
+                    span.fa.fa-trash
+                  div.tree-label
+                    = t('trash.label')
 
           div.view-resize#view-resize
             div.view-handle
