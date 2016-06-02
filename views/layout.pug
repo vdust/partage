@@ -15,12 +15,9 @@ html
         w.FILEHUB_BASEURL="#{baseUrl}";
         w.FILEHUB_CTX="#{menuCtx}";
       })(window);
-    - var isdev = app.get('env') === 'development';
-    - var jsmin = function(path){return isdev ? path : path.replace(/\.js$/,'.min.js');};
-    if isdev
-      script(type="text/javascript", src=staticUrl+jsmin('/js/filehub.js'))
-      if req.isAuthenticated() && req.user.is("admin")
-        script(type="text/javascript", src=staticUrl+jsmin('/js/filehub-admin.js'))
+    script(type="text/javascript", src=staticUrl+'/js/filehub.min.js')
+    if req.isAuthenticated() && req.user.is("admin")
+      script(type="text/javascript", src=staticUrl+'/js/filehub-admin.min.js')
   body
     div#filehub_container
       nav
