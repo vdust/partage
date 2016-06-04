@@ -126,6 +126,7 @@ function cleanArray(array) {
   if (!Array.isArray(array)) return;
   for (var i = 0; i < array.length; i++) {
     delete array[i].mtime;
+    if (array[i].dirs) cleanArray(array[i].dirs);
   }
 }
 

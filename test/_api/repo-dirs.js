@@ -52,8 +52,45 @@ api("GET /api/repo/:folder/path+/", function (agent, test, as) {
           path: 'readonly/subdir',
           type: 'folder',
           mime: 'inode/directory',
-          dirs: [],
+          dirs: [
+            {
+              folder: 'readonly',
+              dirname: 'subdir',
+              name: 'recursive',
+              uid: '2-1f346a55be8c06c757161209bae011d5130f44e3',
+              path: 'readonly/subdir/recursive',
+              type: 'folder',
+              mime: 'inode/directory'
+            }
+          ],
           files: []
+        })
+    ]);
+
+    test("should get directory infos with full subdirectories tree", [
+      () => agent.get('/api/repo/readonly/subdir/')
+        .query({ tree: 1 })
+        .expect(cleanTime)
+        .expect(200, {
+          folder: 'readonly',
+          dirname: '.',
+          name: 'subdir',
+          uid: '2-37db6403631f80ea309d8b6c30580c1b73f4b8a9',
+          path: 'readonly/subdir',
+          type: 'folder',
+          mime: 'inode/directory',
+          dirs: [
+            {
+              folder: 'readonly',
+              dirname: 'subdir',
+              name: 'recursive',
+              uid: '2-1f346a55be8c06c757161209bae011d5130f44e3',
+              path: 'readonly/subdir/recursive',
+              type: 'folder',
+              mime: 'inode/directory',
+              dirs: []
+            }
+          ]
         })
     ]);
 

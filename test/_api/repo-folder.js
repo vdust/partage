@@ -81,6 +81,46 @@ api("GET /api/repo/:folder/", function (agent, test, as) {
         })
     ]);
 
+    test("should get folder infos and full subdirectories tree", [
+      () => agent.get('/api/repo/readonly/')
+        .query({ tree: 1 })
+        .expect(cleanTime)
+        .expect(200, {
+          name: 'readonly',
+          uid: '2',
+          description: 'Read-only folder',
+          type: 'folder',
+          mime: 'inode/directory',
+          path: 'readonly',
+          canread: true,
+          canwrite: false,
+          canedit: false,
+          dirs: [
+            {
+              folder: 'readonly',
+              dirname: '.',
+              name: 'subdir',
+              uid: '2-37db6403631f80ea309d8b6c30580c1b73f4b8a9',
+              path: 'readonly/subdir',
+              type: 'folder',
+              mime: 'inode/directory',
+              dirs: [
+                {
+                  folder: 'readonly',
+                  dirname: 'subdir',
+                  name: 'recursive',
+                  uid: '2-1f346a55be8c06c757161209bae011d5130f44e3',
+                  path: 'readonly/subdir/recursive',
+                  type: 'folder',
+                  mime: 'inode/directory',
+                  dirs: []
+                }
+              ]
+            }
+          ]
+        })
+    ]);
+
     test("should get 404 response on folder with no access", [
       () => agent.get('/api/repo/adminonly/').expect(404)
     ]);

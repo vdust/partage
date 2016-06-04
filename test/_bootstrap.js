@@ -76,7 +76,9 @@ module.exports = function _bootstrap(options) {
           'test.txt': { mtime: mtime, data: 'test' }
         },
         'readonly/': {
-          'subdir/': {},
+          'subdir/': {
+            'recursive/': {}
+          },
           '.fhconfig': roConf,
           'test.txt': { mtime: mtime, data: 'test' }
         },
