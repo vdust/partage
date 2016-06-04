@@ -32,7 +32,7 @@ module.exports = function (grunt) {
       options: {
         atBegin: true,
         debounceDelay: 1000
-      }
+      },
       distjs: {
         files: [
           'static/js/filehub.js',
