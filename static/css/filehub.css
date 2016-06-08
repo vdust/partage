@@ -503,6 +503,10 @@ form.profile-form {
   flex-direction: column;
   height: 100%; }
 
+.list-loader {
+  z-index: 3;
+  background-color: #fff; }
+
 .list-box div.empty {
   font-style: italic;
   text-align: center; }

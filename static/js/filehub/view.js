@@ -10,7 +10,7 @@
   var filehub = window['filehub'];
   if (!filehub) throw Error("filehub is not defined.");
 
-  var View = filehub.Class('View', {
+  var View = filehub.createClass('View', {
     options: {
       viewResize: '#view-resize',
       viewContents: '#view-contents'
@@ -20,15 +20,20 @@
 
       self._body = $(window.document.body);
 
-      self.nav = new filehub.Nav(self._handlers, self.options.nav);
-      self.sidePanel = new filehub.Aside(self._handlers, self.options.aside);
-      self.sidePanel.on('activate', function () {
+      self.sidePanel = new filehub.Aside(self.options.aside);
+      self.sidePanel.on('select', function () {
         self.loadTarget.apply(self, arguments);
       });
+
+      self.nav = new filehub.Nav(self.options.nav);
+      self.nav.on('activate', function (uid) {
+        self.sidePanel.select(uid);
+      });
+
       self.viewResize = $('#view-resize');
       self.viewContents = $('#view-contents');
       self.viewActive = self.viewContents.children('.list-box:visible');
-      self.loader = new filehub.ListLoader(self._handlers, {
+      self.loader = new filehub.ListLoader({
         container: self.viewContents
       });
 
@@ -60,6 +65,8 @@
     },
     _initLists: function () {
 
+    },
+    loadTarget: function (uid, item) {
     }
   });
 })(jQuery, window);

@@ -2,6 +2,44 @@ extends ./layout.pug
 
 include ./_mixins.pug
 
+mixin browsetreeitem(uid, options, subtree, candrop, depth)
+  - var attrs = { 'class': {} }
+  - attrs['data-url'] = options.path.join('/')
+  - attrs['data-uid'] = uid
+  - attrs['data-ico-off'] = 'fa-folder';
+  - attrs['data-ico-on'] = 'fa-folder-open';
+  - attrs.id = 't-' + uid
+  - attrs['class'].active = (uid === options.active.id)
+  - attrs['class']['tree-item-subtree'] = !!subtree && subtree.length > 0
+  - attrs['class']['view-droppable'] = candrop
+  - var canexpand = !!subtree && subtree.length > 0
+  div.tree-item&attributes(attrs)
+    - for (var i = 0; i < depth; i++)
+      div.tree-pad
+    div.tree-expand
+      span&attributes({ 'class': {
+        fa: canexpand,
+        'fa-caret-down': canexpand && options.expand,
+        'fa-caret-right': canexpand && !options.expand
+      }})
+    div.tree-icon
+      span.fa(class='fa-folder'+(uid === options.active.id ? '-open' : ''))
+    div.tree-label
+      = options.name
+  if canexpand
+    - var relpath = options.active.relpath;
+    div.tree(style=!options.expand && 'display: none')
+      each it in subtree
+        +browsetreeitem(it.uid, {
+          name: it.name,
+          expand: it.name === relpath[0] && relpath.length > 1,
+          path: options.path.concat([ encodeURIComponent(it.name) ]),
+          active: {
+            id: pathid,
+            relpath: it.name === relpath[0] ? relpath.slice(1) : []
+          }
+        }, it.dirs, candrop || it.canwrite, (+depth || 0) + 1)
+
 block contents
   - var istrash = typeof trash !== 'undefined'
   div.view-wrap
@@ -11,13 +49,15 @@ block contents
           div.nav-padding#nav-padding
           div.nav-wrap
             ul#nav-path
-              +navitem(t(istrash ? 'trash.label' : 'folders'), '', true)
+              +navitem(t(istrash ? 'trash.label' : 'folders'), istrash ? 'trash' : '0', true)
               if folder
-                - var p = folder.name
-                +navitem(p, p)
+                +navitem(folder.name, folder._.uid)
+                - var p = []
                 each d in path||[]
-                  - p += "/" + d
-                  +navitem(d, p)
+                  - p.push(d);
+                  - var r = folder.resource(p.join('/'))
+                  +navitem(d, r.uid)
+                  - r.unref()
           div.nav-toolbox
             div.view-tools#nav-tools
               if req.user.is('admin')
@@ -36,47 +76,24 @@ block contents
               button(type="button", disabled=!canadd, data-handler='folderAdd')
                 span.fa.fa-plus
                 = t("folder.new")
-            div.tree-box.view-drop-target(data-on-drop='itemDrop')
-              - var attrs = {'data-handler':'folderQuery', 'class':{}}
+            div.tree-box.view-drop-target
               div.tree.tree-large
-                - attrs['data-target'] = 'f-0'
-                - attrs['id'] = 't-' + attrs['data-target']
-                - attrs['class']['active'] = !folder && !istrash
-                - attrs['class']['tree-item-subtree'] = true;
-                div.tree-item(data-url='folders')&attributes(attrs)
-                  div.tree-expand
-                    span.fa(class='fa-caret-'+(folder ? 'down' : 'right'))
-                  div.tree-icon
-                    span.fa(class='fa-folder'+(folder ? '' : '-open'))
-                  div.tree-label
-                    = t('folders')
-                - delete attrs['class']['tree-item-subtree']
-                - attrs['class']['view-droppable'] = true
-                div.tree(style=!folder && 'display: none')
-                  each f in folders
-                    - var active = !!(folder && f.name === folder.name)
-                    - attrs['data-target'] = 'f-'+f.uid
-                    - attrs['id'] = 't-' + attrs['data-target']
-                    - attrs['class']['active'] = active
-                    div.tree-item(data-url='folders/'+encodeURIComponent(f.name))&attributes(attrs)
-                      div.tree-pad
-                      div.tree-expand
-                        span
-                      div.tree-icon
-                        span.fa(class='fa-folder'+(active ? '-open' : ''))
-                      div.tree-label
-                        = f.name
-
-                - attrs['data-target'] = 'f-trash'
-                - attrs['id'] = 't-f-trash'
-                - attrs['class']['active'] = istrash
-                div.tree-item(data-url='folders/.trash')&attributes(attrs)
-                  div.tree-expand
-                    span
-                  div.tree-icon
-                    span.fa.fa-trash
-                  div.tree-label
-                    = t('trash.label')
+                +browsetreeitem('0', {
+                  name: t('folders'),
+                  expand: !!folder,
+                  path: [ req.baseUrl ],
+                  active: {
+                    id: pathid,
+                    relpath: folder ? [ folder.name ].concat(path) : []
+                  }
+                }, folders, false)
+                +browsetreeitem('trash', {
+                  name: t('trash.label'),
+                  path: [ req.baseUrl, '.trash' ],
+                  active: {
+                    id: pathid
+                  }
+                })
 
           div.view-resize#view-resize
             div.view-handle

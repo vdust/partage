@@ -12,6 +12,7 @@
 
   var Aside = filehub.createClass('Aside', {
     options: {
+      idPrefix: 't-',
       aside: '#view-aside',
       expandSelector: '.fa',
       expandClasses: 'fa-caret-right fa-caret-down' // 'collapsed expanded'
@@ -27,12 +28,11 @@
       self.treeIdPrefix = self.treeBox.data('id-prefix') || 't-';
 
       self.buttonBox.on('click', 'button', function (evt) {
-        var button = $(this),
-            handler = button.data('handler');
+        var button = $(this);
 
         if (button.prop('disabled')) return;
 
-        self.trigger('activate', [ button ]);
+        self.trigger('button', [ button ]);
       });
 
       self.treeBox.on('click', '.tree-item-subtree > .tree-expand', function (evt) {
@@ -57,36 +57,39 @@
       buttons.prop('disabled', !enable);
     },
     select: function (uid, item) {
-      var self = this;
+      var self = this,
+          opts = self.options;
 
       if (!uid && !item) {
         item = self.treeBox.find('.tree-item:eq(0)');
       } else if (!item) {
-        item = $('#' + self.idPrefix + uid);
+        item = $('#' + opts.idPrefix + uid);
       }
+      console.log(item);
 
       if (!item.hasClass('active')) {
         self.treeBox.find('.active').treeItemActive(false);
         if (item.hasClass('tree-item')) {
           item.treeItemActive(true);
-          p = item.parent('.tree');
+          var p = item.closest('.tree');
           while (p.length && !p.is(':visible')) {
             p = p.prev('.tree-item');
             p.children('.tree-expand').click();
             p = p.parent('.tree');
           }
         }
+        self.trigger('select', [ uid, item ]);
       }
-
-      self.trigger('select', [ uid, item.data('handler'), item ]);
     },
     /**
      * tree is a list of nodes child of rootUid
      */
     update: function (rootUid, items) {
-      var root = $('#' + self.idPrefix + rootUid),
+      var self = this,
+          opts = self.options,
+          root = $('#' + opts.idPrefix + rootUid),
           tree = root.next('.tree'),
-          expand = self.options.expandClasses.split(/ +/),
+          expand = opts.expandClasses.split(/ +/),
           depth, stack = [], current;
 
       if (!root.length || !items || !items.length) {
@@ -108,6 +111,7 @@
             subtree: item.subtree && item.subtree.length > 0,
             expand: item.subtree ? { off: expand[0], on: expand[1] } : false,
             depth: depth + stack.length,
+            idPrefix: opts.idPrefix,
             uid: item.uid,
             active: item.active,
             'class': item['class'],
@@ -186,14 +190,14 @@
     }
 
     if (options.uid) {
-      this.attr('id', this.idPrefix + options.uid);
+      this.attr('id', options.idPrefix + options.uid);
       this.data('uid', options.uid);
     }
 
     if (typeof options.icon === 'object') {
       this.data({
-        'ico.on': options.icon.on,
-        'ico.off': options.icon.off
+        'ico-on': options.icon.on,
+        'ico-off': options.icon.off
       });
     }
 
@@ -205,10 +209,11 @@
   $.fn.treeItemActive = function (active) {
     active = arguments === 0 ? true : !!active;
     this.toggleClass('active', active);
-    var ico = { on: this.data('ico.on'), off: this.data('ico.off') };
+    var ico = { on: this.data('ico-on'), off: this.data('ico-off') };
     if (ico.on && ico.off) {
-      this.toggleClass(ico.off, !active);
-      this.toggleClass(ico.on, active);
+      this.find('.tree-icon > span')
+        .toggleClass(ico.off, !active)
+        .toggleClass(ico.on, active);
     }
     return this;
   };

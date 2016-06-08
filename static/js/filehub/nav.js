@@ -27,13 +27,15 @@
       });
 
       self.navPath.on('click', '.navitem', function (evt) {
-        var navitem = $(this),
-            handler = navitem.data('handler') || 'navActivate';
+        var navitem = $(this);
 
         evt.preventDefault();
         evt.stopPropagation();
 
-        self.handle(handler, navitem.closest('.navitem'));
+        var uid = navitem.data('uid');
+        if (uid != null) {
+          self.trigger('activate', [''+uid, navitem]);
+        }
       });
     },
     padding: function (width) {
@@ -44,19 +46,19 @@
      *
      * The array can start with null values to preserve first items in the path
      */
-    update: function (path) {
+    update: function (list) {
       var self = this,
           items = self.navPath.children().remove(),
           separator = $(self.options.pathSeparator||'<span/>');
 
-      if (!path) {
-        path = [];
-      } else if (!$.isArray(path)) {
-        path = [ path ];
+      if (!list) {
+        list = [];
+      } else if (!$.isArray(list)) {
+        list = [ list ];
       }
 
-      for (var p, i = 0; i < path; i++) {
-        p = path[i];
+      for (var p, i = 0; i < list; i++) {
+        p = list[i];
 
         if (i < items.length) {
           if (p == null) {

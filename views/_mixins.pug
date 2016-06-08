@@ -1,8 +1,8 @@
-mixin navitem(name, path, first)
+mixin navitem(name, uid, first)
   li
     if !first
       span.fa.fa-chevron-right
-    span.navitem.subdir(data-path=path, data-base-url=baseUrl+'/folders')
+    span.navitem.subdir(data-uid=uid)
       = name
 
 mixin action(select, type, action, i18n, icon, display)

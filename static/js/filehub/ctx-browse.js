@@ -10,12 +10,11 @@
   var filehub = window['filehub'];
   if (!filehub) throw Error("filehub is not defined.");
 
-  filehub.register('users', function () {
+  filehub.register('browse', function () {
     var View = filehub.View;
 
     return new View({
     }).on('update', function (uid) {
-      // this == View instance
     });
   });
 })(jQuery, window);

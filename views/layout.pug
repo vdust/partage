@@ -15,9 +15,18 @@ html
         w.FILEHUB_BASEURL="#{baseUrl}";
         w.FILEHUB_CTX="#{menuCtx}";
       })(window);
-    script(type="text/javascript", src=staticUrl+'/js/filehub.min.js')
-    if req.isAuthenticated() && req.user.is("admin")
-      script(type="text/javascript", src=staticUrl+'/js/filehub-admin.min.js')
+
+    if app.get('env') === 'development'
+      script(type="text/javascript", src=staticUrl+'/js/filehub.js')
+      each f in [ 'aside', 'ctx-browse', 'loader', 'nav', 'view' ]
+        script(type="text/javascript", src=staticUrl+'/js/filehub/'+f+'.js')
+      each f in [ 'users' ]
+        script(type="text/javascript", src=staticUrl+'/js/filehub-admin/'+f+'.js')
+    else
+      script(type="text/javascript", src=staticUrl+'/js/filehub.min.js')
+      if req.isAuthenticated() && req.user.is("admin")
+        script(type="text/javascript", src=staticUrl+'/js/filehub-admin.min.js')
+
   body
     div#filehub_container
       nav
