@@ -1,7 +1,7 @@
 extends ./layout.pug
 
 block contents
-  - var lists = [ 'admin', 'user' ]
+  - var lists = [ 'admin', 'user' ], listDefault = 'user'
   div.view-wrap
     div.nav-out
       div.nav-in
@@ -14,8 +14,8 @@ block contents
                   = t('accounts')
               li
                 span.fa.fa-chevron-right
-                span.navitem(data-uid=lists[0])
-                  = t('access.'+lists[0], { count: 2 })
+                span.navitem(data-uid=listDefault)
+                  = t('access.'+listDefault, { count: 2 })
           div.nav-toolbox
             div.view-tools#nav-tools
               div.view-action(data-select="single", data-type='account', data-event='account:edit', title=t('account.edit'), style="display: none")
@@ -32,8 +32,8 @@ block contents
                 = t('account.add')
             div.tree-box.view-drop-target
               div.tree.tree-large
-                each k, i in lists
-                  div.tree-item.view-droppable(class=(i>0?false:'active'), id="t-"+k, data-uid=k)
+                each k in lists
+                  div.tree-item.view-droppable(class=(k === listDefault ? 'active' : false), id="t-"+k, data-uid=k)
                     div.tree-expand
                       span
                     div.tree-icon
@@ -44,8 +44,8 @@ block contents
             div.view-handle
           div.view-contents#view-contents
             include ./loader.pug
-            each k, i in lists
-              div.list-box.accounts-list(id='l-'+k, data-list=k, style=i>0 && 'display: none')
+            each k in lists
+              div.list-box.accounts-list(id='u-'+k, data-list=k, style=k !== listDefault && 'display: none')
                 div.list
                   div.list-header
                     div.list-cell.account-username

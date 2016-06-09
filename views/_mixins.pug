@@ -32,14 +32,12 @@ mixin mimeicon(mime)
 
 mixin folder-row(d, folder)
   - var mtime = d.mtime ? dateformat(d.mtime, t('date-format')) : '\u2014'
-  - var dpath = path.join('/') + '/' + d.name
   - var dirUid = 'f-' + d.uid
-  - var url = path.slice()
-  - if (folder) url.unshift(folder.name)
-  - url.unshift('folders')
-  - url.push(d.name)
-  - url = url.map(function (a) { return encodeURIComponent(a); }).join('/')
-  div.list-row.folder-entry.view-droppable(data-target=dirUid, data-url=url, data-path=dpath, data-type=d.type)
+  - var url = buildURL(path.slice().concat([ d.name ]));
+  - var dpath = d.path.split('/').map((a) => encodeURIComponent(a)).join('/');
+  - var canwrite = folder ? folder.can('write', req.user) : req.user.is('admin')
+  - var flags = 'r'+(canwrite ? 'w' : '')+(d.path.indexOf('/')>=0 ? '' : 'f')
+  div.list-row.folder-entry.view-droppable(data-uid=d.uid, data-url=url, data-path=dpath, data-type=d.type, data-flags=flags)
     div.list-cell.folder-name
       div.list-cell-content
         +mimeicon(d.mime)
@@ -54,7 +52,11 @@ mixin folder-row(d, folder)
 
 mixin file-row(f, folder)
   - var mtime = f.mtime ? dateformat(f.mtime, t('date-format')) : '\u2014'
-  div.list-row.file-entry(data-path=path.join('/')+'/'+f.name, data-type=f.type)
+  - var url = buildURL(path.slice().concat([ f.name ]));
+  - var dpath = datapath.concat([ d.name ]).map((a) => encodeURIComponent(a)).join('/');
+  - var canwrite = folder ? folder.can('write', req.user) : req.user.is('admin')
+  - var flags = 'r'+(canwrite ? 'w' : '')
+  div.list-row.file-entry(data-url=url, data-path=dpath, data-type=f.type, data-flags=flags)
     div.list-cell.folder-name
       div.list-cell-content
         +mimeicon(f.mime)

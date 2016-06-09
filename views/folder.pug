@@ -1,9 +1,14 @@
 include ./_mixins.pug
 
+- var canwrite = folder ? folder.can('write', req.user) : req.user.is('admin')
 - var istrash = typeof trash !== 'undefined'
+- var flags = 'r'+(canwrite ? (folder ? 'w' : 'c') : '')+(folder ? (path.length ? '' : 'f') : 's')
 - var folderName = istrash ? '.trash' : (folder ? folder.name : '')
-div.list-box.folders-list(id='f-'+pathid, data-folder=folderName, data-path=path.join('/'))
-  div.list(data-row-activate='rowActivate')
+- var listURL = buildURL()
+- var listPath = datapath.map((a) => encodeURIComponent(a)).join('/')
+- if (istrash) flags = 't'
+div.list-box.folders-list(id='f-'+pathid, data-uid=pathid, data-folder=folder&&folder.name, data-url=listURL, data-path=listPath, data-flags=flags)
+  div.list
     div.list-header
       div.list-cell.folder-name
         div.list-cell-content
