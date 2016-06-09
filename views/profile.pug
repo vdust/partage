@@ -4,7 +4,7 @@ mixin inputtag(typ, nam, i18n, val, icon)
   if icon
     span.input-icon
       span.fa(class="fa-"+icon)
-  input(type=typ, name=nam, placeholder=t('user.'+i18n), value=val)
+  input(type=typ, name=nam, placeholder=t('account.'+i18n), value=val)
 
 block contents
   div.contents-wrap
@@ -15,15 +15,15 @@ block contents
             = t('profile')
             span.fa.fa-angle-right
             span= req.user.name
-          p.note= t("user.edit-profile")
+          p.note= t("account.edit-profile")
           // todo: csrf token
           h3
             span.fa.fa-envelope-o
-            = t('user.email')
+            = t('account.email')
           +inputtag('email', 'email', 'email', req.user.email)
           h3
             span.fa.fa-key
-            = t('user.password')
+            = t('account.password')
           +inputtag('password', 'password', 'password-new', '')
           +inputtag('password', 'password2', 'password-confirm', '')
           h3

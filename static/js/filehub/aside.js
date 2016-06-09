@@ -65,7 +65,6 @@
       } else if (!item) {
         item = $('#' + opts.idPrefix + uid);
       }
-      console.log(item);
 
       if (!item.hasClass('active')) {
         self.treeBox.find('.active').treeItemActive(false);

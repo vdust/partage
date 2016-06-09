@@ -20,7 +20,7 @@ html
       script(type="text/javascript", src=staticUrl+'/js/filehub.js')
       each f in [ 'aside', 'ctx-browse', 'loader', 'nav', 'view' ]
         script(type="text/javascript", src=staticUrl+'/js/filehub/'+f+'.js')
-      each f in [ 'users' ]
+      each f in [ 'accounts' ]
         script(type="text/javascript", src=staticUrl+'/js/filehub-admin/'+f+'.js')
     else
       script(type="text/javascript", src=staticUrl+'/js/filehub.min.js')
@@ -41,11 +41,11 @@ html
                   != "&nbsp;"
                   = t("folders")
               if req.user.is("admin")
-                li(class=menuCtx === "users" ? "active" : "")
-                  a(href=baseUrl+"/users", title=t("users"))
+                li(class=menuCtx === "accounts" ? "active" : "")
+                  a(href=baseUrl+"/accounts", title=t("accounts"))
                     span.fa.fa-users
                     != "&nbsp;"
-                    = t("users")
+                    = t("accounts")
               li(class=menuCtx === "profile" ? "active" : "")
                 a(href=baseUrl+"/profile", title=t("profile"))
                   span.fa.fa-user

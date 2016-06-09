@@ -8,23 +8,23 @@
 
 var api = require('./_common').api;
 
-api("* /api/user/:username", function (agent, test, as) {
+api("* /api/account/:username", function (agent, test, as) {
   test("should trigger 401 response if unauthenticated", [
-    () => agent.get('/api/user/user').expect(401),
-    () => agent.get('/api/user/unknown').expect(401),
-    () => agent.head('/api/user/user').expect(401),
-    () => agent.head('/api/user/unknown').expect(401),
-    () => agent.put('/api/user/user').expect(401),
-    () => agent.put('/api/user/unknown').expect(401),
-    () => agent.del('/api/user/user').expect(401),
-    () => agent.del('/api/user/unknown').expect(401)
+    () => agent.get('/api/account/user').expect(401),
+    () => agent.get('/api/account/unknown').expect(401),
+    () => agent.head('/api/account/user').expect(401),
+    () => agent.head('/api/account/unknown').expect(401),
+    () => agent.put('/api/account/user').expect(401),
+    () => agent.put('/api/account/unknown').expect(401),
+    () => agent.del('/api/account/user').expect(401),
+    () => agent.del('/api/account/unknown').expect(401)
   ]);
 });
 
-api("GET /api/user/:username", function (agent, test, as) {
+api("GET /api/account/:username", function (agent, test, as) {
   as('user', function () {
     test("should get 'user' informations", [
-      () => agent.get('/api/user/user')
+      () => agent.get('/api/account/user')
         .expect('Content-Type', /json/)
         .expect(200, {
           username: 'user',
@@ -34,17 +34,17 @@ api("GET /api/user/:username", function (agent, test, as) {
     ]);
 
     test("should get forbidden response on other users", [
-      () => agent.get('/api/user/user2').expect(403)
+      () => agent.get('/api/account/user2').expect(403)
     ]);
 
     test("should get forbidden response on unknown users", [
-      () => agent.get('/api/user/unknown').expect(403)
+      () => agent.get('/api/account/unknown').expect(403)
     ]);
   });
 
   as('admin', function () {
     test("should get 'user2' informations", [
-      () => agent.get('/api/user/user2')
+      () => agent.get('/api/account/user2')
         .expect('Content-Type', /json/)
         .expect(200, {
           username: 'user2',
@@ -54,7 +54,7 @@ api("GET /api/user/:username", function (agent, test, as) {
     ]);
 
     test("should get 'admin' informations", [
-      () => agent.get('/api/user/admin')
+      () => agent.get('/api/account/admin')
         .expect('Content-Type', /json/)
         .expect(200, {
           username: 'admin',
@@ -64,17 +64,17 @@ api("GET /api/user/:username", function (agent, test, as) {
     ]);
 
     test("should get forbidden response on special users", [
-      () => agent.get('/api/user/super').expect(403)
+      () => agent.get('/api/account/super').expect(403)
     ]);
 
     test("should get notfound response on unknown users", [
-      () => agent.get('/api/user/unknown').expect(404)
+      () => agent.get('/api/account/unknown').expect(404)
     ]);
   });
 
   as('super', function () {
     test("should get 'user2' informations", [
-      () => agent.get('/api/user/user2')
+      () => agent.get('/api/account/user2')
         .expect('Content-Type', /json/)
         .expect(200, {
           username: 'user2',
@@ -84,7 +84,7 @@ api("GET /api/user/:username", function (agent, test, as) {
     ]);
 
     test("should get 'admin' informations", [
-      () => agent.get('/api/user/admin')
+      () => agent.get('/api/account/admin')
         .expect('Content-Type', /json/)
         .expect(200, {
           username: 'admin',
@@ -94,7 +94,7 @@ api("GET /api/user/:username", function (agent, test, as) {
     ]);
 
     test("should get 'super' informations", [
-      () => agent.get('/api/user/super')
+      () => agent.get('/api/account/super')
         .expect('Content-Type', /json/)
         .expect(200, {
           username: 'super',
@@ -104,41 +104,41 @@ api("GET /api/user/:username", function (agent, test, as) {
     ]);
 
     test("should get notfound response on unknown users", [
-      () => agent.get('/api/user/unknown').expect(404)
+      () => agent.get('/api/account/unknown').expect(404)
     ]);
   });
 });
 
-api("HEAD /api/user/:username", function (agent, test, as) {
+api("HEAD /api/account/:username", function (agent, test, as) {
   as('user', function () {
     test("should return 204 on self", [
-      () => agent.head('/api/user/user').expect(204)
+      () => agent.head('/api/account/user').expect(204)
     ]);
 
     test("should return 404 with any other username", [
-      () => agent.head('/api/user/user2').expect(404),
-      () => agent.head('/api/user/super').expect(404),
-      () => agent.head('/api/user/unknown').expect(404)
+      () => agent.head('/api/account/user2').expect(404),
+      () => agent.head('/api/account/super').expect(404),
+      () => agent.head('/api/account/unknown').expect(404)
     ]);
   });
   
   as('admin', function () {
     test("should return 204 on self and other users", [
-      () => agent.head('/api/user/user').expect(204),
-      () => agent.head('/api/user/admin').expect(204),
-      () => agent.head('/api/user/super').expect(204)
+      () => agent.head('/api/account/user').expect(204),
+      () => agent.head('/api/account/admin').expect(204),
+      () => agent.head('/api/account/super').expect(204)
     ]);
 
     test("should return 404 on unknown users", [
-      () => agent.head('/api/user/unknown').expect(404)
+      () => agent.head('/api/account/unknown').expect(404)
     ]);
   });
 });
 
-api("PUT /api/user/:username", function (agent, test, as) {
+api("PUT /api/account/:username", function (agent, test, as) {
   as('user', function () {
     test("should update password on self", [
-      () => agent.put('/api/user/user')
+      () => agent.put('/api/account/user')
         .type('json')
         .send({ password: 'password123' })
         .expect(200, {
@@ -150,7 +150,7 @@ api("PUT /api/user/:username", function (agent, test, as) {
         .type('json')
         .send({ username: 'user', password: 'password123' })
         .expect(200),
-      () => agent.get('/api/user/user')
+      () => agent.get('/api/account/user')
         .expect(200, {
           username: 'user',
           accessLevel: 'user',
@@ -159,7 +159,7 @@ api("PUT /api/user/:username", function (agent, test, as) {
     ]);
 
     test("should ignore accessLevel edit on self", [
-      () => agent.put('/api/user/user')
+      () => agent.put('/api/account/user')
         .type('json')
         .send({ accessLevel: 'admin' })
         .expect(200, {
@@ -167,7 +167,7 @@ api("PUT /api/user/:username", function (agent, test, as) {
           accessLevel: 'user',
           email: 'user@example.com'
         }),
-      () => agent.get('/api/user/user')
+      () => agent.get('/api/account/user')
         .expect(200, {
           username: 'user',
           accessLevel: 'user',
@@ -176,7 +176,7 @@ api("PUT /api/user/:username", function (agent, test, as) {
     ]);
 
     test("should update email on self", [
-      () => agent.put('/api/user/user')
+      () => agent.put('/api/account/user')
         .type('json')
         .send({ email: 'user@example.net' })
         .expect(200, {
@@ -184,7 +184,7 @@ api("PUT /api/user/:username", function (agent, test, as) {
           accessLevel: 'user',
           email: 'user@example.net'
         }),
-      () => agent.get('/api/user/user')
+      () => agent.get('/api/account/user')
         .expect(200, {
           username: 'user',
           accessLevel: 'user',
@@ -193,14 +193,14 @@ api("PUT /api/user/:username", function (agent, test, as) {
     ]);
 
     test("should return 403 on other users", [
-      () => agent.put('/api/user/user2')
+      () => agent.put('/api/account/user2')
         .type('json')
         .send({ email: 'user2@example.net' })
         .expect(403)
     ]);
 
     test("should return 403 on unknown users", [
-      () => agent.put('/api/user/unknown')
+      () => agent.put('/api/account/unknown')
         .type('json')
         .send({ email: 'unknown@example.net' })
         .expect(403)
@@ -209,7 +209,7 @@ api("PUT /api/user/:username", function (agent, test, as) {
 
   as('admin', function () {
     test("should ignore accessLevel edit on self", [
-      () => agent.put('/api/user/admin')
+      () => agent.put('/api/account/admin')
         .type('json')
         .send({ accessLevel: 'user' })
         .expect(200, {
@@ -217,7 +217,7 @@ api("PUT /api/user/:username", function (agent, test, as) {
           accessLevel: 'admin',
           email: 'admin@example.com'
         }),
-      () => agent.get('/api/user/admin')
+      () => agent.get('/api/account/admin')
         .expect(200, {
           username: 'admin',
           accessLevel: 'admin',
@@ -226,7 +226,7 @@ api("PUT /api/user/:username", function (agent, test, as) {
     ]);
 
     test("should update non-special users", [
-      () => agent.put('/api/user/user2')
+      () => agent.put('/api/account/user2')
         .type('json')
         .send({ email: 'user2@example.net' })
         .expect(200, {
@@ -234,7 +234,7 @@ api("PUT /api/user/:username", function (agent, test, as) {
           accessLevel: 'user',
           email: 'user2@example.net'
         }),
-      () => agent.get('/api/user/user2')
+      () => agent.get('/api/account/user2')
         .expect(200, {
           username: 'user2',
           accessLevel: 'user',
@@ -243,7 +243,7 @@ api("PUT /api/user/:username", function (agent, test, as) {
     ]);
 
     test("should update accessLevel on non-special users", [
-      () => agent.put('/api/user/user2')
+      () => agent.put('/api/account/user2')
         .type('json')
         .send({ accessLevel: 'admin' })
         .expect(200, {
@@ -251,7 +251,7 @@ api("PUT /api/user/:username", function (agent, test, as) {
           accessLevel: 'admin',
           email: 'user2@example.net'
         }),
-      () => agent.get('/api/user/user2')
+      () => agent.get('/api/account/user2')
         .expect(200, {
           username: 'user2',
           accessLevel: 'admin',
@@ -260,21 +260,21 @@ api("PUT /api/user/:username", function (agent, test, as) {
     ]);
 
     test("should return 400 with accessLevel higher than 'admin'", [
-      () => agent.put('/api/user/user2')
+      () => agent.put('/api/account/user2')
         .type('json')
         .send({ accessLevel: 'special' })
         .expect(400)
     ]);
 
     test("should return 404 on unknown users", [
-      () => agent.put('/api/user/unknown')
+      () => agent.put('/api/account/unknown')
         .type('json')
         .send({ email: 'unknown@example.net' })
         .expect(404)
     ]);
 
     test("should return 403 on special users", [
-      () => agent.put('/api/user/super')
+      () => agent.put('/api/account/super')
         .type('json')
         .send({ email: 'super@example.net' })
         .expect(403)
@@ -283,7 +283,7 @@ api("PUT /api/user/:username", function (agent, test, as) {
 
   as('super', function () {
     test("should update self", [
-      () => agent.put('/api/user/super')
+      () => agent.put('/api/account/super')
         .type('json')
         .send({ email: 'super@example.net' })
         .expect(200, {
@@ -291,7 +291,7 @@ api("PUT /api/user/:username", function (agent, test, as) {
           accessLevel: 'su',
           email: 'super@example.net'
         }),
-      () => agent.get('/api/user/super')
+      () => agent.get('/api/account/super')
         .expect(200, {
           username: 'super',
           accessLevel: 'su',
@@ -300,14 +300,14 @@ api("PUT /api/user/:username", function (agent, test, as) {
     ]);
 
     test("should return 400 with accessLevel higher than 'admin'", [
-      () => agent.put('/api/user/user2')
+      () => agent.put('/api/account/user2')
         .type('json')
         .send({ accessLevel: 'special' })
         .expect(400)
     ]);
 
     test("should return 404 on unknown users", [
-      () => agent.put('/api/user/unknown')
+      () => agent.put('/api/account/unknown')
         .type('json')
         .send({ email: 'unknown@example.net' })
         .expect(404)
@@ -315,54 +315,54 @@ api("PUT /api/user/:username", function (agent, test, as) {
   });
 });
 
-api("DELETE /api/user/:username", function (agent, test, as) {
+api("DELETE /api/account/:username", function (agent, test, as) {
   as('user', function () {
     test("should return 403 on any user", [
-      () => agent.del('/api/user/user').expect(403),
-      () => agent.del('/api/user/user2').expect(403),
-      () => agent.del('/api/user/super').expect(403),
-      () => agent.del('/api/user/unknown').expect(403)
+      () => agent.del('/api/account/user').expect(403),
+      () => agent.del('/api/account/user2').expect(403),
+      () => agent.del('/api/account/super').expect(403),
+      () => agent.del('/api/account/unknown').expect(403)
     ]);
   });
 
   as('admin', function () {
     test("should delete non-special users", [
-      () => agent.del('/api/user/user').expect(204)
+      () => agent.del('/api/account/user').expect(204)
     ]);
 
     test("should silently ignore unknown users", [
-      () => agent.del('/api/user/unknown').expect(204)
+      () => agent.del('/api/account/unknown').expect(204)
     ]);
 
     test("should return 403 on self and special users", [
-      () => agent.del('/api/user/admin').expect(403),
-      () => agent.del('/api/user/super').expect(403)
+      () => agent.del('/api/account/admin').expect(403),
+      () => agent.del('/api/account/super').expect(403)
     ]);
   });
 
   as('super', function () {
     test("should return 403 on self", [
-      () => agent.del('/api/user/super').expect(403)
+      () => agent.del('/api/account/super').expect(403)
     ]);
 
     test("should delete other users", [
-      () => agent.del('/api/user/user2').expect(204),
-      () => agent.del('/api/user/admin').expect(204)
+      () => agent.del('/api/account/user2').expect(204),
+      () => agent.del('/api/account/admin').expect(204)
     ]);
   });
 });
 
 
-api("* /api/users", function (agent, test, as) {
+api("* /api/accounts", function (agent, test, as) {
   test("should trigger 401 response if unauthenticated", [
-    () => agent.get('/api/users').expect(401),
-    () => agent.post('/api/users').expect(401)
+    () => agent.get('/api/accounts').expect(401),
+    () => agent.post('/api/accounts').expect(401)
   ]);
 
   as('user', function () {
     test("should trigger 403 response", [
-      () => agent.get('/api/users').expect(403),
-      () => agent.post('/api/users')
+      () => agent.get('/api/accounts').expect(403),
+      () => agent.post('/api/accounts')
         .type('json')
         .send({ username: 'shouldfail', password: 'test1234' })
         .expect(403)
@@ -370,10 +370,10 @@ api("* /api/users", function (agent, test, as) {
   });
 });
 
-api("GET /api/users", function (agent, test, as) {
+api("GET /api/accounts", function (agent, test, as) {
   as('admin', function () {
     test("should get users grouped by access level", [
-      () => agent.get('/api/users')
+      () => agent.get('/api/accounts')
         .expect(200, {
           user: [
             {
@@ -398,7 +398,7 @@ api("GET /api/users", function (agent, test, as) {
     ]);
 
     test("should get users with matching access level only", [
-      () => agent.get('/api/users?accessLevel=user')
+      () => agent.get('/api/accounts?accessLevel=user')
         .expect(200, {
           user: [
             {
@@ -416,7 +416,7 @@ api("GET /api/users", function (agent, test, as) {
     ]);
 
     test("should get user with matching email only", [
-      () => agent.get('/api/users?email=admin@example.com')
+      () => agent.get('/api/accounts?email=admin@example.com')
         .expect(200, {
           admin: [
             {
@@ -431,10 +431,10 @@ api("GET /api/users", function (agent, test, as) {
   });
 });
 
-api("POST /api/users", function (agent, test, as) {
+api("POST /api/accounts", function (agent, test, as) {
   as('admin', function () {
     test("should create a new user with defaults on missing fields", [
-      () => agent.post('/api/users')
+      () => agent.post('/api/accounts')
         .type('json')
         .send({
           username: 'newuser1',
@@ -447,7 +447,7 @@ api("POST /api/users", function (agent, test, as) {
     ]);
 
     test("should create a new user with all provided fields", [
-      () => agent.post('/api/users')
+      () => agent.post('/api/accounts')
         .type('json')
         .send({
           username: 'newuser2',
@@ -462,18 +462,18 @@ api("POST /api/users", function (agent, test, as) {
     ]);
 
     test("should get 400 response with an invalid password", [
-      () => agent.post('/api/users')
+      () => agent.post('/api/accounts')
         .type('json')
         .send({
           username: 'newuser3'
         }).expect(400),
-      () => agent.post('/api/users')
+      () => agent.post('/api/accounts')
         .type('json')
         .send({
           username: 'newuser4',
           password: 'abc' // too short
         }).expect(400),
-      () => agent.post('/api/users')
+      () => agent.post('/api/accounts')
         .type('json')
         .send({
           username: 'newuser5',
@@ -482,18 +482,18 @@ api("POST /api/users", function (agent, test, as) {
     ]);
 
     test("should get 400 response with an invalid username", [
-      () => agent.post('/api/users')
+      () => agent.post('/api/accounts')
         .type('json')
         .send({
           password: 'password123'
         }).expect(400),
-      () => agent.post('/api/users')
+      () => agent.post('/api/accounts')
         .type('json')
         .send({
           username: 'a', // too short
           password: 'password123'
         }).expect(400),
-      () => agent.post('/api/users')
+      () => agent.post('/api/accounts')
         .type('json')
         .send({
           username: 'user name', // illegal character
@@ -502,7 +502,7 @@ api("POST /api/users", function (agent, test, as) {
     ]);
 
     test("should return 409 response if user already exists", [
-      () => agent.post('/api/users')
+      () => agent.post('/api/accounts')
         .type('json')
         .send({
           username: 'user',

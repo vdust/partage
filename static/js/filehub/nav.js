@@ -42,13 +42,13 @@
       this.navPadding.width(w);
     },
     /**
-     * update([{ label: '', cls: '', data: { url: 'foo/bar' } }, 'flat'])
+     * update([{ label: '', cls: '', data: { uid: 'xxx' } }, 'flat'])
      *
      * The array can start with null values to preserve first items in the path
      */
     update: function (list) {
       var self = this,
-          items = self.navPath.children().remove(),
+          items = self.navPath.children().detach(),
           separator = $(self.options.pathSeparator||'<span/>');
 
       if (!list) {
@@ -57,8 +57,8 @@
         list = [ list ];
       }
 
-      for (var p, i = 0; i < list; i++) {
-        p = list[i];
+      for (var i = 0; i < list.length; i++) {
+        var p = list[i];
 
         if (i < items.length) {
           if (p == null) {
@@ -92,7 +92,7 @@
 
     this.empty();
 
-    if (first && separatorObj) {
+    if (!first && separatorObj) {
       separatorObj.clone().appendTo(this);
     }
 

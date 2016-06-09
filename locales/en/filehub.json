@@ -5,6 +5,18 @@
     "user": "User",
     "user_plural": "Users"
   },
+  "account": {
+    "add": "Add user",
+    "delete": "Delete user",
+    "edit": "Edit user",
+    "edit-profile": "Edit your informations.",
+    "email": "Email",
+    "username": "User name",
+    "password": "Password",
+    "password-new": "New password",
+    "password-confirm": "Confirm new password"
+  },
+  "accounts": "Accounts",
   "contact": "Contact Us",
   "date-format": "ddd d, yyyy",
   "error": {
@@ -55,17 +67,5 @@
     "label": "Trash",
     "remove": "Delete forever",
     "restore": "Restore resource"
-  },
-  "user": {
-    "add": "Add user",
-    "delete": "Delete user",
-    "edit": "Edit user",
-    "edit-profile": "Edit your informations.",
-    "email": "Email",
-    "name": "User name",
-    "password": "Password",
-    "password-new": "New password",
-    "password-confirm": "Confirm new password"
-  },
-  "users": "Users"
+  }
 }

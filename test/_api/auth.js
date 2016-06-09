@@ -48,7 +48,7 @@ api('POST /api/logout', function (agent, test) {
     () => agent.post('/api/logout')
       .expect('Content-Type', /json/)
       .expect(200, {}),
-    () => agent.get('/api/user/admin')
+    () => agent.get('/api/account/admin')
       .expect(401)
   ]);
 });

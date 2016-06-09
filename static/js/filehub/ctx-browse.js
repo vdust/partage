@@ -14,7 +14,19 @@
     var View = filehub.View;
 
     return new View({
-    }).on('update', function (uid) {
+    }).on('select', function (uid, item) {
+      var navlist = [], tree
+      do {
+        navlist.unshift({
+          label: item.children('.tree-label').text(),
+          cls: 'subdir',
+          data: { uid: item.data('uid') }
+        });
+
+        tree = item.closest('.tree');
+        item = tree.prev('.tree-item');
+      } while (item.length);
+      this.nav.update(navlist);
     });
   });
 })(jQuery, window);

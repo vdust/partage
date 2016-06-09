@@ -11,7 +11,7 @@ var expect = require('expect');
 describe('REST api:', function () {
   [
     'auth',
-    'users',
+    'accounts',
     'repo',
     'repo-folder',
     'repo-files',

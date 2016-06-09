@@ -23,6 +23,7 @@
       self.sidePanel = new filehub.Aside(self.options.aside);
       self.sidePanel.on('select', function () {
         self.loadTarget.apply(self, arguments);
+        self.trigger('select', arguments);
       });
 
       self.nav = new filehub.Nav(self.options.nav);
@@ -67,6 +68,7 @@
 
     },
     loadTarget: function (uid, item) {
+
     }
   });
 })(jQuery, window);

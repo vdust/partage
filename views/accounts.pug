@@ -1,0 +1,66 @@
+extends ./layout.pug
+
+block contents
+  - var lists = [ 'admin', 'user' ]
+  div.view-wrap
+    div.nav-out
+      div.nav-in
+        div.nav#nav
+          div.nav-padding#nav-padding
+          div.nav-wrap
+            ul#nav-path
+              li
+                span.navitem
+                  = t('accounts')
+              li
+                span.fa.fa-chevron-right
+                span.navitem(data-uid=lists[0])
+                  = t('access.'+lists[0], { count: 2 })
+          div.nav-toolbox
+            div.view-tools#nav-tools
+              div.view-action(data-select="single", data-type='account', data-event='account:edit', title=t('account.edit'), style="display: none")
+                span.fa.fa-edit
+              div.view-action(data-select="multi", data-type='account', data-event='account:delete', style="display: none")
+                span.fa.fa-trash-o
+    div.view-wrap-in
+      div.view-wrap-in-2
+        div.view
+          div.view-aside.accounts-lists#view-aside(style='vidth:0')
+            div.button-box
+              button(type="button", data-action="account:add")
+                span.fa.fa-user-plus
+                = t('account.add')
+            div.tree-box.view-drop-target
+              div.tree.tree-large
+                each k, i in lists
+                  div.tree-item.view-droppable(class=(i>0?false:'active'), id="t-"+k, data-uid=k)
+                    div.tree-expand
+                      span
+                    div.tree-icon
+                      span.fa.fa-accounts
+                    div.tree-label
+                      = t('access.'+k, { count: 2 })
+          div.view-resize#view-resize
+            div.view-handle
+          div.view-contents#view-contents
+            include ./loader.pug
+            each k, i in lists
+              div.list-box.accounts-list(id='l-'+k, data-list=k, style=i>0 && 'display: none')
+                div.list
+                  div.list-header
+                    div.list-cell.account-username
+                      div.list-cell-content
+                        span= t('account.username')
+                    div.list-cell.account-email
+                      div.list-cell-content
+                        span= t('account.email')
+                  div.list-group
+                    each u in accounts[k]
+                      div.list-row.account-entry(data-uid=u.name, data-type='account')
+                        div.list-cell.account-username
+                          div.list-cell-content
+                            span.fa.fa-user
+                            span.account-username= u.name
+                        div.list-cell.account-email
+                          div.list-cell-content
+                            span.account-email= u.email
