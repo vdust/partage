@@ -56,6 +56,12 @@
 
       buttons.prop('disabled', !enable);
     },
+    resize: function (width) {
+      this.aside.width(width);
+    },
+    width: function () {
+      return this.aside.width();
+    },
     select: function (uid, item) {
       var self = this,
           opts = self.options;

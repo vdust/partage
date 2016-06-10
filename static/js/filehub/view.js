@@ -43,8 +43,7 @@
     },
     _initResize: function () {
       var self = this,
-          sidePannel = self.sidePanel,
-          nav = self.nav,
+          sidePanel = self.sidePanel,
           startWidth, startX,
           handle = self.viewResize.children('.view-handle');
 
@@ -55,9 +54,9 @@
 
         $(window).on('mousemove.resize', function (evt) {
           var dX = evt.pageX - startX;
-          w = Math.max(0, startWidth + dX);
+          var w = Math.max(0, startWidth + dX);
           sidePanel.resize(w); // TODO: SizePanel.resize()
-          nav.padding(w);
+          self.nav.padding(w);
         }).on('mouseup.resize', function (evt) {
           if (evt.which !== 1) return; // left button only
           $(window).off('.resize');

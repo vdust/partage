@@ -39,7 +39,7 @@
       });
     },
     padding: function (width) {
-      this.navPadding.width(w);
+      this.navPadding.width(width);
     },
     /**
      * update([{ label: '', cls: '', data: { uid: 'xxx' } }, 'flat'])
