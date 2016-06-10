@@ -9,7 +9,7 @@
 
   var baseUrl = window['FILEHUB_BASEURL'] || '';
 
-  var filehub = window['filehub'] = function init() {
+  var filehub = window['filehub'] = function () {
     var ctx = window['FILEHUB_CTX'];
     filehub.setup(); /* Ensure the core objects are registered */
     if (ctx && typeof (filehub['ctx:' + ctx]) === 'function') {
@@ -25,7 +25,7 @@
   var debug = filehub.debug;
 
 
-  filehub.register = function register(ctx, fn, setupFn) {
+  filehub.register = function (ctx, fn, setupFn) {
     if (typeof ctx !== 'string') {
       throw Error("register(): first argument must be a string");
     }
@@ -43,7 +43,7 @@
   };
 
   var _isSetup;
-  filehub.setup = function setup() {
+  filehub.setup = function () {
     if (_isSetup) return;
     _isSetup = true;
 
@@ -95,7 +95,7 @@
 
   filehub.support = {
     /* Picked up from answer to http://stackoverflow.com/questions/7263590/ */
-    pointerEvents: (function(){
+    pointerEvents: (function () {
       var element = document.createElement('x'),
           documentElement = document.documentElement,
           getComputedStyle = window.getComputedStyle,
@@ -114,7 +114,7 @@
   };
 
   filehub.ease = {
-    inOutQuad: function easeInOutQuad(t, p, dp, d) {
+    inOutQuad: function (t, p, dp, d) {
       if (!(d > 0)) return p + dp; /* end position immediately */
       t /= d/2;
       if (t < 1) return p + t * t * dp/2;
@@ -157,7 +157,7 @@
    *   // ...
    * ]
    */
-  filehub.build = function build(tree) {
+  filehub.build = function (tree) {
     var coll = [];
     var spec, elem;
 
@@ -191,7 +191,14 @@
     return $(coll);
   }
 
-  filehub.messageBox = function messageBox(div, infos, prefix) {
+  filehub.modMask = function (evt) {
+    // ctrl = 1, alt = 2, shift = 4
+    return (evt.ctrlKey ? 1 : 0)
+         + (evt.altKey ? 2 : 0)
+         + (evt.shiftKey ? 4 : 0);
+  };
+
+  filehub.messageBox = function (div, infos, prefix) {
     var title, wrap;
     prefix = prefix || 'message';
     div.addClass(prefix + '-box');
@@ -223,7 +230,7 @@
     return div;
   }
 
-  filehub.errorBox = function errorBox(div, err) {
+  filehub.errorBox = function (div, err) {
     return filehub.messageBox(div, {
       title: (err && err.title) || 'Unexpected error',
       message: (err && err.message) || 'An unexpected error occured.'
@@ -239,7 +246,7 @@
    *
    * Filehub classes also implement .on(), .off() and .trigger()
    */
-  filehub.createClass = function Class(name, proto) {
+  filehub.createClass = function (name, proto) {
     if (!name) throw Error("class name required");
 
     proto = proto || {};
@@ -308,7 +315,7 @@
 
       if (!act) return;
 
-      act.fireWith(this, args);
+      act.fireWith(this, args||[]);
 
       return this;
     };

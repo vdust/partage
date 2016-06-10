@@ -14,7 +14,7 @@
     var View = filehub.View;
 
     return new View({
-    }).on('select', function (uid, item) {
+    }).on('refresh', function (uid, item) {
       var navlist = [], tree
       do {
         navlist.unshift({
@@ -27,6 +27,14 @@
         item = tree.prev('.tree-item');
       } while (item.length);
       this.nav.update(navlist);
+    }).on('activate', function (listrow) {
+      switch(listrow.data('type')) {
+        case 'folder':
+          this.sidePanel.select(listrow.data('uid'));
+          break;
+        default:
+          // TODO: download/preview files
+      }
     });
   });
 })(jQuery, window);

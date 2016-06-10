@@ -529,11 +529,24 @@ form.profile-form {
     width: 100%; }
   .list .list-row {
     display: table-row;
+    position: relative;
     width: 100%;
     transition: opacity 0.2s; }
+    .list .list-row.list-row-prev:after {
+      display: block;
+      content: '';
+      width: 3px;
+      height: 43px;
+      position: absolute;
+      left: 0px;
+      margin-top: 1px;
+      margin-left: 1px;
+      background-color: #196e7b; }
     .list .list-row.list-row-selected {
       background-color: #196e7b;
       color: #fff; }
+      .list .list-row.list-row-selected.list-row-prev:after {
+        background-color: #fff; }
     .list .list-row.list-row-selected.list-row-dragged {
       opacity: 0.5; }
   .list .list-cell {

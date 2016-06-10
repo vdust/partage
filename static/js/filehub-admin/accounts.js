@@ -14,7 +14,7 @@
     var View = filehub.View;
 
     return new View({
-    }).on('select', function (uid, item) {
+    }).on('refresh', function (uid, item) {
       this.nav.update([ null, {
         label: item.children('.tree-label').text(),
         data: { uid: item.data('uid') }

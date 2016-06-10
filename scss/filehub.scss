@@ -484,9 +484,24 @@ form.profile-form {
   }
   .list-row {
     display: table-row;
+    position: relative;
     width: 100%;
     transition: opacity 0.2s;
+    &.list-row-prev:after {
+      display: block;
+      content: '';
+      width: 3px;
+      height: 43px;
+      position: absolute;
+      left: 0px;
+      margin-top: 1px;
+      margin-left: 1px;
+      background-color: $view-sel-bg-color;
+    }
     &.list-row-selected {
+      &.list-row-prev:after {
+        background-color: $view-sel-color;
+      }
       background-color: $view-sel-bg-color;
       color: $view-sel-color;
     }
