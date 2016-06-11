@@ -561,7 +561,8 @@ form.profile-form {
       left: 0px;
       margin-top: 1px;
       margin-left: 1px;
-      background-color: #196e7b; }
+      background-color: #196e7b;
+      opacity: 0.9; }
     .list .list-row.list-row-selected {
       background-color: #196e7b;
       color: #fff; }

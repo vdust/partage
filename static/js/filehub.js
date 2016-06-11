@@ -14,6 +14,7 @@
     filehub.setup(); /* Ensure the core objects are registered */
     if (ctx && typeof (filehub['ctx:' + ctx]) === 'function') {
       window['FILEHUB_OBJ'] = filehub['ctx:' + ctx]();
+      window['FILEHUB_OBJ'].context = ctx;
     }
   };
 
@@ -110,6 +111,9 @@
         getComputedStyle(element, '').pointerEvents === 'auto';
       documentElement.removeChild(element);
       return !!supports;
+    })(),
+    pushState: (function () {
+      return window.history && typeof window.history.pushState === 'function';
     })()
   };
 

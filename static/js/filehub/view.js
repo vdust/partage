@@ -28,6 +28,7 @@
 
   var View = filehub.createClass('View', {
     options: {
+      listIdPrefix: 'l-',
       viewResize: '#view-resize',
       viewContents: '#view-contents',
       // ctrl = 1, alt = 2, shift = 4
@@ -72,8 +73,8 @@
 
       self.sidePanel = new filehub.Aside(self.options.aside);
       self.sidePanel.on('select', function () {
-        self.loadTarget.apply(self, arguments);
         self.trigger('refresh', arguments);
+        self.loadTarget.apply(self, arguments);
       });
 
       self.nav = new filehub.Nav(self.options.nav);
@@ -413,7 +414,44 @@
       return dndbox.hide().fadeIn(200);
     },
     loadTarget: function (uid, item) {
+      var self = this,
+          id = self.options.listIdPrefix + uid,
+          list = $('#'+id);
 
+      if (self.viewActive.data('uid') === uid) return;
+
+      self.trigger('unselectall');
+      self.viewActive.fadeOut('fast');
+
+      if (list.length) {
+        self.viewActive = list.fadeIn('fast');
+        self.trigger('select', [ $() ]);
+        return;
+      }
+      self.loader.show();
+      self.viewActive = $();
+
+      self._loadPendingUid = uid;
+
+      var _once = false;
+      function onLoad(err, list) {
+        if (_once || self._loadPendingUid !== uid) return; // expired onLoad()
+        _once = true;
+        self._loadPendingUid = null;
+
+        if (err) {
+          // TODO: display loading error message
+          return;
+        }
+
+        // ensure id is consistent with the one expected
+        list.prop('id', self.options.listIdPrefix + uid);
+        self.viewActive = list.hide().appendTo(self.viewContents);
+        self.loader.hide();
+        list.fadeIn('fast');
+      }
+
+      self.trigger('load', [ uid, item, onLoad ]);
     }
   });
 })(jQuery, window);

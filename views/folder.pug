@@ -7,7 +7,7 @@ include ./_mixins.pug
 - var listURL = buildURL()
 - var listPath = datapath.map((a) => encodeURIComponent(a)).join('/')
 - if (istrash) flags = 't'
-div.list-box.folders-list(id='f-'+pathid, data-uid=pathid, data-folder=folder&&folder.name, data-url=listURL, data-path=listPath, data-flags=flags)
+div.list-box.folders-list(id='l-'+pathid, data-uid=pathid, data-folder=folder&&folder.name, data-url=listURL, data-path=listPath, data-flags=flags)
   div.list
     div.list-header
       div.list-cell.folder-name

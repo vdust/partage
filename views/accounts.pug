@@ -45,7 +45,7 @@ block contents
           div.view-contents#view-contents(tabindex='0')
             include ./loader.pug
             each k in lists
-              div.list-box.accounts-list(id='u-'+k, data-list=k, style=k !== listDefault && 'display: none')
+              div.list-box.accounts-list(id='l-'+k, data-list=k, style=k !== listDefault && 'display: none')
                 div.list
                   div.list-header
                     div.list-cell.account-username
