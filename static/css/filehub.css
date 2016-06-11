@@ -175,8 +175,21 @@ ul#menu {
     background-color: transparent; }
   .on-drag ul#menu a, .on-drag ul#menu button {
     cursor: inherit; }
-  ul#menu a:hover, ul#menu button:hover {
-    color: white; }
+  ul#menu a:hover, ul#menu a:focus, ul#menu button:hover, ul#menu button:focus {
+    color: white;
+    outline: none; }
+    ul#menu a:hover:before, ul#menu a:focus:before, ul#menu button:hover:before, ul#menu button:focus:before {
+      display: block;
+      content: '';
+      position: absolute;
+      box-sizing: border-box;
+      width: 100%;
+      height: 1px;
+      top: 0;
+      left: 0;
+      overflow: hidden;
+      background-color: #dadada;
+      opacity: 0.8; }
 
 .contents, .contents-wrap, .view-wrap {
   -webkit-box-flex: 1 100%;
@@ -236,8 +249,9 @@ ul#menu {
     text-align: right;
     color: inherit;
     padding: 1em; }
-  .footer-notice a:hover {
-    text-decoration: underline; }
+  .footer-notice a:hover, .footer-notice a:focus {
+    text-decoration: underline;
+    outline: none; }
 
 .input-icon {
   display: block;
@@ -277,13 +291,14 @@ button {
 
 .highlight, form.sign-in button, form.profile-form button {
   background-color: #0a5860;
-  color: #fff;
+  color: #f0f0f0;
   font-weight: bold;
   border: 1px solid transparent; }
 
-.highlight-hover, form.sign-in button:hover, form.profile-form button:hover {
+.highlight-hover, form.sign-in button:hover, form.sign-in button:focus, form.profile-form button:hover, form.profile-form button:focus {
   background-color: #094b52;
-  border-color: #042529; }
+  border-color: #042529;
+  outline: none; }
 
 form.sign-in, form.profile-form {
   position: relative;
@@ -377,8 +392,9 @@ form.profile-form {
         cursor: inherit; }
       .view-wrap .nav .view-tools .view-action .fa {
         vertical-align: middle; }
-      .view-wrap .nav .view-tools .view-action:hover {
+      .view-wrap .nav .view-tools .view-action:hover, .view-wrap .nav .view-tools .view-action:focus {
         opacity: 1.0;
+        outline: none;
         background-color: rgba(255, 255, 255, 0.5);
         border-color: #acacac; }
   .view-wrap .nav ul {
@@ -454,8 +470,8 @@ form.profile-form {
       cursor: col-resize; }
       .on-drag .view-wrap .view .view-resize .view-handle {
         cursor: inherit; }
-  .view-wrap .view .view-resize:hover {
-    background-color: #c5c5c5; }
+    .view-wrap .view .view-resize:hover {
+      background-color: #c5c5c5; }
   .view-wrap .view .view-contents {
     -webkit-box-flex: 1 1 auto;
     -webkit-flex: 1 1 auto;
@@ -464,7 +480,11 @@ form.profile-form {
     height: 100%;
     box-sizing: border-box;
     background-color: #fff;
-    overflow: hidden; }
+    overflow: hidden;
+    border-top: 1px solid #f8f8f8; }
+    .view-wrap .view .view-contents:focus {
+      border-color: #e4e4e4;
+      outline: none; }
 
 .list-cell-content {
   /* also used for dnd */
@@ -622,16 +642,18 @@ form.profile-form {
     cursor: default;
     font-weight: bold;
     background-color: #0a5860;
-    color: #fff; }
+    color: #f0f0f0; }
     .on-drag .button-box button {
       cursor: inherit; }
     .button-box button .fa {
       margin-right: 10px; }
-    .button-box button:hover {
+    .button-box button:hover, .button-box button:focus {
+      color: white;
       box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.2);
-      background-color: #095057;
-      border: 1px solid #073a40; }
-    .button-box button[disabled], .button-box button[disabled]:hover {
+      background-color: #084349;
+      border: 1px solid #063236;
+      outline: none; }
+    .button-box button[disabled], .button-box button[disabled]:hover, .button-box button[disabled]:focus {
       box-shadow: none;
       background-color: #0a5860;
       border-color: transparent;

@@ -125,8 +125,22 @@ ul#menu {
     .on-drag & {
       cursor: inherit;
     }
-    &:hover {
+    &:hover, &:focus {
       color: lighten($nav-color, 15%);
+      outline: none;
+      &:before {
+        display: block;
+        content: '';
+        position: absolute;
+        box-sizing: border-box;
+        width: 100%;
+        height: 1px;
+        top: 0;
+        left: 0;
+        overflow: hidden;
+        background-color: $nav-color;
+        opacity: 0.8;
+      }
     }
   }
 }
@@ -179,8 +193,9 @@ ul#menu {
     color: inherit;
     padding: 1em;
   }
-  a:hover {
+  a:hover, a:focus {
     text-decoration: underline;
+    outline: none;
   }
 }
 
@@ -230,6 +245,7 @@ button {
 .highlight-hover {
   background-color: darken($button-hl-bg-color, 3%);
   border-color: darken($button-hl-bg-color, 12%);
+  outline: none;
 }
 
 form.sign-in, form.profile-form {
@@ -241,7 +257,7 @@ form.sign-in, form.profile-form {
     display: block;
     box-sizing: border-box;
     width: 100%;
-    &:hover {
+    &:hover, &:focus {
       @extend .highlight-hover
     }
   }
@@ -325,8 +341,9 @@ form.profile-form {
         .fa {
           vertical-align: middle;
         }
-        &:hover {
+        &:hover, &:focus {
           opacity: 1.0;
+          outline: none;
           background-color: rgba(255, 255, 255, 0.5);
           border-color: darken($contents-bg-color, 30%);
         }
@@ -402,9 +419,9 @@ form.profile-form {
           cursor: inherit;
         }
       }
-    }
-    .view-resize:hover {
-      background-color: darken($contents-bg-color, 20%);
+      &:hover {
+        background-color: darken($contents-bg-color, 20%);
+      }
     }
     .view-contents {
       @include flex(1 1 auto);
@@ -413,6 +430,11 @@ form.profile-form {
       box-sizing: border-box;
       background-color: $main-bg-color;
       overflow: hidden;
+      border-top: 1px solid $contents-bg-color;
+      &:focus {
+        border-color: darken($contents-bg-color, 8%);
+        outline: none;
+      }
     }
   }
 }
@@ -598,12 +620,14 @@ form.profile-form {
     .fa {
       margin-right: 10px;
     }
-    &:hover {
+    &:hover, &:focus {
+      color: lighten($button-hl-color, 10%);
       box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.2);
-      background-color: darken($button-hl-bg-color, 2%);
-      border: 1px solid darken($button-hl-bg-color, 7%);
+      background-color: darken($button-hl-bg-color, 5%);
+      border: 1px solid darken($button-hl-bg-color, 9%);
+      outline: none;
     }
-    &[disabled], &[disabled]:hover {
+    &[disabled], &[disabled]:hover, &[disabled]:focus {
       box-shadow: none;
       background-color: $button-hl-bg-color;
       border-color: transparent;

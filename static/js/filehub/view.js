@@ -89,6 +89,7 @@
       });
 
       self._initResize();
+      self._initShortcuts();
       self._initLists();
     },
     _initResize: function () {
@@ -204,12 +205,12 @@
         self._selectFromOrigin(cur);
       }
     },
-    _initLists: function () {
+    _initShortcuts: function () {
       var self = this;
 
       doc.on('keydown.list-shortcuts', function (evt) {
         if (self._body.hasClass(DRAG)) return; // ignore shortcuts when d&d
-        if ($(evt.target).closest('a,button,input,textarea').length) return;
+        if ($(evt.target).closest('a,button,input,textarea,.dialog').length) return;
 
         var shortcuts = self.options.shortcuts,
             mod = filehub.modMask(evt),
@@ -232,8 +233,12 @@
           args.push(self.getRows(action.rows));
         }
 
+        evt.preventDefault(); // prevent weird side effects
         self.trigger(action.eventname, args);
       });
+    },
+    _initLists: function () {
+      var self = this;
 
       self.on('selectall', function () {
         var rows = self.getRows();

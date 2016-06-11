@@ -42,7 +42,7 @@ block contents
                       = t('access.'+k, { count: 2 })
           div.view-resize#view-resize
             div.view-handle
-          div.view-contents#view-contents
+          div.view-contents#view-contents(tabindex='0')
             include ./loader.pug
             each k in lists
               div.list-box.accounts-list(id='u-'+k, data-list=k, style=k !== listDefault && 'display: none')
