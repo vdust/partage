@@ -49,23 +49,23 @@ block contents
           div.nav-padding#nav-padding
           div.nav-wrap
             ul#nav-path
-              +navitem(t(istrash ? 'trash.label' : 'folders'), istrash ? 'trash' : '0', true)
+              -var pp = path||[]
+              +navitem(t(istrash ? 'trash.label' : 'folders'), istrash ? 'trash' : '0', true, !!folder)
               if folder
-                +navitem(folder.name, folder._.uid)
+                +navitem(folder.name, folder._.uid, false, pp.length > 0)
                 - var p = []
-                each d in path||[]
+                each d,i in pp
                   - p.push(d);
                   - var r = folder.resource(p.join('/'))
-                  +navitem(d, r.uid)
+                  +navitem(d, r.uid, false, i < (pp.length - 1))
                   - r.unref()
           div.nav-toolbox
             div.view-tools#nav-tools
               if req.user.is('admin')
-                +action('multi', 'folder|#f-0', 'folderAccessList', 'folder.access', 'user-plus', 'none')
-                +action('multi', 'folder|#f-0', 'itemDelete', 'folder.delete', 'trash-o', 'none')
-              +action('multi', '*|:not(#f-trash,#f-0)', 'itemDelete', 'folder.delete', 'trash-o', 'none')
-              +action('multi', 'trash|#f-trash', 'trashRestore', 'trash.restore', 'reply', 'none')
-              +action('multi', 'trash|#f-trash', 'trashRemove', 'trash.remove', 'remove', 'none')
+                +action('single', 'folder||#l-0', 'folderAccessList', 'folder.access', 'user-plus', 'none')
+              +action('multi', '*|w|:not(#l-trash)', 'itemDelete', 'folder.delete', 'trash-o', 'none')
+              +action('multi', 'trash||#l-trash', 'trashRestore', 'trash.restore', 'reply', 'none')
+              +action('multi', 'trash||#l-trash', 'trashRemove', 'trash.remove', 'remove', 'none')
     div.view-wrap-in
       div.view-wrap-in-2
         div.view

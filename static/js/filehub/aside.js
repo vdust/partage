@@ -68,6 +68,8 @@
 
       if (!uid && !item) {
         item = self.treeBox.find('.tree-item:eq(0)');
+      } else if (!uid) {
+        uid = item.data('uid');
       } else if (!item) {
         item = $('#' + opts.idPrefix + uid);
       }

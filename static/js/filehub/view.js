@@ -29,6 +29,7 @@
   var View = filehub.createClass('View', {
     options: {
       listIdPrefix: 'l-',
+      listExpire: 300, // 5 minutes
       viewResize: '#view-resize',
       viewContents: '#view-contents',
       // ctrl = 1, alt = 2, shift = 4
@@ -75,11 +76,15 @@
       self.sidePanel.on('select', function () {
         self.trigger('refresh', arguments);
         self.loadTarget.apply(self, arguments);
+      }).on('button', function () {
+        self.trigger('button', arguments);
       });
 
       self.nav = new filehub.Nav(self.options.nav);
       self.nav.on('activate', function (uid) {
         self.sidePanel.select(uid);
+      }).on('action', function () {
+        self.trigger('action', arguments);
       });
 
       self.viewResize = $('#view-resize');
@@ -165,7 +170,7 @@
 
       selected = allrows.filter('.'+ROW_SEL);
 
-      self.trigger('select', selected);
+      self.trigger('select', [ selected ]);
 
       return selected;
     },
@@ -189,7 +194,7 @@
         if (mod === 1) {
           self.getRows().removeClass(ROW_ORIG+' '+ROW_PREV);
           row.toggleClass(ROW_SEL+' '+ROW_ORIG+' '+ROW_PREV);
-          self.trigger('select', self.getSelected());
+          self.trigger('select', [ self.getSelected() ]);
         }
         return;
       }
@@ -197,7 +202,7 @@
       if (!mod) {
         self.getRows().removeClass(ROW_SEL+' '+ROW_ORIG+' '+ROW_PREV);
         cur.addClass(ROW_SEL+' '+ROW_ORIG+' '+ROW_PREV);
-        self.trigger('select', cur);
+        self.trigger('select', [ cur ]);
       } else if (mod === 1) { // ctrl
         row.removeClass(ROW_PREV);
         cur.addClass(ROW_PREV);
@@ -244,7 +249,7 @@
       self.on('selectall', function () {
         var rows = self.getRows();
         rows.removeClass(ROW_ORIG).addClass(ROW_SEL);
-        self.trigger('select', rows);
+        self.trigger('select', [ rows ]);
       }).on('unselectall', function () {
         self.getRows()
           .removeClass(ROW_SEL+' '+ROW_ORIG);
@@ -286,7 +291,7 @@
           row.toggleClass(ROW_SEL, (mod&1) ? undefined : true);
 
           selected = allrows.filter('.'+ROW_SEL);
-          self.trigger('select', selected);
+          self.trigger('select', [ selected ]);
         }
 
         function initDrag() {
@@ -425,6 +430,7 @@
 
       if (list.length) {
         self.viewActive = list.fadeIn('fast');
+        self.trigger('view', [ self.viewActive ]);
         self.trigger('select', [ $() ]);
         return;
       }
@@ -445,8 +451,10 @@
         }
 
         // ensure id is consistent with the one expected
-        list.prop('id', self.options.listIdPrefix + uid);
+        /* list.attr('id', self.options.listIdPrefix + uid); */
         self.viewActive = list.hide().appendTo(self.viewContents);
+        self.trigger('view', [ self.viewActive ]);
+        self.trigger('select', [ $() ]);
         self.loader.hide();
         list.fadeIn('fast');
       }

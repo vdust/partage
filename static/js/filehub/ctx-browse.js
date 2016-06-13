@@ -31,14 +31,15 @@
         });
       }
 
-      var navlist = [], tree;
+      var navlist = [], tree, last=true;
 
       do {
         navlist.unshift({
           label: item.children('.tree-label').text(),
-          cls: 'subdir',
+          cls: 'subdir'+(last?'':' act'),
           data: { uid: item.data('uid') }
         });
+        last = false;
 
         tree = item.closest('.tree');
         item = tree.prev('.tree-item');
@@ -47,6 +48,8 @@
       this.nav.update(navlist);
     }).on('load', function (uid, item, callback) {
       var self = this;
+
+      self.sidePanel.enable(false);
 
       $.get(item.data('url')+'?list-only=1', function (html) {
         var list = $('<div/>').html(html).children('.list-box');
@@ -67,6 +70,46 @@
         default:
           // TODO: download/preview files
       }
+    }).on('view', function (active) {
+      this.sidePanel.enable((active.data('flags')||'').indexOf('w') >= 0);
+    }).on('select', function (selected) {
+      var list = this.viewActive,
+          selTypes = {}, types = 0;
+
+      selected.each(function () {
+        var row = $(this), t = row.data('type');
+        if (!selTypes[t]) {
+          types++;
+          selTypes[t] = true;
+        }
+      });
+
+      this.nav.actions().each(function () {
+        var action = $(this),
+            select = action.data('select') || 'single',
+            target = (action.data('target') || '*').split('|'),
+            flag = target[1],
+            filter = target[2],
+            visible = false;
+
+        target = target[0];
+
+        do {
+          // Must have selected element
+          if (!selected || !selected.length) break;
+          if (selected.length > 1 && select === 'single') break;
+          // Active list must match the filter
+          if (filter && !list.is(filter)) break;
+          // Active list must have the flag
+          if (flag && list.data('flags').indexOf(flag) < 0) break;
+
+          if (target !== '*' && (types !== 1 || !selTypes[target])) break;
+
+          visible = true;
+        } while(0);
+
+        action.toggle(visible);
+      });
     });
 
     $(window).on('popstate', function (evt) {

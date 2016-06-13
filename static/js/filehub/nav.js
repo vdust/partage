@@ -15,7 +15,7 @@
       nav: '#nav',
       navPadding: '#nav-padding',
       navPath: '#nav-path',
-      navTools: 'nav-tools',
+      navTools: '#nav-tools',
       pathSeparator: '<span class="fa fa-chevron-right"/>'
     },
     _init: function () {
@@ -37,6 +37,14 @@
           self.trigger('activate', [''+uid, navitem]);
         }
       });
+
+      self.navTools.on('click', '.view-action', function (evt) {
+        var act = $(this);
+        self.trigger('action', [ act.data('action'), act ]);
+      });
+    },
+    actions: function () {
+      return this.navTools.children('.view-action');
     },
     padding: function (width) {
       this.navPadding.width(width);

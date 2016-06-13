@@ -398,7 +398,7 @@ form.profile-form {
         background-color: rgba(255, 255, 255, 0.5);
         border-color: #acacac; }
   .view-wrap .nav ul {
-    margin: 0 20px;
+    margin: 0 18px;
     padding: 10px 0;
     height: 100%;
     box-sizing: border-box; }
@@ -419,9 +419,15 @@ form.profile-form {
         opacity: 1; }
       .view-wrap .nav ul li .navitem {
         display: inline-block;
-        height: 30px;
-        line-height: 30px;
-        padding: 0 5px; }
+        height: 28px;
+        line-height: 28px;
+        padding: 0 6px;
+        border: 1px solid transparent;
+        border-radius: 2px; }
+        .view-wrap .nav ul li .navitem.act {
+          cursor: pointer; }
+          .view-wrap .nav ul li .navitem.act:hover {
+            border-color: rgba(0, 0, 0, 0.3); }
 
 .view-wrap .view-wrap-in {
   width: 100%;

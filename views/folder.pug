@@ -2,7 +2,7 @@ include ./_mixins.pug
 
 - var canwrite = folder ? folder.can('write', req.user) : req.user.is('admin')
 - var istrash = typeof trash !== 'undefined'
-- var flags = 'r'+(canwrite ? (folder ? 'w' : 'c') : '')+(folder ? (path.length ? '' : 'f') : 's')
+- var flags = 'r'+(canwrite ? (folder ? 'w' : 'cw') : '')+(folder ? (path.length ? '' : 'f') : 's')
 - var folderName = istrash ? '.trash' : (folder ? folder.name : '')
 - var listURL = buildURL()
 - var listPath = datapath.map((a) => encodeURIComponent(a)).join('/')
