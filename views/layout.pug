@@ -18,7 +18,7 @@ html
 
     if app.get('env') === 'development'
       script(type="text/javascript", src=staticUrl+'/js/filehub.js')
-      each f in [ 'aside', 'ctx-browse', 'loader', 'nav', 'view' ]
+      each f in [ 'api', 'aside', 'ctx-browse', 'loader', 'nav', 'view' ]
         script(type="text/javascript", src=staticUrl+'/js/filehub/'+f+'.js')
       each f in [ 'accounts' ]
         script(type="text/javascript", src=staticUrl+'/js/filehub-admin/'+f+'.js')
