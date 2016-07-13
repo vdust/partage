@@ -53,7 +53,7 @@ mixin folder-row(d, folder)
 mixin file-row(f, folder)
   - var mtime = f.mtime ? dateformat(f.mtime, t('date-format')) : '\u2014'
   - var url = buildURL(path.slice().concat([ f.name ]));
-  - var dpath = datapath.concat([ d.name ]).map((a) => encodeURIComponent(a)).join('/');
+  - var dpath = datapath.concat([ f.name ]).map((a) => encodeURIComponent(a)).join('/');
   - var canwrite = folder ? folder.can('write', req.user) : req.user.is('admin')
   - var flags = 'r'+(canwrite ? 'w' : '')
   div.list-row.file-entry(data-url=url, data-path=dpath, data-type=f.type, data-flags=flags)
