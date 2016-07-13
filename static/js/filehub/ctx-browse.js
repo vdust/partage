@@ -21,6 +21,9 @@
   filehub.register('browse', function () {
     var View = filehub.View;
     var poppingState;
+
+    var api = new filehub.Api();
+
     var browse = new View({
     }).on('refresh', function (uid, item) {
       if (!poppingState) {
@@ -68,7 +71,7 @@
           this.sidePanel.select(listrow.data('uid'));
           break;
         default:
-          // TODO: download/preview files
+          api.getFile(listrow.data('path'));
       }
     }).on('view', function (active) {
       this.sidePanel.enable((active.data('flags')||'').indexOf('w') >= 0);
