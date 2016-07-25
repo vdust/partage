@@ -3,16 +3,23 @@ extends ./layout.pug
 include ./_mixins.pug
 
 mixin browsetreeitem(uid, options, subtree, candrop, depth)
-  - var attrs = { 'class': {} }
-  - attrs['data-url'] = options.path.join('/')
-  - attrs['data-uid'] = uid
-  - attrs['data-ico-off'] = 'fa-folder';
-  - attrs['data-ico-on'] = 'fa-folder-open';
-  - attrs.id = 't-' + uid
-  - attrs['class'].active = (uid === options.active.id)
-  - attrs['class']['tree-item-subtree'] = !!subtree && subtree.length > 0
-  - attrs['class']['view-droppable'] = candrop
-  - var canexpand = !!subtree && subtree.length > 0
+  -
+    var attrs = { 'class': {} }
+    var icoState = [
+      options.iconoff || 'fa-folder',
+      options.iconon || options.iconoff || 'fa-folder-open'
+    ];
+    attrs['data-url'] = options.path.join('/')
+    attrs['data-uid'] = uid
+    attrs['data-ico-off'] = icoState[0];
+    attrs['data-ico-on'] = icoState[1];
+    attrs.id = 't-' + uid
+    attrs['class'].active = (uid === options.active.id)
+    attrs['class']['tree-item-subtree'] = !!subtree && subtree.length > 0
+    attrs['class']['view-droppable'] = candrop === true || candrop === 'files'
+    attrs['class']['view-droppable-files'] = candrop === 'files'
+    var canexpand = !!subtree && subtree.length > 0
+
   div.tree-item&attributes(attrs)
     - for (var i = 0; i < depth; i++)
       div.tree-pad
@@ -23,7 +30,7 @@ mixin browsetreeitem(uid, options, subtree, candrop, depth)
         'fa-caret-right': canexpand && !options.expand
       }})
     div.tree-icon
-      span.fa(class='fa-folder'+(uid === options.active.id ? '-open' : ''))
+      span.fa(class=icoState[uid === options.active.id ? 1 : 0])
     div.tree-label
       = options.name
   if canexpand
@@ -38,7 +45,7 @@ mixin browsetreeitem(uid, options, subtree, candrop, depth)
             id: pathid,
             relpath: it.name === relpath[0] ? relpath.slice(1) : []
           }
-        }, it.dirs, candrop || it.canwrite, (+depth || 0) + 1)
+        }, it.dirs, it.canwrite ? 'files' : candrop, (+depth || 0) + 1)
 
 block contents
   - var istrash = typeof trash !== 'undefined'
@@ -89,14 +96,18 @@ block contents
                 }, folders, false)
                 +browsetreeitem('trash', {
                   name: t('trash.label'),
+                  iconoff: 'fa-trash',
                   path: [ req.baseUrl, '.trash' ],
                   active: {
                     id: pathid
                   }
-                })
+                }, null, true)
 
           div.view-resize#view-resize
             div.view-handle
           div.view-contents#view-contents(tabindex='0')
             include ./loader.pug
             include ./folder.pug
+
+block extra
+  = ''

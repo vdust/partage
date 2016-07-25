@@ -8,7 +8,7 @@
   'use strict';
 
   var filehub = window['filehub'];
-  if (!filehub) throw Error("filehub is not defined.");
+  if (!PROD && !filehub) throw Error("filehub is not defined.");
 
   function updateUrl(url, state) {
     if (filehub.support.pushState) {
@@ -18,14 +18,44 @@
     }
   }
 
+  var ACTIONS = {
+    folderAccessList: function(folder) {
+      var self = this;
+
+      if (folder.length !== 1 || folder.data('flags').indexOf('f') < 0) {
+        return;
+      }
+
+      if (!self.accessListDialog) {
+        self.accessListDialog = new filehub.AccessListDialog({
+          api: self.api
+        });
+      }
+
+      self.accessListDialog.edit(folder.data('path'), function (list) {
+        self.trigger('accessListUpdated', [ folder, list ]);
+      }, function (err) {
+        self.trigger('error', [ err ]);
+      });
+    },
+    itemDelete: function (items) {
+
+    },
+    trashRestore: function (items) {
+    },
+    trashRemove: function (items) {
+    }
+  };
+
   filehub.register('browse', function () {
     var View = filehub.View;
     var poppingState;
 
     var api = new filehub.Api();
 
-    var browse = new View({
-    }).on('refresh', function (uid, item) {
+    var browse = new View({});
+
+    browse.on('refresh', function (uid, item) {
       if (!poppingState) {
         updateUrl(item.data('url'), {
           ctx: this.context,
@@ -113,6 +143,15 @@
 
         action.toggle(visible);
       });
+    }).on('action', function (action, actBtn) {
+      var selected = this.getSelected(),
+          handler = ACTIONS[action];
+
+      if (!handler || typeof handler !== 'function') {
+        return;
+      }
+
+      handler.call(this, selected, actBtn);
     });
 
     $(window).on('popstate', function (evt) {

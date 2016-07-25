@@ -248,7 +248,8 @@ ul#menu {
   .footer-notice .note, .footer-notice .empty {
     text-align: right;
     color: inherit;
-    padding: 1em; }
+    padding: 1em;
+    margin: 0; }
   .footer-notice a:hover, .footer-notice a:focus {
     text-decoration: underline;
     outline: none; }
@@ -628,7 +629,7 @@ form.profile-form {
   box-sizing: border-box; }
 
 .button-box {
-  height: 30px;
+  height: 60px;
   padding: 20px 10px 10px;
   position: relative;
   width: 100%;
@@ -735,5 +736,47 @@ form.profile-form {
 
 .folders-list .list-row .list-cell.folder-mtime, .folders-list .list-row .list-cell.folder-size {
   font-size: 0.85em; }
+
+.overlay {
+  z-index: 300;
+  position: absolute;
+  left: 0;
+  top: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background-color: #000;
+  opacity: 0.75; }
+
+.dialog {
+  z-index: 350;
+  position: absolute;
+  max-height: 100%;
+  overflow: auto;
+  width: auto !important;
+  max-width: 100%;
+  box-sizing: border-box;
+  border-radius: 2px;
+  border: 1px solid transparent;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), 0 8px 40px rgba(0, 0, 0, 0.4); }
+
+.notice-container {
+  position: absolute;
+  z-index: 299;
+  width: 0;
+  max-height: 100%;
+  max-width: 100%;
+  bottom: 0;
+  left: 0; }
+
+.notice {
+  margin: 0px 20px 20px;
+  float: left;
+  border-radius: 2px;
+  padding: 0 1.8em;
+  line-height: 3em;
+  white-space: nowrap;
+  background-color: rgba(0, 0, 0, 0.75);
+  color: #fff; }
 
 /*# sourceMappingURL=filehub.css.map */

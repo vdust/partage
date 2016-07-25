@@ -7,17 +7,17 @@
 (function ($, window, undefined) {
   'use strict';
 
+  var filehub = window['filehub'];
+  if (!PROD && !filehub) throw Error("filehub is not defined.");
+
   var abs = Math.abs,
       max = Math.max,
-      min = Math.min;
+      min = Math.min,
 
-  var filehub = window['filehub'];
-  if (!filehub) throw Error("filehub is not defined.");
+      win = $(window),
+      doc = $(window.document),
 
-  var win = $(window),
-      doc = $(window.document);
-
-  var ROW = 'list-row',
+      ROW = 'list-row',
       ROW_SEL = ROW + '-selected',
       ROW_PREV = ROW + '-prev',
       ROW_ORIG = ROW + '-orig',
@@ -361,6 +361,7 @@
           selected = self._selectFromOrigin(prev = row, allrows);
         } else if ((mod&1) || !rowWasSelected) {
           updateSimpleSelect(mod);
+          if (!(mod&1)) initDrag();
         }
       }).on('dblclick', '.'+ROW, function (evt) {
         self.trigger('activate', [ $(this) ]);

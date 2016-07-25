@@ -1,31 +1,31 @@
 doctype html
 html
   head
-    - var ggFont='https://fonts.googleapis.com/css?family=Roboto:400,400italic,700,700italic&subset=latin,latin-ext';
+    -
+      var ggFamily = [
+        "Roboto:400,400i,500,500i,700,700i",
+        "Roboto+Slab:400,700",
+        "Roboto+Mono:400,400i,500,500i,700,700i"
+      ].join("|");
+      var ggFont='https://fonts.googleapis.com/css?family='+ggFamily+'&subset=latin,latin-ext';
+      var bsUrl=staticUrl+'/bootstrap';
     block title
       title= app.get('title')
     link(rel="stylesheet", type="text/css", href=ggFont)
     link(rel="stylesheet", type="text/css", href=staticUrl+'/css/font-awesome.css')
+    link(rel="stylesheet", type="text/css", href=bsUrl+'/css/bootstrap.min.css')
+    link(rel="stylesheet", type="text/css", href=bsUrl+'/css/bootstrap-theme.min.css')
     link(rel="stylesheet", type="text/css", href=staticUrl+'/css/filehub.css')
     if req.isAuthenticated() && req.user.is("admin")
       link(rel="stylesheet", type="text/css", href=staticUrl+'/css/filehub-admin.css')
-    script(type="text/javascript", src=staticUrl+'/js/jquery-2.2.1.min.js')
     script(type"text/javascript").
       (function(w){
         w.FILEHUB_BASEURL="#{baseUrl}";
         w.FILEHUB_CTX="#{menuCtx}";
       })(window);
-
     if app.get('env') === 'development'
-      script(type="text/javascript", src=staticUrl+'/js/filehub.js')
-      each f in [ 'api', 'aside', 'ctx-browse', 'loader', 'nav', 'view' ]
-        script(type="text/javascript", src=staticUrl+'/js/filehub/'+f+'.js')
-      each f in [ 'accounts' ]
-        script(type="text/javascript", src=staticUrl+'/js/filehub-admin/'+f+'.js')
-    else
-      script(type="text/javascript", src=staticUrl+'/js/filehub.min.js')
-      if req.isAuthenticated() && req.user.is("admin")
-        script(type="text/javascript", src=staticUrl+'/js/filehub-admin.min.js')
+      script(type="text/javascript").
+        var PROD=false;
 
   body
     div#filehub_container
@@ -67,3 +67,19 @@ html
                 = t("signin")
       div.contents
         block contents
+    block extra
+      = ''
+
+    script(type="text/javascript", src=staticUrl+'/js/jquery-3.1.0.min.js')
+    script(type="text/jabascript", src=bsUrl+'/js/bootstrap.min.js')
+    if app.get('env') === 'development'
+      script(type="text/javascript", src=staticUrl+'/js/filehub.js')
+      each f in [ 'api', 'aside', 'ctx-browse', 'loader', 'nav', 'view' ]
+        script(type="text/javascript", src=staticUrl+'/js/filehub/'+f+'.js')
+      if req.isAuthenticated() && req.user.is("admin")
+        each f in [ 'accounts' ]
+          script(type="text/javascript", src=staticUrl+'/js/filehub-admin/'+f+'.js')
+    else
+      script(type="text/javascript", src=staticUrl+'/js/filehub.min.js')
+      if req.isAuthenticated() && req.user.is("admin")
+        script(type="text/javascript", src=staticUrl+'/js/filehub-admin.min.js')

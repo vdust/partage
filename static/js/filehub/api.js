@@ -8,7 +8,7 @@
   'use strict';
 
   var filehub = window['filehub'];
-  if (!filehub) throw Error("filehub is not defined.");
+  if (!PROD && !filehub) throw Error("filehub is not defined.");
 
   var aJoin = Array.prototype.join,
       aSlice = Array.prototype.slice;

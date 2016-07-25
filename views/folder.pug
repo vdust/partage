@@ -1,13 +1,19 @@
 include ./_mixins.pug
 
-- var canwrite = folder ? folder.can('write', req.user) : req.user.is('admin')
-- var istrash = typeof trash !== 'undefined'
-- var flags = 'r'+(canwrite ? (folder ? 'w' : 'cw') : '')+(folder ? (path.length ? '' : 'f') : 's')
-- var folderName = istrash ? '.trash' : (folder ? folder.name : '')
-- var listURL = buildURL()
-- var listPath = datapath.map((a) => encodeURIComponent(a)).join('/')
-- if (istrash) flags = 't'
-div.list-box.folders-list(id='l-'+pathid, data-uid=pathid, data-folder=folder&&folder.name, data-url=listURL, data-path=listPath, data-flags=flags)
+-
+  var canwrite = folder ? folder.can('write', req.user) : req.user.is('admin')
+  var istrash = typeof trash !== 'undefined'
+  var flags = istrash ? 't' : ('r'+(canwrite ? (folder ? 'w' : 'cw') : '')+(folder ? (path.length ? '' : 'f') : 's'))
+  var folderName = istrash ? '.trash' : (folder ? folder.name : '')
+  var attrs = { 'class': {} }
+  attrs['data-uid'] = pathid
+  attrs['data-folder'] = folder&&folder.name
+  attrs['data-url'] = buildURL()
+  attrs['data-path'] = datapath.map((a) => encodeURIComponent(a)).join('/')
+  attrs['data-flags'] = flags
+  attrs['class']['view-droppable-files'] = !!(canwrite && folder)
+
+div.list-box.folders-list(id='l-'+pathid)&attributes(attrs)
   div.list
     div.list-header
       div.list-cell.folder-name
@@ -33,8 +39,9 @@ div.list-box.folders-list(id='l-'+pathid, data-uid=pathid, data-folder=folder&&f
           +folder-row(d, folder)
         each f in files
           +file-row(f, folder)
-  - var empty = (istrash && !trash.length) || (!istrash && !dirs.length && !files.length)
-  - var msgkey = istrash ? 'trash' : (folder ? 'folder' : 'root')
-  - msgkey += (msgkey === 'root' && req.is('admin')) ? '-admin' : ''
+  -
+    var empty = (istrash && !trash.length) || (!istrash && !dirs.length && !files.length)
+    var msgkey = istrash ? 'trash' : (folder ? 'folder' : 'root')
+    msgkey += (msgkey === 'root' && req.is('admin')) ? '-admin' : ''
   if empty
     div.empty= t('folder.empty-'+msgkey)

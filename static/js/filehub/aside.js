@@ -8,7 +8,7 @@
   'use strict';
 
   var filehub = window['filehub'];
-  if (!filehub) throw Error("filehub is not defined.");
+  if (!PROD && !filehub) throw Error("filehub is not defined.");
 
   var Aside = filehub.createClass('Aside', {
     options: {
@@ -215,13 +215,20 @@
 
   $.fn.treeItemActive = function (active) {
     active = arguments === 0 ? true : !!active;
+
     this.toggleClass('active', active);
-    var ico = { on: this.data('ico-on'), off: this.data('ico-off') };
-    if (ico.on && ico.off) {
+
+    var icoOn = this.data('ico-on'),
+        icoOff = this.data('ico-off');
+
+    if (icoOn && icoOff) {
+      // icoOn and icoOff can contain common classes so we must remove all
+      // then add the current state to avoid side effects
       this.find('.tree-icon > span')
-        .toggleClass(ico.off, !active)
-        .toggleClass(ico.on, active);
+        .removeClass(icoOff + ' ' + icoOn)
+        .addClass(active ? icoOn : icoOff);
     }
+
     return this;
   };
 
