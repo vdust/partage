@@ -20,10 +20,23 @@ module.exports = function (grunt) {
       }
     },
     uglify: {
-      options: { sourceMap: true },
+      options: {
+        sourceMap: true,
+        compress: {
+          dead_code: true
+        },
+        banner: [
+          "/* filehub",
+          " * Copyright (c) 2016 Raphaël Bois Rousseau",
+          " * MIT Licensed",
+          " */" ].join("\n")
+      },
       filehub: {
         files: {
-          'static/js/filehub.min.js': [ 'static/js/filehub.js', 'static/js/filehub/*.js' ],
+          'static/js/filehub.min.js': [
+            'static/js/_defines.js',
+            'static/js/filehub.js',
+            'static/js/filehub/*.js' ],
           'static/js/filehub-admin.min.js': 'static/js/filehub-admin/*.js'
         }
       }
