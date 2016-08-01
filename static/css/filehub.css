@@ -263,7 +263,11 @@ ul#menu {
   pointer-events: none;
   opacity: 0.7; }
 
-input {
+input[type="email"],
+input[type="number"],
+input[type="password"],
+input[type="text"],
+input[type="url"] {
   display: block;
   box-sizing: border-box;
   width: 100%;
@@ -273,9 +277,6 @@ input {
   font-family: inherit;
   font-size: inherit;
   line-height: 1; }
-
-input[type="hidden"] {
-  display: none; }
 
 button {
   border: none;

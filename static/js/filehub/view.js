@@ -217,6 +217,7 @@
       doc.on('keydown.list-shortcuts', function (evt) {
         if (self._body.hasClass(DRAG)) return; // ignore shortcuts when d&d
         if ($(evt.target).closest('a,button,input,textarea,.dialog').length) return;
+        if (self._scDisabled) return; // needed for overlay operations.
 
         var shortcuts = self.options.shortcuts,
             mod = filehub.modMask(evt),

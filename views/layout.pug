@@ -70,11 +70,11 @@ html
     block extra
       = ''
 
-    script(type="text/javascript", src=staticUrl+'/js/jquery-3.1.0.min.js')
-    script(type="text/jabascript", src=bsUrl+'/js/bootstrap.min.js')
+    script(type="text/javascript", src=staticUrl+'/js/jquery-2.2.4.min.js')
+    script(type="text/javascript", src=bsUrl+'/js/bootstrap.min.js')
     if app.get('env') === 'development'
       script(type="text/javascript", src=staticUrl+'/js/filehub.js')
-      each f in [ 'api', 'aside', 'ctx-browse', 'loader', 'nav', 'view' ]
+      each f in [ 'api', 'aside', 'browse-acl', 'ctx-browse', 'loader', 'nav', 'view' ]
         script(type="text/javascript", src=staticUrl+'/js/filehub/'+f+'.js')
       if req.isAuthenticated() && req.user.is("admin")
         each f in [ 'accounts' ]

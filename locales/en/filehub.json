@@ -2,6 +2,9 @@
   "access": {
     "admin": "Administrator",
     "admin_plural": "Administrators",
+    "listof": "Access list of folder {folder}",
+    "save": "Save list",
+    "nouser": "No user selected",
     "user": "User",
     "user_plural": "Users"
   },
@@ -17,6 +20,11 @@
     "password-confirm": "Confirm new password"
   },
   "accounts": "Accounts",
+  "button": {
+    "cancel": "Cancel",
+    "ok": "Ok",
+    "save": "Save"
+  },
   "contact": "Contact Us",
   "date-format": "ddd d, yyyy",
   "error": {

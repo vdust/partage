@@ -27,15 +27,19 @@
       }
 
       if (!self.accessListDialog) {
-        self.accessListDialog = new filehub.AccessListDialog({
+        self.accessListDialog = new filehub.AccessList({
           api: self.api
         });
+        self.accessListDialog.dialog.on('show.bs.modal', function (evt) {
+          self._scDisabled = true;
+        }).on('hide.bs.modal', function (evt) {
+          delete self._scDisabled;
+        });
       }
-
       self.accessListDialog.edit(folder.data('path'), function (list) {
         self.trigger('accessListUpdated', [ folder, list ]);
-      }, function (err) {
-        self.trigger('error', [ err ]);
+      }, function (err, jqxhr) {
+        self.trigger('error', [ err, jqxhr && jqxhr.statusCode() ]);
       });
     },
     itemDelete: function (items) {
