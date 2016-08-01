@@ -36,15 +36,15 @@
       d.modal({ show: false });
 
       ld = self.aclLoading = {
-        body: d.find('.acl_loading'),
-        btn: d.find('.acl_btnLoading')
+        body: d.find('.acl-loading'),
+        btn: d.find('.acl-btnLoading')
       };
       ld.all = $([ ld.body.get(0), ld.btn.get(0) ]);
 
       lst = self.aclList = {
-        body: d.find('.acl_list'),
-        ul: d.find('.acl_list > ul'),
-        btn: d.find('.acl_btnList')
+        body: d.find('.acl-list'),
+        ul: d.find('.acl-list > ul'),
+        btn: d.find('.acl-btnList')
       };
       lst.all = $([ lst.body.get(0), lst.btn.get(0) ]);
       lst.user = lst.ul.children('li.user').eq(0).detach();
@@ -61,9 +61,9 @@
       });
 
       sel = self.aclSelect = {
-        body: d.find('.acl_select'),
-        div: d.find('.acl_select > div'),
-        btn: d.find('.acl_btnSelect')
+        body: d.find('.acl-select'),
+        div: d.find('.acl-select > div'),
+        btn: d.find('.acl-btnSelect')
       };
       sel.all = $([ sel.body.get(0), sel.btn.get(0) ]);
 

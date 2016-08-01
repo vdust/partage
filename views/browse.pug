@@ -110,51 +110,51 @@ block contents
             include ./folder.pug
 
 block extra
-  div#acl_dialog.modal.fade(tabindex=-1, data-backdrop="static", style="display:none")
-    div.modal-dialog
-      div.modal-content
-        div.modal-header
-          button.close(type="button", data-dismiss="modal")
-            span.fa.fa-close
-          h4.modal-title(data-text=t('access.listof'))
-            = t('access.listof')
-        div.modal-body
-          div.acl_loading
-            span.fa.fa-spin.fa-circle-o-notch.fa-2x
-            != '&nbsp;'
-            = t('loading')
-          div.acl_list(style="display: none")
-            ul
-              li.user
-                button(type="button")
-                  span.fa.fa-remove
-                != '&nbsp;'
-                span.username= ''
-                != '&nbsp;'
-                select
-                  option(value="ro")= t('access.readonly')
-                  option(value="rw")= t('access.readwrite')
-              li.empty= t('access.nouser')
-              li.add
-                button.btn.btn-primary(type="button")
-                  span.fa.fa-plus
+  if req.user.is('admin')
+    div#acl_dialog.modal.fade(tabindex=-1, data-backdrop="static", style="display:none")
+      div.modal-dialog
+        div.modal-content
+          div.modal-header
+            button.close(type="button", data-dismiss="modal")
+              span.fa.fa-close
+            h4.modal-title(data-text=t('access.listof'))
+              = t('access.listof')
+          div.modal-body
+            div.acl-loading
+              span.fa.fa-spin.fa-circle-o-notch.fa-2x
+              != '&nbsp;'
+              = t('loading')
+            div.acl-list(style="display: none")
+              ul
+                li.user
+                  button(type="button" title=t('access.remove'))
+                    span.fa.fa-remove
                   != '&nbsp;'
-                  = t('access.select')
+                  span.username= ''
+                  != '&nbsp;'
+                  select
+                    option(value="ro")= t('access.readonly')
+                    option(value="rw")= t('access.readwrite')
+                li.empty= t('access.nouser')
+                li.add
+                  button.btn.btn-primary(type="button")
+                    span.fa.fa-plus
+                    != '&nbsp;'
+                    = t('access.select')
 
-          div.acl_select(style="display: none")
-            div.users
-        div.modal-footer
-          div.acl_btnLoading
-            button.btn.btn-default.cancel(type="button", data-action="cancel")
-              = t('button.cancel')
-          div.acl_btnList
-            button.btn.btn-default.cancel(type="button", data-action="cancel")
-              = t('button.cancel')
-            button.btn.btn-primary.update(type="button", data-action="update")
-              = t('access.save')
-          div.acl_btnSelect
-            button.btn.btn-default.cancel(type="button", data-action="cancel-select")
-              = t('button.cancel')
-            button.btn.btn-primary.select(type="button", data-action="select")
-              = t('button.ok')
-
+            div.acl-select(style="display: none")
+              div.users
+          div.modal-footer
+            div.acl-btnLoading
+              button.btn.btn-default.cancel(type="button", data-action="cancel")
+                = t('button.cancel')
+            div.acl-btnList
+              button.btn.btn-default.cancel(type="button", data-action="cancel")
+                = t('button.cancel')
+              button.btn.btn-primary.update(type="button", data-action="update")
+                = t('access.save')
+            div.acl-btnSelect
+              button.btn.btn-default.cancel(type="button", data-action="cancel-select")
+                = t('button.cancel')
+              button.btn.btn-primary.select(type="button", data-action="select")
+                = t('button.ok')

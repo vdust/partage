@@ -5,3 +5,88 @@
   min-width: 300px;
   width: auto;
 }
+
+.acl-list {
+  li.user {
+    border-top: 1px solid transparent;
+    line-height: 2.5em;
+    height: 2.5em;
+    padding: 0 0.5em;
+
+    button {
+      background: none;
+      padding: 0;
+      margin-right: 1em;
+      height: 2.5em;
+      width: 2.5em;
+      line-height: 2.5em;
+      text-align: center;
+      color: #444;
+      &:hover {
+        color: #000;
+      }
+      vertical-align: top;
+    }
+
+    + li.user {
+      border-color: #eaeaea;
+    }
+
+    + li.empty {
+      display: none;
+    }
+
+    .username {
+      display: inline-block;
+      height: 2.5em;
+      line-height: 2.5em;
+      width: 200px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      vertical-align: top;
+    }
+
+    select {
+      height: 2em;
+      margin-top: 0.2em;
+      vertical-align: top;
+    }
+  }
+  li.empty {
+    padding: 0.5em;
+  }
+  li.add {
+    padding: 1em 0 0;
+    margin-bottom: -0.5em;
+
+    span.fa {
+      margin-right: 0.5em;
+    }
+  }
+}
+
+.acl-select {
+  .users > div {
+    border-top: 1px solid transparent;
+    height: 2.5em;
+    line-height: 2.5em;
+    overflow: hidden;
+
+    input {
+      margin: 0 1.8em 0 1.2em;
+      vertical-align: middle;
+      cursor: pointer;
+    }
+
+    label {
+      height: 2.5em;
+      line-height: 2.5em;
+      cursor: pointer;
+    }
+
+    + div {
+      border-color: #eaeaea;
+    }
+  }
+}

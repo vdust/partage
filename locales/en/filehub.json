@@ -4,7 +4,11 @@
     "admin_plural": "Administrators",
     "listof": "Access list of folder {folder}",
     "save": "Save list",
+    "select": "Select users...",
     "nouser": "No user selected",
+    "readonly": "Can view",
+    "readwrite": "Can write",
+    "remove": "Remove user from list",
     "user": "User",
     "user_plural": "Users"
   },
