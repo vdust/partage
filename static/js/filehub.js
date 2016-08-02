@@ -10,11 +10,18 @@
   var baseUrl = window['FILEHUB_BASEURL'] || '';
 
   var filehub = window['filehub'] = function () {
-    var ctx = window['FILEHUB_CTX'];
+    var ctx = window['FILEHUB_CTX'],
+        obj, post;
     filehub.setup(); /* Ensure the core objects are registered */
     if (ctx && typeof (filehub['ctx:' + ctx]) === 'function') {
-      window['FILEHUB_OBJ'] = filehub['ctx:' + ctx]();
-      window['FILEHUB_OBJ'].context = ctx;
+      obj = window['FILEHUB_OBJ'] = filehub['ctx:' + ctx]();
+      obj.context = ctx;
+      post = filehub['post:'+ctx] || [];
+      for (var i = 0; i < post.length; i++) {
+        if (post[i] && typeof post[i] === 'function') {
+          post[i].call(obj);
+        }
+      }
     }
   };
 
@@ -26,19 +33,42 @@
   var debug = filehub.debug;
 
 
-  filehub.register = function (ctx, fn, setupFn) {
+  var _postCount=0;
+  // filehub.register([post,] ctx, fn [, setupFn])
+  filehub.register = function (post, ctx, fn, setupFn) {
+    var target;
+
+    if (typeof post !== 'boolean') {
+      setupFn = fn;
+      fn = ctx;
+      ctx = post;
+      post = false;
+    }
+
     if (typeof ctx !== 'string') {
       throw Error("register(): first argument must be a string");
     }
+
+    target = (post?'post':'ctx')+':'+ctx;
 
     if (fn && typeof fn !== 'function') {
       throw Error("register(): second argument must be a function or null");
     }
 
-    if (fn) filehub['ctx:'+ctx] = fn;
+    if (fn) {
+      if (post) {
+        // Register a function for post context initialization.
+        // Used for admin-specific features, not required by regular users.
+        if (!filehub[target]) filehub[target] = [];
+        filehub[target].push(fn);
+        _postCount++;
+      } else {
+        if (fn) filehub[target] = fn;
+      }
+    }
 
     if (typeof setupFn === 'function') {
-      filehub.setup._load[ctx] = setupFn;
+      filehub.setup._load[post ? 'post'+_postCount : ctx] = setupFn;
     }
     return fn;
   };
@@ -93,6 +123,7 @@
 
     debug("done.");
   };
+  filehub.setup._load = {};
 
   filehub.support = {
     /* Picked up from answer to http://stackoverflow.com/questions/7263590/ */
