@@ -77,7 +77,7 @@ html
       each f in [ 'api', 'aside', 'browse-acl', 'ctx-browse', 'loader', 'nav', 'view' ]
         script(type="text/javascript", src=staticUrl+'/js/filehub/'+f+'.js')
       if req.isAuthenticated() && req.user.is("admin")
-        each f in [ 'accounts' ]
+        each f in [ 'ctx-browse', 'accounts' ]
           script(type="text/javascript", src=staticUrl+'/js/filehub-admin/'+f+'.js')
     else
       script(type="text/javascript", src=staticUrl+'/js/filehub.min.js')

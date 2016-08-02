@@ -19,31 +19,7 @@
   }
 
   var ACTIONS = {
-    folderAccessList: function(folder) {
-      var self = this;
-
-      if (folder.length !== 1 || folder.data('flags').indexOf('f') < 0) {
-        return;
-      }
-
-      if (!self.accessListDialog) {
-        self.accessListDialog = new filehub.AccessList({
-          api: self.api
-        });
-        self.accessListDialog.dialog.on('show.bs.modal', function (evt) {
-          self._scDisabled = true;
-        }).on('hide.bs.modal', function (evt) {
-          delete self._scDisabled;
-        });
-      }
-      self.accessListDialog.edit(folder.data('path'), function (list, count) {
-        self.trigger('accessListUpdated', [ folder, list, count ]);
-      }, function (err, jqxhr) {
-        self.trigger('error', [ err, jqxhr && jqxhr.statusCode() ]);
-      });
-    },
     itemDelete: function (items) {
-
     },
     trashRestore: function (items) {
     },
@@ -58,6 +34,8 @@
     var api = new filehub.Api();
 
     var browse = new View({});
+
+    browse.ACTIONS = ACTIONS;
 
     browse.on('refresh', function (uid, item) {
       if (!poppingState) {
@@ -149,23 +127,13 @@
       });
     }).on('action', function (action, actBtn) {
       var selected = this.getSelected(),
-          handler = ACTIONS[action];
+          handler = this.ACTIONS[action];
 
       if (!handler || typeof handler !== 'function') {
         return;
       }
 
       handler.call(this, selected, actBtn);
-    }).on('accessListUpdated', function (folder, list, count) {
-      var shared = folder.find('.folder-shared');
-      if (!count) {
-        if (shared.length) shared.remove();
-        return;
-      }
-      if (!shared.length) {
-        shared = $('<span class="folder-shared"/>').appendTo(folder.children('.folder-name').children('.list-cell-content'));
-      }
-      shared.text(count).prepend('<span class="fa fa-user"/>');
     });
 
     $(window).on('popstate', function (evt) {
