@@ -62,7 +62,7 @@
 
       sel = self.aclSelect = {
         body: d.find('.acl-select'),
-        div: d.find('.acl-select > div'),
+        div: d.find('.acl-select > div.users'),
         btn: d.find('.acl-btnSelect')
       };
       sel.all = $([ sel.body.get(0), sel.btn.get(0) ]);
@@ -204,19 +204,20 @@
     },
     _update: function (folderName, success, error) {
       var self = this,
-          acl = {};
+          acl = {}, count = 0;
 
       self.aclList.ul.children('.user').each(function () {
         var li = $(this),
             user = li.data('key');
         acl[user] = li.children('select').val() || 'ro';
+        count++;
       });
 
       self.pendingAjax = self.api.updateFolder(folderName, {
         accessList: acl
       }).done(function () {
         delete self.pendingAjax;
-        success(acl);
+        success(acl, count);
       }).fail(function (jqxhr, st, err) {
         delete self.pendingAjax;
         if (err && err !== abort) error(JSON.parse(err), jqxhr);

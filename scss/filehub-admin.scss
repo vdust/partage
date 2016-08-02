@@ -6,6 +6,23 @@
   width: auto;
 }
 
+.list-cell-content {
+  .folder-shared {
+    vertical-align: baseline;
+    margin-left: 3em;
+    font-size: 0.9em;
+    font-weight: bold;
+    .fa {
+      font-size: 1.11em;
+      position: static;
+      top: 0;
+      margin-right: 0.3em;
+      width: auto;
+      vertical-align: baseline;
+    }
+  }
+}
+
 .acl-list {
   li.user {
     border-top: 1px solid transparent;
@@ -87,6 +104,14 @@
 
     + div {
       border-color: #eaeaea;
+    }
+  }
+  div.note {
+    padding-top: 0.5em;
+    font-size: 0.85714em;
+    &:last-child {
+      padding-top: 1em;
+      margin-bottom: -0.8em;
     }
   }
 }

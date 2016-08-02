@@ -40,12 +40,17 @@ mixin folder-row(d, folder)
     attrs['data-type'] = d.type
     attrs['data-flags'] = 'r'+(canwrite ? 'w' : '')+(d.path.indexOf('/')>=0 ? '' : 'f')
     //attrs['class']['view-droppable-files'] = !!(canwrite && folder)
+    var acl = Object.keys(d.accessList||{}).length;
 
   div.list-row.folder-entry.view-droppable(data-uid=d.uid, data-url=url, data-path=dpath, data-type=d.type, data-flags=flags)&attributes(attrs)
     div.list-cell.folder-name
       div.list-cell-content
         +mimeicon(d.mime)
         span.folder-name= d.name
+        if acl
+          span.folder-shared
+            span.fa.fa-user
+            = acl
     div.list-cell.folder-mtime
       div.list-cell-content
         span.folder-mtime

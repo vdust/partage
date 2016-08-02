@@ -692,6 +692,8 @@ form.profile-form {
     line-height: 1;
     padding-right: 10px;
     opacity: 0.9; }
+  .tree > .tree-item .tree-label {
+    padding-left: 4px; }
   .tree > .tree-item.tree-item-subtree .tree-expand {
     cursor: default; }
     .tree > .tree-item.tree-item-subtree .tree-expand span {

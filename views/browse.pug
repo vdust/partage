@@ -143,7 +143,11 @@ block extra
                     = t('access.select')
 
             div.acl-select(style="display: none")
+              div.note
+                p= t('access.selectmsg')
               div.users
+              div.note
+                p= t('access.adminauto')
           div.modal-footer
             div.acl-btnLoading
               button.btn.btn-default.cancel(type="button", data-action="cancel")
@@ -155,6 +159,6 @@ block extra
                 = t('access.save')
             div.acl-btnSelect
               button.btn.btn-default.cancel(type="button", data-action="cancel-select")
-                = t('button.cancel')
+                = t('access.backtolist')
               button.btn.btn-primary.select(type="button", data-action="select")
-                = t('button.ok')
+                = t('button.apply')

@@ -36,8 +36,8 @@
           delete self._scDisabled;
         });
       }
-      self.accessListDialog.edit(folder.data('path'), function (list) {
-        self.trigger('accessListUpdated', [ folder, list ]);
+      self.accessListDialog.edit(folder.data('path'), function (list, count) {
+        self.trigger('accessListUpdated', [ folder, list, count ]);
       }, function (err, jqxhr) {
         self.trigger('error', [ err, jqxhr && jqxhr.statusCode() ]);
       });
@@ -156,6 +156,16 @@
       }
 
       handler.call(this, selected, actBtn);
+    }).on('accessListUpdated', function (folder, list, count) {
+      var shared = folder.find('.folder-shared');
+      if (!count) {
+        if (shared.length) shared.remove();
+        return;
+      }
+      if (!shared.length) {
+        shared = $('<span class="folder-shared"/>').appendTo(folder.children('.folder-name').children('.list-cell-content'));
+      }
+      shared.text(count).prepend('<span class="fa fa-user"/>');
     });
 
     $(window).on('popstate', function (evt) {

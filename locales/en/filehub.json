@@ -2,15 +2,20 @@
   "access": {
     "admin": "Administrator",
     "admin_plural": "Administrators",
+    "adminauto": "Admin accounts already have access to any folder.",
+    "backtolist": "Back to list",
     "listof": "Access list of folder {folder}",
     "save": "Save list",
-    "select": "Select users...",
+    "select": "Select accounts...",
+    "selectmsg": "Select accounts to add in the access list:",
     "nouser": "No user selected",
     "readonly": "Can view",
     "readwrite": "Can write",
     "remove": "Remove user from list",
     "user": "User",
-    "user_plural": "Users"
+    "user_plural": "Users",
+    "usercount": "{users} user have access to this folder",
+    "usercount_plural": "{users} users have access to this folder"
   },
   "account": {
     "add": "Add user",
@@ -25,6 +30,7 @@
   },
   "accounts": "Accounts",
   "button": {
+    "apply": "Apply",
     "cancel": "Cancel",
     "ok": "Ok",
     "save": "Save"
