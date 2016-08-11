@@ -74,11 +74,11 @@ html
     script(type="text/javascript", src=bsUrl+'/js/bootstrap.min.js')
     if app.get('env') === 'development'
       script(type="text/javascript", src=staticUrl+'/js/filehub.js')
-      each f in [ 'api', 'aside', 'browse-acl', 'ctx-browse', 'loader', 'nav', 'view' ]
-        script(type="text/javascript", src=staticUrl+'/js/filehub/'+f+'.js')
+      each f in devScripts.common
+        script(type="text/javascript", src=staticUrl+'/js/filehub/'+f)
       if req.isAuthenticated() && req.user.is("admin")
-        each f in [ 'ctx-browse', 'accounts' ]
-          script(type="text/javascript", src=staticUrl+'/js/filehub-admin/'+f+'.js')
+        each f in devScripts.admin
+          script(type="text/javascript", src=staticUrl+'/js/filehub-admin/'+f)
     else
       script(type="text/javascript", src=staticUrl+'/js/filehub.min.js')
       if req.isAuthenticated() && req.user.is("admin")
