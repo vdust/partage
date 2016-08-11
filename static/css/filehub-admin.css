@@ -6,7 +6,8 @@
   vertical-align: baseline;
   margin-left: 3em;
   font-size: 0.9em;
-  font-weight: bold; }
+  font-weight: bold;
+  color: #555555; }
   .list-cell-content .folder-shared .fa {
     font-size: 1.11em;
     position: static;
@@ -14,6 +15,10 @@
     margin-right: 0.3em;
     width: auto;
     vertical-align: baseline; }
+
+.list-row-selected .list-cell-content .folder-shared {
+  color: inherit;
+  opacity: 0.8; }
 
 .acl-list li.user {
   border-top: 1px solid transparent;

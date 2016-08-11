@@ -17,14 +17,135 @@
       win = $(window),
       doc = $(window.document),
 
+      DZCTX = '.fh-dropzone',
+
       ROW = 'list-row',
       ROW_SEL = ROW + '-selected',
       ROW_PREV = ROW + '-prev',
       ROW_ORIG = ROW + '-orig',
       ROW_DRAG = ROW + '-dragged',
       DRAG = 'on-drag',
+      DZONE = 'view-drop-zone',
       D_COPY = DRAG+'-copy',
       D_HOVER = 'view-droppable-hover';
+
+  var _globalDnDInitialized;
+  var _views = {}, _viewId = 0;
+  var _onDrag;
+  function _dInit(evt) {
+    var target = $(evt.target),
+        zone = target.closest('.'+DZONE),
+        dropId = zone.data('dropId');
+
+    evt.preventDefault();
+    evt.stopPropagation();
+
+    return {
+      dropId: dropId,
+      zone: zone.length ? zone : undefined,
+      view: dropId ? _views[dropId] : undefined
+    };
+  };
+  function _updateCtx(evt, onDrag) {
+    if (!_onDrag && !onDrag) return;
+    if (onDrag) _onDrag = onDrag;
+
+    var target = $(evt.target),
+        list = target.closest('.list-box'),
+        row = list.length ? target.closest('.'+ROW) : $();
+
+    _onDrag.list = list.length ? list : undefined;
+    _onDrag.row = row.length ? row : undefined;
+  }
+
+  // XXX Work around the d&d mouse tracking crap for user visual feedback
+  function _dragendDetect(e) {
+    if (_onDrag) {
+      if (!(e.buttons & 1)) _leave(e);
+    } else {
+      // because of all the nasty corner-cases, we do this check even though
+      // if should not happen (doesn't cost much).
+      win.off('.fhdragdetect');
+    }
+  }
+
+  function _leave(evt, skipLeave) {
+    if (!_onDrag) return;
+    win.off('.fhdragdetect');
+    if (!skipLeave) {
+      _onDrag.view.trigger('dragleave', [ evt, _onDrag ]);
+    }
+    _onDrag = undefined;
+  }
+  function _enter(evt, onDrag) {
+    _leave(evt);
+    _updateCtx(evt, onDrag);
+    if (evt.buttons != null) { // Detection require MouseEvent.buttons
+      win.on('mouseover.fhdragdetect', _dragendDetect);
+    }
+    onDrag.view.trigger('dragenter', [ evt, onDrag ]);
+  }
+  function setupDnD(view) {
+    var vId = 'v'+(++_viewId);
+    _views[vId] = view;
+    view.viewContents.addClass(DZONE).data('dropId', vId);
+
+    if (_globalDnDInitialized) return;
+
+    // We need to setup a global handler because of inconsistent default
+    // behaviour of browsers when dropping files (e.g. images get loaded
+    // in Chrome)
+    $('html').on('dragover'+DZCTX, function (evt) {
+      // Handles as much as possible in dragover to prevent corner cases.
+      var row, d = _dInit(evt);
+
+      if (_onDrag) {
+        if (!d.zone) {
+          _leave(evt);
+        } else if (d.dropId != _onDrag.dropId) {
+          _enter(evt, d); // trigger dragleave on previous zone automatically.
+        } else {
+          _updateCtx(evt); // list and row can change.
+          _onDrag.view.trigger('dragupdate', [ evt, _onDrag ]);
+        }
+      } else if (!d.zone || !d.view) {
+        return;
+      } else {
+        _enter(evt, d);
+      }
+    }).on('dragenter'+DZCTX, function (evt) {
+      // dragover already handles notifications, but we still need to prevent
+      // default behaviour.
+      evt.preventDefault();
+      evt.stopPropagation();
+    }).on('dragleave'+DZCTX, function (evt) {
+      // Occurs when leaving the page window ?
+      // Dragover handles most cases, this is a safety trigger
+      // just in case.
+      var d = _dInit(evt);
+      if (_onDrag && d.zone && d.zone.is(evt.target)) {
+        _leave(evt);
+      }
+    }).on('drop'+DZCTX, function (evt) {
+      var d = _dInit(evt);
+
+      if (_onDrag) {
+        _updateCtx(evt);
+        _onDrag.view.trigger('drop', [ evt, _onDrag ]);
+        _leave(evt, true); // no dragleave event is triggered.
+      }
+    });
+
+    // FIXME: There is an issue when the cursor is leaving the browser to
+    // another window on top of it. Browsers (at least Chrome and Firefox)
+    // won't trigger dragleave events in this case. Google Drive seems to
+    // know how to handle this case, however, which looks like black magic
+    // to me right now. Maybe the right combinations of preventDefault()
+    // and stopIteration() in the drag event handlers could do the trick,
+    // but i can't figure out how to handle this for now.
+
+    _globalDnDInitialized = true;
+  }
 
   var View = filehub.createClass('View', {
     options: {
@@ -32,6 +153,7 @@
       listExpire: 300, // 5 minutes
       viewResize: '#view-resize',
       viewContents: '#view-contents',
+      dropzone: false,
       // ctrl = 1, alt = 2, shift = 4
       // { 'keyCode': { 'ctrl|alt|shift': 'eventname' } }
       shortcuts: {
@@ -68,11 +190,12 @@
       },
     },
     _init: function () {
-      var self = this;
+      var self = this,
+          options = self.options;
 
       self._body = $(window.document.body);
 
-      self.sidePanel = new filehub.Aside(self.options.aside);
+      self.sidePanel = new filehub.Aside(options.aside);
       self.sidePanel.on('select', function () {
         self.trigger('refresh', arguments);
         self.loadTarget.apply(self, arguments);
@@ -80,15 +203,15 @@
         self.trigger('button', arguments);
       });
 
-      self.nav = new filehub.Nav(self.options.nav);
+      self.nav = new filehub.Nav(options.nav);
       self.nav.on('activate', function (uid) {
         self.sidePanel.select(uid);
       }).on('action', function () {
         self.trigger('action', arguments);
       });
 
-      self.viewResize = $('#view-resize');
-      self.viewContents = $('#view-contents');
+      self.viewResize = $(options.viewResize);
+      self.viewContents = $(options.viewContents);
       self.viewActive = self.viewContents.children('.list-box:visible');
       self.loader = new filehub.ListLoader({
         container: self.viewContents
@@ -97,6 +220,7 @@
       self._initResize();
       self._initShortcuts();
       self._initLists();
+      self._initDropZone();
     },
     _initResize: function () {
       var self = this,
@@ -123,7 +247,7 @@
     getRows: function (filter) {
       var rows = this.viewActive
         .children('.list')
-        .children('.list-group')
+        .children('.list-body')
         .children('.'+ROW);
 
       return filter ? rows.filter(filter) : rows;
@@ -273,7 +397,7 @@
             uStart_i , uEnd_i,
             sStart_i, sEnd_i,
             list = row.closest('.list'),
-            allrows = list.children('.list-group').children('.'+ROW),
+            allrows = list.children('.list-body').children('.'+ROW),
             prev = allrows.filter('.'+ROW_PREV),
             orig = allrows.filter('.'+ROW_ORIG),
             selected = allrows.filter('.'+ROW_SEL);
@@ -419,6 +543,19 @@
         dndbox.trigger(mvEvt);
       });
       return dndbox.hide().fadeIn(200);
+    },
+    _initDropZone: function () {
+      var self = this;
+      if (!self.options.dropzone) return;
+      setupDnD(self);
+      /* self.on('dragenter', function (evt) { */
+        /* self.viewContents.css('background-color', '#ff0'); */
+      /* }).on('dragleave', function (evt) { */
+        /* self.viewContents.css('background-color', ''); */
+      /* }).on('drop', function (evt) { */
+        /* self.viewContents.css('background-color', ''); */
+        /* console.log(evt); */
+      /* }); */
     },
     loadTarget: function (uid, item) {
       var self = this,

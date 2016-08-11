@@ -33,7 +33,9 @@
 
     var api = new filehub.Api();
 
-    var browse = new View({});
+    var browse = new View({
+      dropzone: true
+    });
 
     browse.ACTIONS = ACTIONS;
 
@@ -134,7 +136,40 @@
       }
 
       handler.call(this, selected, actBtn);
+    }).on({
+      dragenter: _dragUpdate,
+      dragupdate: _dragUpdate,
+      dragleave: _dragRelease,
+      drop: _drop
     });
+
+    var memDropTarget;
+    function _dragUpdate(evt, ctx) {
+      var rowDrop = ctx.row
+            && ctx.row.hasClass('view-droppable')
+            && ctx.row.data('flags').indexOf('w') >= 0,
+          listDrop = ctx.list && ctx.list.data('flags').indexOf('w');
+
+      if (memDropTarget) memDropTarget.removeClass('view-dragover');
+      if (rowDrop) {
+        memDropTarget = ctx.row;
+      } else if (listDrop) {
+        memDropTarget = ctx.list;
+      } else {
+        memDropTarget = $();
+      }
+      memDropTarget.addClass('view-dragover');
+    }
+    function _dragRelease(evt, ctx) {
+      if (memDropTarget) {
+        memDropTarget.removeClass('view-dragover');
+      }
+      memDropTarget = undefined;
+    }
+    function _drop(evt, ctx) {
+      _dragRelease();
+
+    }
 
     $(window).on('popstate', function (evt) {
       var state = evt.originalEvent.state;

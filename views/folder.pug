@@ -30,7 +30,7 @@ div.list-box.folders-list(id='l-'+pathid)&attributes(attrs)
         div.list-cell.folder-size
           div.list-cell-content
             span= t('folder.size')
-    div.list-group
+    div.list-body
       if istrash
         each tr in trash
           +trash-row(tr)

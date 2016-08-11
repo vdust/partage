@@ -12,6 +12,7 @@
     margin-left: 3em;
     font-size: 0.9em;
     font-weight: bold;
+    color: lighten($main-color, 20%);
     .fa {
       font-size: 1.11em;
       position: static;
@@ -20,6 +21,13 @@
       width: auto;
       vertical-align: baseline;
     }
+  }
+}
+
+.list-row-selected .list-cell-content {
+  .folder-shared {
+    color: inherit;
+    opacity: 0.8;
   }
 }
 

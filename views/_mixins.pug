@@ -47,6 +47,9 @@ mixin folder-row(d, folder)
       div.list-cell-content
         +mimeicon(d.mime)
         span.folder-name= d.name
+        if d.description
+          span.folder-desc
+            = d.description
         if acl
           span.folder-shared
             span.fa.fa-user
