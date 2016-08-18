@@ -38,6 +38,7 @@
     });
 
     browse.ACTIONS = ACTIONS;
+    browse.api = api;
 
     browse.on('refresh', function (uid, item) {
       if (!poppingState) {
@@ -148,7 +149,9 @@
       var rowDrop = ctx.row
             && ctx.row.hasClass('view-droppable')
             && ctx.row.data('flags').indexOf('w') >= 0,
-          listDrop = ctx.list && ctx.list.data('flags').indexOf('w');
+          listDrop = ctx.list
+            && ctx.list.data('flags').indexOf('w') >= 0
+            && ctx.list.data('flags').indexOf('s') < 0;
 
       if (memDropTarget) memDropTarget.removeClass('view-dragover');
       if (rowDrop) {
@@ -163,12 +166,40 @@
     function _dragRelease(evt, ctx) {
       if (memDropTarget) {
         memDropTarget.removeClass('view-dragover');
+        memDropTarget = undefined;
       }
-      memDropTarget = undefined;
     }
     function _drop(evt, ctx) {
+      var dt = evt.dataTransfer || (evt.originalEvent || {}).dataTransfer,
+          target;
+
       _dragRelease();
 
+      if (!dt || !dt.files || !dt.files.length) return;
+
+      if (ctx.row
+          && ctx.row.hasClass('view-droppable')
+          && ctx.row.data('flags').indexOf('w') >= 0
+      ) {
+        target = ctx.row;
+      } else if (ctx.list
+                 && ctx.list.data('flags').indexOf('w') >= 0
+                 && ctx.list.data('flags').indexOf('s') < 0
+      ) {
+        target = ctx.list;
+      } else {
+        return;
+      }
+
+      if (!self.sendQueue) {
+        self.sendQueue = new filehub.SendQueue({
+          api: api
+        });
+      }
+
+      self.sendQueue.queue(dt.files, {
+        path: target.data('path')
+      });
     }
 
     $(window).on('popstate', function (evt) {

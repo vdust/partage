@@ -1,0 +1,155 @@
+$sq-size: 30px;
+
+.send-queue {
+  position: fixed;
+  z-index: 100;
+  max-height: 100%;
+  width: 90%;
+  max-width: 14 * $sq-size;
+  bottom: 0;
+  right: 3%;
+  border-radius: 5px 5px 0px 0px / 5px 5px 0px 0px;
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.7);
+  overflow: hidden;
+
+  button:focus {
+    outline: none;
+  }
+
+  .sq-header {
+    position: relative;
+    height: $sq-size;
+    width: auto;
+    background-color: $nav-bg-color;
+    color: #fff;
+
+    .sq-tools {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: $sq-size;
+      button {
+        height: $sq-size;
+        width: $sq-size + 1;
+        line-height: $sq-size;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+        background-color: desaturate(darken($nav-bg-color, 3%), 10%);
+        color: $nav-color;
+        border-left: 1px solid $nav-bg-color;
+        &:hover {
+          color: lighten($nav-color, 10%);
+          background-color: desaturate(darken($nav-bg-color, 5%), 10%);
+        }
+      }
+    }
+
+    .title {
+      font-size: 1em;
+      padding: 0 ($sq-size + $sq-size / 3) 0 ($sq-size / 3);
+      line-height: $sq-size;
+      width: 100%;
+      height: $sq-size;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .sq-body {
+    max-height: -webkit-calc(100% - 40px);
+    max-height: -moz-calc(100% - 40px);
+    max-height: calc(100% - 40px);
+    height: 200px;
+    padding: 3px 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    .sq-wrap {
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .sq-row {
+      position: relative;
+      height: $sq-size + 1;
+      border-top: 1px solid transparent;
+      line-height: $sq-size;
+      padding: 0 ($sq-size / 3);
+      width: 100%;
+      font-size: 0.9em;
+      overflow: hidden;
+
+      color: lighten($main-color, 20%);
+
+      + .sq-row {
+        border-color: lighten($input-border-color, 10%);
+      }
+
+      button {
+        position: relative;
+        z-index: 2;
+        float: right;
+        height: $sq-size;
+        width: ($sq-size / 2);
+        padding: 0;
+        line-height: $sq-size;
+        text-align: center;
+        color: inherit;
+        background-color: transparent;
+        &:hover {
+          color: $main-color;
+        }
+      }
+
+      .sq-progress {
+        float: right;
+        position: relative;
+        width: 2 * $sq-size + 2;
+        height: $sq-size;
+        margin: 0 ($sq-size / 3);
+
+        .sq-progress-box {
+          position: relative;
+          height: $sq-size / 2;
+          width: 100%;
+          margin-top: ($sq-size / 4);
+          overflow: hidden;
+          border: 1px solid $input-border-color;
+        }
+
+        .sq-progress-in {
+          position: absolute;
+          left: 0;
+          top: 0;
+          height: $sq-size / 2;
+          width: 100%;
+          background-color: lighten($nav-bg-color, 20%);
+          z-index: 2;
+        }
+
+        .sq-progress-label {
+          position: absolute;
+          width: 100%;
+          color: $main-color;
+          height: (($sq-size / 2) - 2);
+          line-height: (($sq-size / 2) - 1);
+          font-size: 0.7em;
+          font-weight: bold;
+          text-align: center;
+          z-index: 3;
+          text-shadow: 0 0 1px #fff;
+        }
+      }
+
+      .sq-label {
+        position: absolute;
+        width: 100%;
+        padding: 0 (4 * $sq-size) 0 0;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+    }
+  }
+}

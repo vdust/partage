@@ -85,9 +85,12 @@
     },
 
     sendFileUrl: function (path, file, replace) {
-      var fullpath = path.replace(/\/+$/, '') + "/" + file.name;
+      var fullpath = path.replace(/\/+$/, '') + "/" + file.name,
+          url;
 
-      return this.options.apiUrl + "/repo" + fullpath + (replace ? "?replace=1" : "");
+      url = ("/repo/" + fullpath + (replace ? "?replace=1" : "")).replace(/\/\/+/g, '/');
+
+      return this.options.apiUrl + url;
     },
 
     getFile: function (path) {

@@ -511,9 +511,6 @@ form.profile-form {
     top: -1px;
     margin-right: 0.3em; }
 
-.view-droppable-hover {
-  background-color: #b0dce2 !important; }
-
 .list-box, .error-box, .message-box {
   position: absolute;
   width: 100%;
@@ -586,6 +583,12 @@ form.profile-form {
     position: relative;
     box-sizing: border-box;
     border-bottom: 1px solid #ebebeb; }
+
+.view-droppable-hover, .view-dragover {
+  background-color: #b0dce2 !important; }
+
+.view-dragover .list .list-cell {
+  border-color: transparent; }
 
 .dnd-row {
   position: absolute;
@@ -790,5 +793,127 @@ form.profile-form {
   white-space: nowrap;
   background-color: rgba(0, 0, 0, 0.75);
   color: #fff; }
+
+.send-queue {
+  position: fixed;
+  z-index: 100;
+  max-height: 100%;
+  width: 90%;
+  max-width: 420px;
+  bottom: 0;
+  right: 3%;
+  border-radius: 5px 5px 0px 0px / 5px 5px 0px 0px;
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.7);
+  overflow: hidden; }
+  .send-queue button:focus {
+    outline: none; }
+  .send-queue .sq-header {
+    position: relative;
+    height: 30px;
+    width: auto;
+    background-color: #104850;
+    color: #fff; }
+    .send-queue .sq-header .sq-tools {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 30px; }
+      .send-queue .sq-header .sq-tools button {
+        height: 30px;
+        width: 31px;
+        line-height: 30px;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+        background-color: #11393f;
+        color: #dadada;
+        border-left: 1px solid #104850; }
+        .send-queue .sq-header .sq-tools button:hover {
+          color: #f4f4f4;
+          background-color: #0f3237; }
+    .send-queue .sq-header .title {
+      font-size: 1em;
+      padding: 0 40px 0 10px;
+      line-height: 30px;
+      width: 100%;
+      height: 30px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis; }
+  .send-queue .sq-body {
+    max-height: -webkit-calc(100% - 40px);
+    max-height: -moz-calc(100% - 40px);
+    max-height: calc(100% - 40px);
+    height: 200px;
+    padding: 3px 0;
+    overflow-x: hidden;
+    overflow-y: auto; }
+    .send-queue .sq-body .sq-wrap {
+      position: relative;
+      overflow-x: hidden; }
+    .send-queue .sq-body .sq-row {
+      position: relative;
+      height: 31px;
+      border-top: 1px solid transparent;
+      line-height: 30px;
+      padding: 0 10px;
+      width: 100%;
+      font-size: 0.9em;
+      overflow: hidden;
+      color: #555555; }
+      .send-queue .sq-body .sq-row + .sq-row {
+        border-color: #dadada; }
+      .send-queue .sq-body .sq-row button {
+        position: relative;
+        z-index: 2;
+        float: right;
+        height: 30px;
+        width: 15px;
+        padding: 0;
+        line-height: 30px;
+        text-align: center;
+        color: inherit;
+        background-color: transparent; }
+        .send-queue .sq-body .sq-row button:hover {
+          color: #222; }
+      .send-queue .sq-body .sq-row .sq-progress {
+        float: right;
+        position: relative;
+        width: 62px;
+        height: 30px;
+        margin: 0 10px; }
+        .send-queue .sq-body .sq-row .sq-progress .sq-progress-box {
+          position: relative;
+          height: 15px;
+          width: 100%;
+          margin-top: 7.5px;
+          overflow: hidden;
+          border: 1px solid #c0c0c0; }
+        .send-queue .sq-body .sq-row .sq-progress .sq-progress-in {
+          position: absolute;
+          left: 0;
+          top: 0;
+          height: 15px;
+          width: 100%;
+          background-color: #2195a5;
+          z-index: 2; }
+        .send-queue .sq-body .sq-row .sq-progress .sq-progress-label {
+          position: absolute;
+          width: 100%;
+          color: #222;
+          height: 13px;
+          line-height: 14px;
+          font-size: 0.7em;
+          font-weight: bold;
+          text-align: center;
+          z-index: 3;
+          text-shadow: 0 0 1px #fff; }
+      .send-queue .sq-body .sq-row .sq-label {
+        position: absolute;
+        width: 100%;
+        padding: 0 120px 0 0;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden; }
 
 /*# sourceMappingURL=filehub.css.map */

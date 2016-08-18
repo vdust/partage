@@ -61,7 +61,9 @@
   // XXX Work around the d&d mouse tracking crap for user visual feedback
   function _dragendDetect(e) {
     if (_onDrag) {
-      if (!(e.buttons & 1)) _leave(e);
+      if (!(e.buttons & 1)) {
+        _leave(e);
+      }
     } else {
       // because of all the nasty corner-cases, we do this check even though
       // if should not happen (doesn't cost much).
@@ -114,21 +116,17 @@
         _enter(evt, d);
       }
     }).on('dragenter'+DZCTX, function (evt) {
-      // dragover already handles notifications, but we still need to prevent
-      // default behaviour.
       evt.preventDefault();
       evt.stopPropagation();
     }).on('dragleave'+DZCTX, function (evt) {
-      // Occurs when leaving the page window ?
-      // Dragover handles most cases, this is a safety trigger
-      // just in case.
-      var d = _dInit(evt);
-      if (_onDrag && d.zone && d.zone.is(evt.target)) {
-        _leave(evt);
-      }
+      evt.preventDefault();
+      evt.stopPropagation();
     }).on('drop'+DZCTX, function (evt) {
       var d = _dInit(evt);
 
+      if (!d.zone || !d.view) return;
+      // We need to do this because mouseover is triggered just before
+      _updateCtx(evt, d);
       if (_onDrag) {
         _updateCtx(evt);
         _onDrag.view.trigger('drop', [ evt, _onDrag ]);

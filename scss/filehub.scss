@@ -468,10 +468,6 @@ form.profile-form {
   }
 }
 
-.view-droppable-hover {
-  background-color: desaturate(lighten($view-sel-bg-color, 50%), 20%) !important;
-}
-
 .list-box, .error-box, .message-box {
   position: absolute;
   width: 100%;
@@ -551,6 +547,14 @@ form.profile-form {
     box-sizing: border-box;
     border-bottom: 1px solid darken($contents-bg-color, 5%);
   }
+}
+
+.view-droppable-hover, .view-dragover {
+  background-color: desaturate(lighten($view-sel-bg-color, 50%), 20%) !important;
+}
+
+.view-dragover .list .list-cell {
+  border-color: transparent;
 }
 
 .dnd-row {
@@ -803,3 +807,5 @@ form.profile-form {
   background-color: rgba(0, 0, 0, 0.75);
   color: #fff;
 }
+
+@import 'sendqueue';

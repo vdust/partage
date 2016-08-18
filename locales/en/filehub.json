@@ -36,7 +36,7 @@
     "save": "Save"
   },
   "contact": "Contact Us",
-  "date-format": "ddd d, yyyy",
+  "date-format": "mmm d, yyyy",
   "error": {
     "404": {
       "title": "Resource not found",
@@ -70,6 +70,12 @@
   "login-failure": "User name and password don't match.",
   "powered-by": "Powered by FileHub",
   "profile": "Profile",
+  "queue": {
+    "complete": "File upload complete",
+    "done": "done",
+    "pending": "pending...",
+    "uploading": "Uploading file: {percent}%, {pending} pending"
+  },
   "save": "Save",
   "signin": "Sign in",
   "signin-message": "Sign in to access your files.",

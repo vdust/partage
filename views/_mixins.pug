@@ -32,17 +32,18 @@ mixin mimeicon(mime)
 
 mixin folder-row(d, folder)
   -
-    var canwrite = folder ? folder.can('write', req.user) : req.user.is('admin')
-    var attrs = { 'class': {} }
-    attrs['data-uid'] = d.uid
-    attrs['data-url'] = buildURL(path.slice().concat([ d.name ]))
-    attrs['data-path'] = d.path.split('/').map((a) => encodeURIComponent(a)).join('/')
-    attrs['data-type'] = d.type
-    attrs['data-flags'] = 'r'+(canwrite ? 'w' : '')+(d.path.indexOf('/')>=0 ? '' : 'f')
-    //attrs['class']['view-droppable-files'] = !!(canwrite && folder)
+    var canwrite = folder ? folder.can('write', req.user) : req.user.is('admin');
+    var attrs = {
+      'class': {},
+      'data-flags': 'r'+(canwrite ? 'w' : '')+(d.path.indexOf('/')>=0 ? '' : 'f'),
+      'data-path': d.path.split('/').map((a) => encodeURIComponent(a)).join('/'),
+      'data-type': d.type,
+      'data-uid': d.uid,
+      'data-url': buildURL(path.slice().concat([ d.name ]))
+      };
     var acl = Object.keys(d.accessList||{}).length;
 
-  div.list-row.folder-entry.view-droppable(data-uid=d.uid, data-url=url, data-path=dpath, data-type=d.type, data-flags=flags)&attributes(attrs)
+  div.list-row.folder-entry.view-droppable&attributes(attrs)
     div.list-cell.folder-name
       div.list-cell-content
         +mimeicon(d.mime)
@@ -64,12 +65,17 @@ mixin folder-row(d, folder)
           != '&mdash;'
 
 mixin file-row(f, folder)
-  - var mtime = f.mtime ? dateformat(f.mtime, t('date-format')) : '\u2014'
-  - var url = buildURL(path.slice().concat([ f.name ]));
-  - var dpath = datapath.concat([ f.name ]).map((a) => encodeURIComponent(a)).join('/');
-  - var canwrite = folder ? folder.can('write', req.user) : req.user.is('admin')
-  - var flags = 'r'+(canwrite ? 'w' : '')
-  div.list-row.file-entry(data-url=url, data-path=dpath, data-type=f.type, data-flags=flags)
+  -
+    var mtime = f.mtime ? dateformat(f.mtime, t('date-format')) : '\u2014'
+    var canwrite = folder ? folder.can('write', req.user) : req.user.is('admin')
+    var attrs = {
+      'class': {},
+      'data-flags': 'r' + (canwrite ? 'w' : ''),
+      'data-path': datapath.concat([ f.name ]).map((a) => encodeURIComponent(a)).join('/'),
+      'data-type': f.type,
+      'data-url': buildURL(path.slice().concat([ f.name ]))
+      };
+  div.list-row.file-entry&attributes(attrs)
     div.list-cell.folder-name
       div.list-cell-content
         +mimeicon(f.mime)

@@ -1,0 +1,31 @@
+-
+  var tl = {
+    title: {
+      uploading: t('queue.uploading'),
+      complete: t('queue.complete')
+    },
+    progress: {
+      pending: t('queue.pending'),
+      done: t('queue.done')
+    }
+  };
+
+div.send-queue#send-queue(style="display: none", data-tl=JSON.stringify(tl))
+  div.sq-header
+    div.sq-tools
+      button.sq-toggle
+        span.fa.fa-chevron-down(data-target-is=':visible', style="display: none")
+        span.fa.fa-chevron-up(data-target-is=':not(:visible)')
+    h3.title
+      = tl.title.complete
+  div.sq-body(style="display: none")
+    div.sq-wrap
+      div.sq-row
+        button.sq-abort
+          span.fa.fa-remove
+        div.sq-progress
+          div.sq-progress-box
+            div.sq-progress-in(style="width: 0%")
+            div.sq-progress-label= tl.progress.pending
+        div.sq-label
+          = 'filename'
