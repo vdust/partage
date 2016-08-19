@@ -580,23 +580,8 @@
 
       self.trigger('unselectall');
 
-      var reloaded;
-      if (_r) {
-        reloaded = {};
-        self.viewActive.find('.list-row').each(function () {
-          var row = $(this);
-
-          if (row.hasClass('list-row-selected')) {
-            reloaded[row.data('uid')] = {
-              orig: row.hasClass('list-row-orig'),
-              prev: row.hasClass('list-row-prev')
-            };
-          }
-        });
-      }
-
       self.viewActive.fadeOut('fast', function () {
-        if (reloaded) $(this).remove();
+        if (_r) $(this).remove();
       });
 
       if (list.length && !_r) {
@@ -612,8 +597,6 @@
 
       var _once = false;
       function onLoad(err, list) {
-        var selected = $();
-
         if (self._reloading === uid) {
           self._reloading = null;
         }
@@ -631,21 +614,9 @@
         // ensure id is consistent with the one expected
         /* list.attr('id', self.options.listIdPrefix + uid); */
         self.viewActive = list.hide().appendTo(self.viewContents);
-        if (reloaded) {
-          list.find('.list-row').each(function () {
-            var row = $(this),
-                r = reloaded[row.data('uid')];
 
-            if (r) {
-              selected = selected.add(this);
-              row.addClass('list-row-selected');
-              row.toggleClass('list-row-orig', !!r.orig);
-              row.toggleClass('list-row-prev', !!r.prev);
-            }
-          });
-        }
         self.trigger('view', [ self.viewActive ]);
-        self.trigger('select', [ selected ]);
+        self.trigger('select', [ $() ]);
         self.loader.hide();
         list.fadeIn('fast');
       }
