@@ -21,7 +21,7 @@
       var self = this,
           options = self.options,
           tl,
-          container;
+          container, hdr, tools;
 
       self._queue = [];
       self.container = container = $(options.container);
@@ -30,8 +30,11 @@
         tl = JSON.parse(tl || '{}') || {}
       }
       self.tl = tl;
-      self.toggle = container.find('.sq-tools .sq-toggle');
-      self.title = container.find('.title'),
+      hdr = container.children('.sq-header');
+      tools = hdr.children('.sq-tools');
+      self.toggle = tools.children('.sq-toggle');
+      self.close = tools.children('.sq-close').hide();
+      self.title = hdr.find('.title'),
       self.body = container.children('.sq-body'),
       self.wrap = self.body.children('.sq-wrap'),
       self.template = self.wrap.children('.sq-row:eq(0)').remove().hide();
@@ -40,8 +43,39 @@
       self.toggle.on('click', function () {
         self._bodySlide();
       });
+      self.close.on('click', function () {
+        if (self._queue.length) return;
+        self.container.slideUp('fast');
+        self.close.hide();
+      });
       self.title.on('dblclick', function () {
         self._bodySlide();
+      });
+      function _remCheck() {
+        $(this).remove();
+        if (!self.wrap.children().length) {
+          self.close.click();
+        }
+      }
+      self.body.on('click', '.sq-abort', function () {
+        var el = $(this).closest('.sq-row'),
+            data = el.data('fh-sq');
+
+        switch (data.status) {
+          case 'pending':
+            data.status = 'skip';
+            el.fadeOut('fast', _remCheck);
+            break;
+          case 'sending':
+            data.xhr.abort();
+            break;
+          default:
+            el.fadeOut('fast', _remCheck);
+        }
+      });
+
+      self.on('complete', function () {
+        self.close.show();
       });
     },
     startNext: function () {
@@ -60,6 +94,8 @@
         self.trigger('complete');
         return;
       }
+
+      next.status = 'sending';
 
       var uptl = self.tl.title.uploading;
       next.update = function (p) {
@@ -127,8 +163,8 @@
             width: '100%',
             left: 0,
           });
+
           next.loaded = next.total;
-          next.status = 'done';
 
           if (xhr.status !== 200) {
             next.status = 'error';
@@ -137,6 +173,7 @@
             next.pgl.text(self.tl.progress.aborted || 'error');
             self.trigger('error', [ next, xhr ]);
           } else {
+            next.status = 'done';
             self.trigger('uploaded', [ next, xhr ]);
           }
 

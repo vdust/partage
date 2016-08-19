@@ -170,7 +170,8 @@
       }
     }
     function _drop(evt, ctx) {
-      var dt = evt.dataTransfer || (evt.originalEvent || {}).dataTransfer,
+      var self = this,
+          dt = evt.dataTransfer || (evt.originalEvent || {}).dataTransfer,
           target;
 
       _dragRelease();
@@ -194,6 +195,16 @@
       if (!self.sendQueue) {
         self.sendQueue = new filehub.SendQueue({
           api: api
+        });
+
+        var pendingPaths = {};
+        self.sendQueue.on('uploaded', function (up, ctx) {
+          pendingPaths[up.options.path] = true;
+        }).on('complete', function () {
+          if (pendingPaths[self.viewActive.data('path')]) {
+            self.reloadActive();
+          }
+          pendingPaths = {};
         });
       }
 

@@ -16,6 +16,8 @@ div.send-queue#send-queue(style="display: none", data-tl=JSON.stringify(tl))
       button.sq-toggle
         span.fa.fa-chevron-down(data-target-is=':visible', style="display: none")
         span.fa.fa-chevron-up(data-target-is=':not(:visible)')
+      button.sq-close(style="display: none")
+        span.fa.fa-remove
     h3.title
       = tl.title.complete
   div.sq-body(style="display: none")

@@ -546,26 +546,60 @@
       var self = this;
       if (!self.options.dropzone) return;
       setupDnD(self);
-      /* self.on('dragenter', function (evt) { */
-        /* self.viewContents.css('background-color', '#ff0'); */
-      /* }).on('dragleave', function (evt) { */
-        /* self.viewContents.css('background-color', ''); */
-      /* }).on('drop', function (evt) { */
-        /* self.viewContents.css('background-color', ''); */
-        /* console.log(evt); */
-      /* }); */
+    },
+    reloadActive: function () {
+      var self = this,
+          uid = self.viewActive.data('uid');
+
+      if (!uid) return;
+
+      if (self._reloading) {
+        if (self._reloadPending) return;
+        self._reloadPending = setTimeout(function () {
+          delete self._reloadPending;
+
+          if (self.viewActive.data('uid') === uid) {
+            self.reloadActive();
+          }
+        }, 1000);
+        return;
+      }
+
+      self._reloading = uid;
+      self.loadTarget(uid, self.viewActive);
     },
     loadTarget: function (uid, item) {
       var self = this,
           id = self.options.listIdPrefix + uid,
-          list = $('#'+id);
+          list = $('#'+id),
+          _r = self._reloading;
 
-      if (self.viewActive.data('uid') === uid) return;
+      if (_r && self._loadPendingUid && self._loadPendingUid !== _r) return;
+
+      if (self.viewActive.data('uid') === uid && !_r) return;
 
       self.trigger('unselectall');
-      self.viewActive.fadeOut('fast');
 
-      if (list.length) {
+      var reloaded;
+      if (_r) {
+        reloaded = {};
+        self.viewActive.find('.list-row').each(function () {
+          var row = $(this);
+
+          if (row.hasClass('list-row-selected')) {
+            reloaded[row.data('uid')] = {
+              orig: row.hasClass('list-row-orig'),
+              prev: row.hasClass('list-row-prev')
+            };
+          }
+        });
+      }
+
+      self.viewActive.fadeOut('fast', function () {
+        if (reloaded) $(this).remove();
+      });
+
+      if (list.length && !_r) {
         self.viewActive = list.fadeIn('fast');
         self.trigger('view', [ self.viewActive ]);
         self.trigger('select', [ $() ]);
@@ -578,7 +612,14 @@
 
       var _once = false;
       function onLoad(err, list) {
-        if (_once || self._loadPendingUid !== uid) return; // expired onLoad()
+        var selected = $();
+
+        if (self._reloading === uid) {
+          self._reloading = null;
+        }
+        if (_once || self._loadPendingUid !== uid) {
+          return; // expired onLoad()
+        }
         _once = true;
         self._loadPendingUid = null;
 
@@ -590,8 +631,21 @@
         // ensure id is consistent with the one expected
         /* list.attr('id', self.options.listIdPrefix + uid); */
         self.viewActive = list.hide().appendTo(self.viewContents);
+        if (reloaded) {
+          list.find('.list-row').each(function () {
+            var row = $(this),
+                r = reloaded[row.data('uid')];
+
+            if (r) {
+              selected = selected.add(this);
+              row.addClass('list-row-selected');
+              row.toggleClass('list-row-orig', !!r.orig);
+              row.toggleClass('list-row-prev', !!r.prev);
+            }
+          });
+        }
         self.trigger('view', [ self.viewActive ]);
-        self.trigger('select', [ $() ]);
+        self.trigger('select', [ selected ]);
         self.loader.hide();
         list.fadeIn('fast');
       }
