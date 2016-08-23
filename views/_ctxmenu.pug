@@ -1,0 +1,87 @@
+div#context-menu.context-menu.dropdown(style="display: none")
+  ul.dropdown-menu
+    li(
+      data-check='menuFolderCheck',
+      data-action='newFolder'
+    )
+      span.fa-stack.ctx-stack
+        span.fa.fa-stack-1x.fa-folder
+        span.fa.fa-inverse.fa-stack-1x.fa-plus
+      span= t('folder.newFolder')
+    li.divider(
+      role='separator',
+      data-check='menuFolderCheck')
+        
+    li(
+      data-check='menuFolderCheck',
+      data-action=true
+    )
+      input#browse-menu-upload(type='file', multiple=true, style='display: none')
+      label.upload(for='browse-menu-upload')
+        span.fa-stack
+          span.fa.fa-stack-1x.fa-upload
+        span= t('folder.upload')
+
+    li(
+      data-select='single',
+      data-target='file||:not(#l-trash)',
+      data-check='menuItemCheck',
+      data-action='menuDownload'
+    )
+      span.fa-stack
+        span.fa.fa-stack-1x.fa-download
+      span= t('folder.download')
+    li(
+      data-select='single',
+      data-target='folder||:not(#l-trash)',
+      data-check='menuItemCheck',
+      data-action='menuArchive'
+    )
+      span.fa-stack.ctx-stack
+        span.fa.fa-stack-1x.fa-folder-o
+        span.fa.fa-stack-1x.fa-download
+      span= t('folder.archive')
+    li(
+      data-select='multi+',
+      data-target='*||:not(#l-trash)',
+      data-check='menuItemCheck',
+      data-action='menuArchive'
+    )
+      span.fa-stack.ctx-stack
+        span.fa.fa-stack-1x.fa-folder-o
+        span.fa.fa-stack-1x.fa-download
+      span= t('folder.archive')
+
+    li(
+      data-select='multi',
+      data-target='*|w|:not(#l-trash)',
+      data-check='menuItemCheck'
+    ).divider(role="separator")
+    li(
+      data-select='multi',
+      data-target='*|w|:not(#l-trash)',
+      data-check='menuItemCheck',
+      data-action='itemDelete'
+    )
+      span.fa-stack
+        span.fa.fa-stack-1x.fa-trash-o
+      span= t('folder.delete')
+
+    li(
+      data-select='multi',
+      data-target='trash||#l-trash',
+      data-check='menuItemCheck',
+      data-action='trashRestore'
+    )
+      span.fa-stack
+        span.fa.fa-stack-1x.fa-undo
+      span= t('folder.restore')
+    li(
+      data-select='multi',
+      data-target='trash||#l-trash',
+      data-check='menuItemCheck',
+      data-action='trashRemove'
+    )
+      span.fa-stack
+        span.fa.fa-stack-1x.fa-trash-o
+      span= t('trash.remove')

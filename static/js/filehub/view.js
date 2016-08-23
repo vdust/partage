@@ -23,6 +23,7 @@
       ROW_SEL = ROW + '-selected',
       ROW_PREV = ROW + '-prev',
       ROW_ORIG = ROW + '-orig',
+      ROW_SELC = ROW_SEL + ' ' + ROW_PREV + ' ' + ROW_ORIG,
       ROW_DRAG = ROW + '-dragged',
       DRAG = 'on-drag',
       DZONE = 'view-drop-zone',
@@ -215,6 +216,11 @@
         container: self.viewContents
       });
 
+      if (options.contextMenu) {
+        self.contextMenu = $(options.contextMenu);
+        if (!self.contextMenu.length) delete self.contextMenu;
+      }
+
       self._initResize();
       self._initShortcuts();
       self._initLists();
@@ -355,6 +361,9 @@
 
         if (!action || !action.eventname) return;
 
+        if (action.args) {
+          $.merge(args, action.args);
+        }
         if (action.mods) {
           args.push(mod);
         }
@@ -492,7 +501,45 @@
         if (evt.which !== 1) return; // left button only
         if ($(evt.target).closest('.'+ROW).length) return;
         self.trigger('unselectall');
-      });
+      })
+      
+      if (self.contextMenu) {
+        self.contextMenu.contextMenu({
+          click: function (e) {
+            var action = $(this).data('action');
+            if (action) self.trigger('action', [ action ]);
+            self.contextMenu.contextMenu('hide');
+          }
+        });
+
+        self.viewContents.on('contextmenu', function (evt) {
+          var mod = filehub.modMask(evt),
+              row = $(evt.target).closest('.list-row'),
+              menu = self._contextMenu;
+
+          if (!mod || (mod & 2)) evt.preventDefault();
+          if (mod) return;
+
+          evt.stopPropagation();
+
+          if (!row.hasClass(ROW_SEL)) {
+            self.getRows().removeClass(ROW_SELC);
+            row.addClass(ROW_SELC);
+          }
+
+          if (!self._contextIsInit) {
+            self.trigger('menuinit', [ self.contextMenu.children('ul') ]);
+            self._contextIsInit = true;
+          }
+
+          self.trigger('viewmenu', [
+            self.contextMenu.children('ul'),
+            evt.selected || self.getSelected()
+          ]);
+
+          self.contextMenu.contextMenu('show', evt);
+        });
+      }
     },
     _dragRow: function (srcRow, other) {
       var dragRow = $('<div class="dnd-row"/>').toggleClass('dnd-row-other', !!other),

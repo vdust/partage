@@ -917,4 +917,52 @@ form.profile-form {
         white-space: nowrap;
         overflow: hidden; }
 
+.context-menu {
+  -ms-user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  position: fixed;
+  top: 100px;
+  left: 300px;
+  z-index: 110; }
+  .context-menu .dropdown-menu {
+    position: static;
+    display: block;
+    float: none;
+    z-index: auto;
+    top: auto;
+    left: auto; }
+    .context-menu .dropdown-menu li[data-action] {
+      position: relative;
+      cursor: pointer;
+      padding: 0.3em 1.4em 0.3em 0.8em; }
+      .context-menu .dropdown-menu li[data-action] > span + span, .context-menu .dropdown-menu li[data-action] label > span + span {
+        margin-left: 0.5em; }
+      .context-menu .dropdown-menu li[data-action]:before {
+        display: none;
+        content: '';
+        position: absolute;
+        width: 4px;
+        height: 2.6em;
+        left: 0;
+        top: 0;
+        background-color: #a0a0a0; }
+      .context-menu .dropdown-menu li[data-action]:hover {
+        background-color: #eaeaea; }
+        .context-menu .dropdown-menu li[data-action]:hover:before {
+          display: block; }
+      .context-menu .dropdown-menu li[data-action] label {
+        display: block;
+        margin: 0;
+        padding: 0;
+        font-weight: inherit;
+        cursor: pointer; }
+    .context-menu .dropdown-menu .ctx-stack .fa {
+      font-size: 1.3em;
+      opacity: 0.8; }
+      .context-menu .dropdown-menu .ctx-stack .fa + .fa {
+        font-size: 0.8em;
+        opacity: 1; }
+
 /*# sourceMappingURL=filehub.css.map */

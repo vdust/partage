@@ -19,11 +19,94 @@
   }
 
   var ACTIONS = {
+    contextMenu: function (items, button) {
+      var off = button.offset(),
+          h = button.innerHeight(),
+          w = button.innerWidth(),
+          e = $.Event('contextmenu', {
+            pageX: off.left,
+            pageY: off.top + h + 1,
+            target: this.getSelected().get(0) || this.viewActive.get(0),
+            selected: $()
+          });
+
+      this.viewContents.trigger(e);
+    },
+    newFolder: function (items) {
+      console.log("new folder");
+    },
+    menuDownload: function (items) {
+      console.log("download");
+    },
+    menuArchive: function (items) {
+      console.log("get archive");
+    },
     itemDelete: function (items) {
+      console.log("delete");
     },
     trashRestore: function (items) {
     },
     trashRemove: function (items) {
+    }
+  };
+
+  var MENUCHECK = {
+    menuFolderCheck: function (el, selected) {
+      var list = this.viewActive,
+          disable = (list.data('flags')||'').indexOf('w') < 0,
+          visible = !(selected && selected.length) && !list.is('#l-trash');
+
+      el.toggle(visible);
+
+      el.toggleClass('disabled', disable)
+        .children('input').prop('disabled', disable);
+    },
+    menuItemCheck: function (el, selected) {
+      var list = this.viewActive,
+          select = el.data('select') || 'single',
+          target = (el.data('target') || '*').split('|'),
+          flag = target[1],
+          filter = target[2],
+          len = (selected && selected.length) || 0,
+          visible = false,
+          types = selected._browseSelectedTypes;
+
+      target = target[0];
+
+      do {
+        // Must have selected elements
+        if (!len) break;
+        if (len > 1 && select === 'single') break;
+        if (len < 2 && select === 'multi+') break;
+        // Active list must match the filter
+        if (filter && !list.is(filter)) break;
+        // Active list must have the flag
+        if (flag && (list.data('flags')||'').indexOf(flag) < 0) break;
+
+        if (!types) {
+          // We cache the items types in the jQuery object so we don't
+          // create the list each time the function is called on the same
+          // set.
+          types = selected._browseSelectedTypes = {
+            count: 0,
+            map: {}
+          };
+
+          selected.each(function () {
+            var row = $(this), t = row.data('type');
+            if (!types.map[t]) {
+              types.count++;
+              types.map[t] = true;
+            }
+          });
+        }
+
+        if (target !== '*' && (types.count !== 1 || !types.map[target])) break;
+
+        visible = true;
+      } while (0);
+
+      el.toggle(visible);
     }
   };
 
@@ -34,11 +117,42 @@
     var api = new filehub.Api();
 
     var browse = new View({
-      dropzone: true
+      contextMenu: '#context-menu',
+      dropzone: true,
+      shortcuts: {
+        "46": {
+          "0": {
+            eventname: 'action',
+            args: [ 'itemDelete' ]
+          }
+        }
+      }
     });
 
     browse.ACTIONS = ACTIONS;
     browse.api = api;
+
+    browse.getSendQueue = function () {
+      var self = this;
+
+      if (!self.sendQueue) {
+        self.sendQueue = new filehub.SendQueue({
+          api: api
+        });
+
+        var pendingPaths = {};
+        self.sendQueue.on('uploaded', function (up, ctx) {
+          pendingPaths[up.options.path] = true;
+        }).on('complete', function () {
+          if (pendingPaths[self.viewActive.data('path')]) {
+            self.reloadActive();
+          }
+          pendingPaths = {};
+        });
+      }
+
+      return self.sendQueue;
+    };
 
     browse.on('refresh', function (uid, item) {
       if (!poppingState) {
@@ -91,52 +205,51 @@
     }).on('view', function (active) {
       this.sidePanel.enable((active.data('flags')||'').indexOf('w') >= 0);
     }).on('select', function (selected) {
-      var list = this.viewActive,
-          selTypes = {}, types = 0;
-
-      selected.each(function () {
-        var row = $(this), t = row.data('type');
-        if (!selTypes[t]) {
-          types++;
-          selTypes[t] = true;
-        }
-      });
+      var self = this;
 
       this.nav.actions().each(function () {
-        var action = $(this),
-            select = action.data('select') || 'single',
-            target = (action.data('target') || '*').split('|'),
-            flag = target[1],
-            filter = target[2],
-            visible = false;
-
-        target = target[0];
-
-        do {
-          // Must have selected element
-          if (!selected || !selected.length) break;
-          if (selected.length > 1 && select === 'single') break;
-          // Active list must match the filter
-          if (filter && !list.is(filter)) break;
-          // Active list must have the flag
-          if (flag && list.data('flags').indexOf(flag) < 0) break;
-
-          if (target !== '*' && (types !== 1 || !selTypes[target])) break;
-
-          visible = true;
-        } while(0);
-
-        action.toggle(visible);
+        MENUCHECK.menuItemCheck.call(self, $(this), selected);
       });
-    }).on('action', function (action, actBtn) {
-      var selected = this.getSelected(),
-          handler = this.ACTIONS[action];
+    }).on('menuinit', function (menu) {
+      $('#browse-menu-upload').on('change', function (e) {
+        var files = this.files,
+            path = menu.data('path');
+
+        e.preventDefault();
+
+        if (!path || !files || !files.length) return;
+
+        browse.getSendQueue().queue(files, { path: path });
+        browse.contextMenu.contextMenu('hide');
+      });
+    }).on('viewmenu', function (menu, selected) {
+      var self = this;
+
+      menu.data('path', self.viewActive.data('path'));
+
+      // update visibility status of context items.
+      menu.children('li').each(function () {
+        var el = $(this),
+            check = el.data('check');
+
+        if (MENUCHECK[check]) {
+          MENUCHECK[check].call(self, el, selected);
+        }
+      });
+    }).on('button', function (button) {
+      var act = button.data('action');
+      if (act) this.trigger('action', [ act, button ]);
+    }).on('action', function (action) {
+      var handler = this.ACTIONS[action],
+          args = [];
 
       if (!handler || typeof handler !== 'function') {
         return;
       }
+      args.push(this.getSelected());
+      $.merge(args, Array.prototype.slice.call(arguments, 1));
 
-      handler.call(this, selected, actBtn);
+      handler.apply(this, args);
     }).on({
       dragenter: _dragUpdate,
       dragupdate: _dragUpdate,
@@ -192,23 +305,7 @@
         return;
       }
 
-      if (!self.sendQueue) {
-        self.sendQueue = new filehub.SendQueue({
-          api: api
-        });
-
-        var pendingPaths = {};
-        self.sendQueue.on('uploaded', function (up, ctx) {
-          pendingPaths[up.options.path] = true;
-        }).on('complete', function () {
-          if (pendingPaths[self.viewActive.data('path')]) {
-            self.reloadActive();
-          }
-          pendingPaths = {};
-        });
-      }
-
-      self.sendQueue.queue(dt.files, {
+      self.getSendQueue().queue(dt.files, {
         path: target.data('path')
       });
     }

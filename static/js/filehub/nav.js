@@ -26,6 +26,9 @@
         self[key] = $(opts[key]);
       });
 
+      self.nav.on('contextmenu', function (e) {
+        e.preventDefault();
+      });
       self.navPath.on('click', '.navitem', function (evt) {
         var navitem = $(this);
 

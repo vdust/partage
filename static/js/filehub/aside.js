@@ -27,6 +27,9 @@
 
       self.treeIdPrefix = self.treeBox.data('id-prefix') || 't-';
 
+      self.aside.on('contextmenu', function (e) {
+        e.preventDefault();
+      });
       self.buttonBox.on('click', 'button', function (evt) {
         var button = $(this);
 

@@ -1,0 +1,54 @@
+.context-menu {
+  @include user-select-none;
+  position: fixed;
+  top: 100px;
+  left: 300px;
+  z-index: 110;
+  .dropdown-menu {
+    position: static;
+    display: block;
+    float: none;
+    z-index: auto;
+    top: auto;
+    left: auto;
+    li[data-action] {
+      position: relative;
+      cursor: pointer;
+      padding: 0.3em 1.4em 0.3em 0.8em;
+      > span + span, label > span + span {
+        margin-left: 0.5em;
+      }
+      &:before {
+        display: none;
+        content: '';
+        position: absolute;
+        width: 4px;
+        height: 2.6em;
+        left: 0;
+        top: 0;
+        background-color: #a0a0a0;
+      }
+      &:hover {
+        background-color: #eaeaea;
+        &:before {
+          display: block;
+        }
+      }
+      label {
+        display: block;
+        margin: 0;
+        padding: 0;
+        font-weight: inherit;
+        cursor: pointer;
+      }
+    }
+    .ctx-stack .fa {
+      font-size: 1.3em;
+      opacity: 0.8;
+      + .fa {
+        font-size: 0.8em;
+        opacity: 1;
+      }
+    }
+  }
+}

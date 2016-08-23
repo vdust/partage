@@ -79,8 +79,8 @@ block contents
           div.view-aside#view-aside(style='width:0')
             - var cond = req.user.is('admin') ? ':not(#f-trash)' : ':not(#f-trash,#f-0,.read-only)'
             - var canadd = req.user.is('admin') || (folder && folder.canwrite(req.user))
-            div.button-box(data-cond="", style=canadd?false:"display: none")
-              button(type="button", disabled=!canadd, data-handler='folderAdd')
+            div.button-box
+              button(type="button", disabled=!canadd, data-action='contextMenu')
                 span.fa.fa-plus
                 = t("folder.new")
             div.tree-box.view-drop-target
@@ -111,4 +111,5 @@ block contents
 
 block extra
   include ./_sendqueue.pug
+  include ./_ctxmenu.pug
   include ./_acldialog.pug
