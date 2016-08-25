@@ -1,0 +1,27 @@
+div.modal.fade#create-or-rename
+  div.modal-dialog.modal-sm
+    div.modal-content
+      div.modal-header
+        button.close(type="button", data-dismiss="modal")
+          span.fa.fa-close
+        h4#rd-title.modal-title(
+          data-rename=t("folder.rename"),
+          data-create=t("folder.newFolder")
+        )= t("folder.newFolder")
+      div.modal-body
+        div.form
+          input#rd-name.name(type="text", name="name",
+            placeholder=t("folder.name"))
+          input#rd-desc.description(type="text", name="description",
+            placeholder=t("folder.description"))
+        div#rd-load.loader(style="display: none")
+          span.fa.fa-spin.fa-spinner
+          = ' '
+          = t("form.processing")
+      div.modal-footer
+        button.btn.btn-default(type="button", data-dismiss="modal")
+          = t('button.cancel')
+        button.btn.btn-primary(type="button", data-type="create")
+          = t('button.create')
+        button.btn.btn-primary(type="button", data-type="rename")
+          = t('button.ok')

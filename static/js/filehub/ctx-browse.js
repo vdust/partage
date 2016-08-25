@@ -18,6 +18,65 @@
     }
   }
 
+  var renameDialog = (function () {
+    var r_modal, title, n, d, showSet, hideSet, _done;
+
+    return function (type, done, name, desc) {
+      if (!r_modal) {
+        r_modal = $('#create-or-rename');
+        title = $('#rd-title');
+        n = $('#rd-name');
+        d = $('#rd-desc');
+        showSet = $('#rd-load');
+        hideSet = $([n.parent().get(0), title.siblings('.close').get(0), r_modal.find('.modal-footer').get(0)]);
+
+        r_modal.modal({
+          backdrop: 'static',
+          show: false
+        });
+
+        r_modal.on('hidden.bs.modal', function () {
+          _done = null;
+          hideSet.show();
+          showSet.hide();
+        }).on('shown.bs.modal', function () {
+          n.removeClass('error').get(0).focus();
+        }).on('click', 'button[data-type]', function () {
+          var el = $(this);
+          if (typeof _done === 'function') {
+            hideSet.hide();
+            showSet.show();
+            r_modal.modal('handleUpdate');
+            _done(el.data('type'), function (err) {
+              if (err) {
+                hideSet.show();
+                showSet.hide();
+                r_modal.modal('handleUpdate');
+                n.addClass('error').get(0).focus();
+              } else {
+                r_modal.modal('hide');
+              }
+            }, n.val(), d.val());
+          } else {
+            r_modal.modal('hide');
+          }
+        });
+      } 
+
+      r_modal.find('.modal-footer').children('button[data-type]').each(function () {
+        var el = $(this);
+        el.toggle(el.data('type') === type);
+      });
+
+      d.toggle(desc != null).val(desc || '');
+      n.val(name || '');
+      title.text(title.data(type) || '');
+
+      _done = done;
+      r_modal.modal('show');
+    }
+  })();
+
   var ACTIONS = {
     contextMenu: function (items, button) {
       var off = button.offset(),
@@ -33,7 +92,40 @@
       this.viewContents.trigger(e);
     },
     newFolder: function (items) {
-      console.log("new folder");
+      var self = this,
+          flags = self.viewActive.data('flags'),
+          path = self.viewActive.data('path');
+
+      if (!flags.indexOf('w') < 0) return;
+
+      renameDialog('create', function (type, done, name, desc) {
+        name = (name || '').replace(/^ +| +$/g, '');
+        desc = (desc || '').replace(/^ +| +$/g, '');
+
+        if (!name || name.indexOf('/') >= 0) {
+          return done('name');
+        }
+
+        if (flags.indexOf('c') >= 0) {
+          self.api.createFolder(name, {
+            description: desc
+          }).done(function () {
+            done();
+            self.reloadActive();
+          }).error(function () {
+            // TODO: Proper error reporting
+            done('name');
+          });
+        } else {
+          self.api.createDir('/'+path.replace(/^\/+/, '')+'/'+name)
+            .done(function () {
+              done();
+              self.reloadActive();
+            }).error(function () {
+              done('name');
+            });
+        }
+      }, '', flags.indexOf('c') >= 0 ? '' : null);
     },
     menuDownload: function (items) {
       console.log("download");

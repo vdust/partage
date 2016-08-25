@@ -32,6 +32,7 @@
   "button": {
     "apply": "Apply",
     "cancel": "Cancel",
+    "create": "Create",
     "ok": "Ok",
     "save": "Save"
   },
@@ -53,19 +54,28 @@
   },
   "folder": {
     "access": "Edit access list",
+    "archive": "Download (.zip)",
     "delete": "Delete",
+    "description": "Description",
+    "download": "Download",
     "empty-folder": "The folder is empty. Drag and drop files here to upload them.",
     "empty-root": "You have no folder subscription yet.",
     "empty-root-admin": "There are no root folder yet. Use the NEW button to create some.",
     "empty-trash": "The trash is empty.",
     "origin": "Original location",
-    "rename": "Rename",
     "mtime": "Last modified",
     "name": "Name",
     "new": "New",
-    "size": "File size"
+    "newFolder": "New folder",
+    "rename": "Rename",
+    "restore": "Restore",
+    "size": "File size",
+    "upload": "Upload file(s)"
   },
   "folders": "Folders",
+  "form": {
+    "processing": "Processing request..."
+  },
   "loading": "Loading...",
   "login-failure": "User name and password don't match.",
   "powered-by": "Powered by FileHub",

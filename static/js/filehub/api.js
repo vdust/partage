@@ -124,7 +124,7 @@
     },
 
     createDir: function (path, recursive) {
-      return this.put("/repo" + path + (recursive ? "?parents=1" : ""));
+      return this.put("/repo" + path.replace(/\/*$/, '/') + (recursive ? "?parents=1" : ""));
     },
 
     trashList: function () {
