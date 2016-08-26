@@ -89,6 +89,7 @@
             selected: $()
           });
 
+      this.contextMenu.css('min-width', w);
       this.viewContents.trigger(e);
     },
     newFolder: function (items) {
@@ -296,6 +297,25 @@
       }
     }).on('view', function (active) {
       this.sidePanel.enable((active.data('flags')||'').indexOf('w') >= 0);
+    }).on('reload-aside', function (uid) {
+      if (uid === 'trash') return; // No reload to do if trash is the target.
+
+      var aside = this.sidePanel,
+          root = aside.getItem(),
+          p = aside.getItem(uid);
+
+      if (!p.length) p = root;
+
+      $.getJSON(aside.treeBox.data('url'), {
+        path: p.data('path'),
+        merge: JSON.stringify({
+          icon: { on: root.data('ico-on'), off: root.data('ico-off') }
+        })
+      }, function (list) {
+        aside.update(uid, list);
+      }).fail(function (jqxhr, txtstatus, error) {
+        // TODO: Handle failure.
+      });
     }).on('select', function (selected) {
       var self = this;
 

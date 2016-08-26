@@ -194,8 +194,8 @@
    * ]
    */
   filehub.build = function (tree) {
-    var coll = [];
-    var spec, elem;
+    var coll = [],
+        spec, elem;
 
     if (!$.isArray(tree)) {
       tree = [ tree ];
@@ -224,7 +224,7 @@
         elem.on(spec.on);
       }
 
-      coll = coll.push(elem.get(0));
+      coll.push(elem.get(0));
     }
 
     return $(coll);
@@ -418,6 +418,7 @@
           break;
         case 'hide':
           res.hide();
+          des.css('min-width', ''); // XXX Hacky hacky to manage with bound button
           res.each(function () {
             var data = $(this).data(NS);
             if (!data) return;

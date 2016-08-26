@@ -614,6 +614,7 @@
 
       self._reloading = uid;
       self.loadTarget(uid, self.viewActive);
+      self.trigger('reload-aside', [ uid ]);
     },
     loadTarget: function (uid, item) {
       var self = this,

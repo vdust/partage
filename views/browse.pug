@@ -10,6 +10,7 @@ mixin browsetreeitem(uid, options, subtree, candrop, depth)
       options.iconon || options.iconoff || 'fa-folder-open'
     ];
     attrs['data-url'] = options.path.join('/')
+    attrs['data-path'] = options.path.slice(1).join('/')
     attrs['data-uid'] = uid
     attrs['data-ico-off'] = icoState[0];
     attrs['data-ico-on'] = icoState[1];
@@ -83,7 +84,7 @@ block contents
               button(type="button", disabled=!canadd, data-action='contextMenu')
                 span.fa.fa-plus
                 = t("folder.new")
-            div.tree-box.view-drop-target
+            div.tree-box.view-drop-target(data-url=req.baseUrl + "/.tree")
               div.tree.tree-large
                 +browsetreeitem('0', {
                   name: t('folders'),

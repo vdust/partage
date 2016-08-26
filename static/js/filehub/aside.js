@@ -65,6 +65,12 @@
     width: function () {
       return this.aside.width();
     },
+    getItem: function (uid) {
+      if (!uid) {
+        return this.treeBox.children('.tree').children().first();
+      }
+      return $('#'+this.options.idPrefix + uid);
+    },
     select: function (uid, item) {
       var self = this,
           opts = self.options;
@@ -104,22 +110,31 @@
 
       if (!root.length || !items || !items.length) {
         tree.remove();
+        root.children('.tree-expand').html('<span/>');
         return;
       }
 
-      tree.empty();
-      depth = root.children('.tree-pad').length;
+      console.log(items);
+
+      if (!tree.length) {
+        tree = $('<div class="tree"/>').insertAfter(root).hide();
+        root.children('.tree-expand')
+            .append($('<span class="fa"/>').addClass(expand[0]));
+      } else {
+        tree.empty();
+      }
+      depth = root.children('.tree-pad').length + 1;
 
       stack.push({ items: items, i: 0, tree: tree });
       while (stack.length) {
         current = stack.pop();
         for (; current.i < current.items.length; current.i++) {
-          var item = current.items[i];
-          var el = $('div').treeItem({
+          var item = current.items[current.i];
+          var el = $('<div/>').treeItem({
             label: item.label,
             icon: item.icon,
             subtree: item.subtree && item.subtree.length > 0,
-            expand: item.subtree ? { off: expand[0], on: expand[1] } : false,
+            expand: (item.subtree && item.subtree.length) ? { off: expand[0], on: expand[1] } : false,
             depth: depth + stack.length,
             idPrefix: opts.idPrefix,
             uid: item.uid,
@@ -183,7 +198,7 @@
         append: [
           {
             tag: 'span',
-            addClass: icon ? icon.off : ''
+            addClass: icon ? 'fa ' + icon.off : ''
           }
         ]
       },
@@ -214,6 +229,8 @@
     this.data(options.data||{});
 
     if (options.active) this.treeItemActive();
+
+    return this;
   }
 
   $.fn.treeItemActive = function (active) {
