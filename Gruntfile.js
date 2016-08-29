@@ -11,7 +11,7 @@ module.exports = function (grunt) {
       api: ['test/api.js']
     },
     sass: {
-      options: { sourceMap: true },
+      options: { sourceMap: false },
       dist: {
         files: {
           'static/css/filehub.css': 'scss/filehub.scss',
@@ -21,7 +21,7 @@ module.exports = function (grunt) {
     },
     uglify: {
       options: {
-        sourceMap: true,
+        sourceMap: false,
         compress: {
           dead_code: true
         },
