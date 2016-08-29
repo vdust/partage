@@ -60,6 +60,15 @@
           } else {
             r_modal.modal('hide');
           }
+        }).on('keydown', 'input', function (e) {
+          switch (e.which) {
+            case 13:
+              r_modal.find('button[data-type]:visible').click();
+              break;
+            case 27:
+              r_modal.find('button[data-dismiss]:visible').first().click();
+              break;
+          }
         });
       } 
 
@@ -129,7 +138,10 @@
       }, '', flags.indexOf('c') >= 0 ? '' : null);
     },
     menuDownload: function (items) {
-      console.log("download");
+      if (items.length !== 1 || items.data('type') === 'folder' || !items.data('path')) {
+        return;
+      }
+      this.api.getFile(items.data('path'));
     },
     menuArchive: function (items) {
       console.log("get archive");
@@ -288,7 +300,7 @@
         callback({ statusCode: jqxhr.statusCode(), textStatus: textStatus, error: error });
       });
     }).on('activate', function (listrow) {
-      switch(listrow.data('type')) {
+      switch (listrow.data('type')) {
         case 'folder':
           this.sidePanel.select(listrow.data('uid'));
           break;

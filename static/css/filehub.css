@@ -926,6 +926,8 @@ form.profile-form {
   top: 100px;
   left: 300px;
   z-index: 110; }
+  .context-menu:focus {
+    outline: none; }
   .context-menu .dropdown-menu {
     position: static;
     display: block;

@@ -342,10 +342,15 @@
     _initShortcuts: function () {
       var self = this;
 
-      doc.on('keydown.list-shortcuts', function (evt) {
+      self._scDisabled = 0;
+      doc.on('shown.bs.modal shown.fhcontextmenu', function (e) {
+        self._scDisabled++;
+      }).on('hidden.bs.modal hidden.fhcontextmenu', function (e) {
+        self._scDisabled = Math.max(0, self._scDisabled - 1);
+      }).on('keydown.list-shortcuts', function (evt) {
+        if (self._scDisabled) return; // needed for overlay operations.
         if (self._body.hasClass(DRAG)) return; // ignore shortcuts when d&d
         if ($(evt.target).closest('a,button,input,textarea,.dialog').length) return;
-        if (self._scDisabled) return; // needed for overlay operations.
 
         var shortcuts = self.options.shortcuts,
             mod = filehub.modMask(evt),
