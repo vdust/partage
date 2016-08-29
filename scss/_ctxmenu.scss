@@ -4,6 +4,9 @@
   top: 100px;
   left: 300px;
   z-index: 110;
+  &:focus {
+    outline: none;
+  }
   .dropdown-menu {
     position: static;
     display: block;
