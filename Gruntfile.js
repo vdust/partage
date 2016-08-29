@@ -14,8 +14,8 @@ module.exports = function (grunt) {
       options: { sourceMap: false },
       dist: {
         files: {
-          'static/css/filehub.css': 'scss/filehub.scss',
-          'static/css/filehub-admin.css': 'scss/filehub-admin.scss'
+          'dist/css/filehub.css': 'scss/filehub.scss',
+          'dist/css/filehub-admin.css': 'scss/filehub-admin.scss'
         }
       }
     },
@@ -33,11 +33,11 @@ module.exports = function (grunt) {
       },
       filehub: {
         files: {
-          'static/js/filehub.min.js': [
+          'dist/js/filehub.min.js': [
             'static/js/_defines.js',
             'static/js/filehub.js',
             'static/js/filehub/*.js' ],
-          'static/js/filehub-admin.min.js': 'static/js/filehub-admin/*.js'
+          'dist/js/filehub-admin.min.js': 'static/js/filehub-admin/*.js'
         }
       }
     },
