@@ -147,7 +147,30 @@
       console.log("get archive");
     },
     itemDelete: function (items) {
-      console.log("delete");
+      var self = this;
+
+      if (!items || !items.length) return;
+
+      items = items.toArray();
+
+      function next() {
+        var item = items.shift();
+
+        if (!item) {
+          // TODO: User feedback.
+          self.reloadActive();
+          return;
+        }
+
+        item = $(item);
+
+        if (!item.data('path')) return next();
+
+        self.api.trash('/'+item.data('path')+(item.data('type') === 'folder' ? '/' : ''))
+          .complete(next);
+      }
+
+      next();
     },
     trashRestore: function (items) {
     },
