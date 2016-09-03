@@ -11,6 +11,7 @@ var expect = require('expect');
 var api = require('./_common').api;
 var cleanTime = require('./_common').cleanTime;
 var merge = require('../../lib/utils').merge;
+var Resource = require('../../lib/manager/resource');
 
 api("* /api/repo/", function (agent, test, as) {
   test("should trigger 401 response if unauthenticated", [
@@ -28,7 +29,7 @@ api("GET /api/repo/", function (agent, test, as) {
         .expect(200, [
           {
             name: 'readonly',
-            uid: '2',
+            uid: Resource.pathHash('readonly'),
             description: 'Read-only folder',
             type: 'folder',
             mime: 'inode/directory',
@@ -39,7 +40,7 @@ api("GET /api/repo/", function (agent, test, as) {
           },
           {
             name: 'readwrite',
-            uid: '3',
+            uid: Resource.pathHash('readwrite'),
             description: 'Read-write folder',
             type: 'folder',
             mime: 'inode/directory',
@@ -60,7 +61,7 @@ api("GET /api/repo/", function (agent, test, as) {
         .expect(200, [
           {
             name: 'adminonly',
-            uid: '1',
+            uid: Resource.pathHash('adminonly'),
             description: '',
             type: 'folder',
             mime: 'inode/directory',
@@ -72,7 +73,7 @@ api("GET /api/repo/", function (agent, test, as) {
           },
           {
             name: 'readonly',
-            uid: '2',
+            uid: Resource.pathHash('readonly'),
             description: 'Read-only folder',
             type: 'folder',
             mime: 'inode/directory',
@@ -86,7 +87,7 @@ api("GET /api/repo/", function (agent, test, as) {
           },
           {
             name: 'readwrite',
-            uid: '3',
+            uid: Resource.pathHash('readwrite'),
             description: 'Read-write folder',
             type: 'folder',
             mime: 'inode/directory',
@@ -113,13 +114,6 @@ api("POST /api/repo/", function (agent, test, as) {
   });
 
   as('admin', function () {
-    var uidseq = (function () {
-      var last = 3;
-      return function () {
-        return ''+(++last);
-      };
-    })();
-
     function query(data, status, mergeBody) {
       return function () {
         var q = agent.post('/api/repo/')
@@ -130,7 +124,7 @@ api("POST /api/repo/", function (agent, test, as) {
         if (data && status === 200) {
           q = q.expect(merge({
             name: data.name,
-            uid: uidseq(),
+            uid: Resource.pathHash(data.name),
             description: data.description||'',
             type: 'folder',
             mime: 'inode/directory',
@@ -225,7 +219,7 @@ api("GET /api/repo/stat", function (agent, test, as) {
         .expect(cleanTime)
         .expect(200, {
           name: 'readonly',
-          uid: '2',
+          uid: Resource.pathHash('readonly'),
           description: 'Read-only folder',
           type: 'folder',
           mime: 'inode/directory',
@@ -239,7 +233,7 @@ api("GET /api/repo/stat", function (agent, test, as) {
         .expect(cleanTime)
         .expect(200, {
           name: 'readonly',
-          uid: '2',
+          uid: Resource.pathHash('readonly'),
           description: 'Read-only folder',
           type: 'folder',
           mime: 'inode/directory',
@@ -258,7 +252,7 @@ api("GET /api/repo/stat", function (agent, test, as) {
           folder: 'readonly',
           dirname: '.',
           name: 'subdir',
-          uid: '2-37db6403631f80ea309d8b6c30580c1b73f4b8a9',
+          uid: Resource.pathHash('readonly/subdir'),
           path: 'readonly/subdir',
           type: 'folder',
           mime: 'inode/directory'
@@ -273,7 +267,7 @@ api("GET /api/repo/stat", function (agent, test, as) {
           folder: 'readonly',
           dirname: '.',
           name: 'subdir',
-          uid: '2-37db6403631f80ea309d8b6c30580c1b73f4b8a9',
+          uid: Resource.pathHash('readonly/subdir'),
           path: 'readonly/subdir',
           type: 'folder',
           mime: 'inode/directory'
@@ -287,7 +281,7 @@ api("GET /api/repo/stat", function (agent, test, as) {
           folder: 'readonly',
           dirname: '.',
           name: 'test.txt',
-          uid: '2-4b6fcb2d521ef0fd442a5301e7932d16cc9f375a',
+          uid: Resource.pathHash('readonly/test.txt'),
           path: 'readonly/test.txt',
           type: 'file',
           mime: 'text/plain',
@@ -303,7 +297,7 @@ api("GET /api/repo/stat", function (agent, test, as) {
           folder: 'readonly',
           dirname: '.',
           name: 'test.txt',
-          uid: '2-4b6fcb2d521ef0fd442a5301e7932d16cc9f375a',
+          uid: Resource.pathHash('readonly/test.txt'),
           path: 'readonly/test.txt',
           type: 'file',
           mime: 'text/plain',
@@ -332,7 +326,7 @@ api("GET /api/repo/stat", function (agent, test, as) {
         .expect(cleanTime)
         .expect(200, {
           name: 'adminonly',
-          uid: '1',
+          uid: Resource.pathHash('adminonly'),
           description: '',
           type: 'folder',
           mime: 'inode/directory',
@@ -347,7 +341,7 @@ api("GET /api/repo/stat", function (agent, test, as) {
         .expect(cleanTime)
         .expect(200, {
           name: 'readonly',
-          uid: '2',
+          uid: Resource.pathHash('readonly'),
           description: 'Read-only folder',
           type: 'folder',
           mime: 'inode/directory',
@@ -369,7 +363,7 @@ api("GET /api/repo/stat", function (agent, test, as) {
           folder: 'adminonly',
           dirname: '.',
           name: 'subdir',
-          uid: '1-37db6403631f80ea309d8b6c30580c1b73f4b8a9',
+          uid: Resource.pathHash('adminonly/subdir'),
           path: 'adminonly/subdir',
           type: 'folder',
           mime: 'inode/directory'
@@ -383,7 +377,7 @@ api("GET /api/repo/stat", function (agent, test, as) {
           folder: 'adminonly',
           dirname: '.',
           name: 'test.txt',
-          uid: '1-4b6fcb2d521ef0fd442a5301e7932d16cc9f375a',
+          uid: Resource.pathHash('adminonly/test.txt'),
           path: 'adminonly/test.txt',
           type: 'file',
           mime: 'text/plain',
@@ -429,7 +423,7 @@ api("POST /api/repo/rename", { edit: true}, function (agent, test, as) {
             name: 'renamed.txt',
             path: 'readwrite/renamed.txt',
             type: 'file',
-            uid: '3-70fa072ee1968882441a966ed2bb8fd0b07c2eea'
+            uid: Resource.pathHash('readwrite/renamed.txt')
           });
           expect(res.body).toContainKey('mtime');
         }),
@@ -453,7 +447,7 @@ api("POST /api/repo/rename", { edit: true}, function (agent, test, as) {
             name: 'moved.txt',
             path: 'readwrite/existdir/moved.txt',
             type: 'file',
-            uid: '3-d00971357e953335d239b51e2f6b90b62246665c'
+            uid: Resource.pathHash('readwrite/existdir/moved.txt')
           });
           expect(res.body).toContainKey('mtime');
         }),
@@ -475,7 +469,7 @@ api("POST /api/repo/rename", { edit: true}, function (agent, test, as) {
           name: 'renamed',
           path: 'readwrite/renamed',
           type: 'folder',
-          uid: '3-876207095ef6ea1315316230f0e9afb23f003c11'
+          uid: Resource.pathHash('readwrite/renamed')
         }),
       () => agent.delPath('readwrite/renamed/')
     ]);
@@ -499,7 +493,7 @@ api("POST /api/repo/rename", { edit: true}, function (agent, test, as) {
             name: 'replace.txt',
             path: 'readwrite/replace.txt',
             type: 'file',
-            uid: '3-5e0e3b0db2344111e3eb830122ac4fb0c973ddd9',
+            uid: Resource.pathHash('readwrite/replace.txt'),
             replaced: {
               origin: 'readwrite/replace.txt'
             }
@@ -529,7 +523,7 @@ api("POST /api/repo/rename", { edit: true}, function (agent, test, as) {
             name: 'replace',
             path: 'readwrite/replace',
             type: 'folder',
-            uid: '3-3cacc7bfac0a382c669a884c953d0401a689785d',
+            uid: Resource.pathHash('readwrite/replace'),
             replaced: {
               origin: 'readwrite/replace'
             }
@@ -555,7 +549,7 @@ api("POST /api/repo/rename", { edit: true}, function (agent, test, as) {
             name: 'exist.txt',
             path: 'readwrite/exist.txt',
             type: 'file',
-            uid: '3-88bccd56a14d64683ecec50d2e2d7387ad7761db'
+            uid: Resource.pathHash('readwrite/exist.txt'),
           });
           expect(res.body).toContainKey('mtime');
         })
@@ -690,27 +684,6 @@ api("POST /api/repo/rename", { edit: true}, function (agent, test, as) {
         })
         .expect(409),
       () => agent.delPath('readwrite/renamed/')
-    ]);
-
-    test("should get 409 response if target has not the same resource type", [
-      () => agent.putFile('readwrite/to-replace.txt'),
-      () => agent.putDir('readwrite/to-replace/'),
-      () => agent.post('/api/repo/rename')
-        .send({
-          src: 'readwrite/to-replace.txt',
-          dest: 'readwrite/to-replace',
-          replace: 1
-        })
-        .expect(409),
-      () => agent.post('/api/repo/rename')
-        .send({
-          src: 'readwrite/to-replace',
-          dest: 'readwrite/to-replace.txt',
-          replace: 1
-        })
-        .expect(409),
-      () => agent.delPath('readwrite/to-replace.txt'),
-      () => agent.delPath('readwrite/to-replace/')
     ]);
 
     test("should get 409 response if the parent of the source is a file", [

@@ -11,6 +11,7 @@ var expect = require('expect');
 var api = require('./_common').api;
 var cleanTime = require('./_common').cleanTime;
 var merge = require('../../lib/utils').merge;
+var Resource = require('../../lib/manager/resource');
 
 api("* /api/repo/:folder/", function (agent, test, as) {
   test("should get 404 response if trailing slash is missing", [
@@ -46,7 +47,7 @@ api("GET /api/repo/:folder/", function (agent, test, as) {
         .expect(cleanTime)
         .expect(200, {
           name: 'readonly',
-          uid: '2',
+          uid: Resource.pathHash('readonly'),
           description: 'Read-only folder',
           type: 'folder',
           mime: 'inode/directory',
@@ -59,7 +60,7 @@ api("GET /api/repo/:folder/", function (agent, test, as) {
               folder: 'readonly',
               dirname: '.',
               name: 'subdir',
-              uid: '2-37db6403631f80ea309d8b6c30580c1b73f4b8a9',
+              uid: Resource.pathHash('readonly/subdir'),
               path: 'readonly/subdir',
               type: 'folder',
               mime: 'inode/directory'
@@ -70,7 +71,7 @@ api("GET /api/repo/:folder/", function (agent, test, as) {
               folder: 'readonly',
               dirname: '.',
               name: 'test.txt',
-              uid: '2-4b6fcb2d521ef0fd442a5301e7932d16cc9f375a',
+              uid: Resource.pathHash('readonly/test.txt'),
               path: 'readonly/test.txt',
               type: 'file',
               mime: 'text/plain',
@@ -87,7 +88,7 @@ api("GET /api/repo/:folder/", function (agent, test, as) {
         .expect(cleanTime)
         .expect(200, {
           name: 'readonly',
-          uid: '2',
+          uid: Resource.pathHash('readonly'),
           description: 'Read-only folder',
           type: 'folder',
           mime: 'inode/directory',
@@ -100,7 +101,7 @@ api("GET /api/repo/:folder/", function (agent, test, as) {
               folder: 'readonly',
               dirname: '.',
               name: 'subdir',
-              uid: '2-37db6403631f80ea309d8b6c30580c1b73f4b8a9',
+              uid: Resource.pathHash('readonly/subdir'),
               path: 'readonly/subdir',
               type: 'folder',
               mime: 'inode/directory',
@@ -109,7 +110,7 @@ api("GET /api/repo/:folder/", function (agent, test, as) {
                   folder: 'readonly',
                   dirname: 'subdir',
                   name: 'recursive',
-                  uid: '2-1f346a55be8c06c757161209bae011d5130f44e3',
+                  uid: Resource.pathHash('readonly/subdir/recursive'),
                   path: 'readonly/subdir/recursive',
                   type: 'folder',
                   mime: 'inode/directory',
@@ -141,7 +142,7 @@ api("GET /api/repo/:folder/", function (agent, test, as) {
         .expect(cleanTime)
         .expect(200, {
           name: 'adminonly',
-          uid: '1',
+          uid: Resource.pathHash('adminonly'),
           description: '',
           type: 'folder',
           mime: 'inode/directory',
@@ -155,7 +156,7 @@ api("GET /api/repo/:folder/", function (agent, test, as) {
               folder: 'adminonly',
               dirname: '.',
               name: 'subdir',
-              uid: '1-37db6403631f80ea309d8b6c30580c1b73f4b8a9',
+              uid: Resource.pathHash('adminonly/subdir'),
               path: 'adminonly/subdir',
               type: 'folder',
               mime: 'inode/directory'
@@ -166,7 +167,7 @@ api("GET /api/repo/:folder/", function (agent, test, as) {
               folder: 'adminonly',
               dirname: '.',
               name: 'test.txt',
-              uid: '1-4b6fcb2d521ef0fd442a5301e7932d16cc9f375a',
+              uid: Resource.pathHash('adminonly/test.txt'),
               path: 'adminonly/test.txt',
               type: 'file',
               mime: 'text/plain',
@@ -234,7 +235,7 @@ api("PUT /api/repo/:folder/", function (agent, test, as) {
   as('admin', function () {
     var infos = {
       name: 'adminonly',
-      uid: '1',
+      uid: Resource.pathHash('adminonly'),
       description: '',
       type: 'folder',
       mime: 'inode/directory',

@@ -10,8 +10,10 @@ var expect = require('expect');
 
 var api = require('./_common').api;
 
+var Resource = require('../../lib/manager/resource');
 
-api("* /api/repo/:folder/path+", function (agent, test, as) {
+
+api("* /api/repo/:folder/:path+", function (agent, test, as) {
   test("should get 401 (unauthorized) response if unauthenticated", [
     () => agent.get('/api/repo/adminonly/test.txt').expect(401),
     () => agent.head('/api/repo/adminonly/test.txt').expect(401),
@@ -49,7 +51,7 @@ function queryFile(agent, path, contents, type) {
     });
 }
 
-api("GET /api/repo/:folder/path+", function (agent, test, as) {
+api("GET /api/repo/:folder/:path+", function (agent, test, as) {
   as('user', function () {
     test("should get file contents", [
       queryFile(agent, '/readonly/test.txt', "test")
@@ -77,7 +79,7 @@ api("GET /api/repo/:folder/path+", function (agent, test, as) {
   });
 });
 
-api("HEAD /api/repo/:folder/path+", function (agent, test, as) {
+api("HEAD /api/repo/:folder/:path+", function (agent, test, as) {
   as('user', function () {
     test("should get 204 response", [
       () => agent.head('/api/repo/readonly/test.txt').expect(204)
@@ -105,7 +107,7 @@ api("HEAD /api/repo/:folder/path+", function (agent, test, as) {
   });
 });
 
-api("PUT /api/repo/:folder/path+", function (agent, test, as) {
+api("PUT /api/repo/:folder/:path+", function (agent, test, as) {
   as('user', function () {
     test("should write a new file", [
       () => agent.put('/api/repo/readwrite/new.txt')
@@ -117,7 +119,7 @@ api("PUT /api/repo/:folder/path+", function (agent, test, as) {
             folder: 'readwrite',
             dirname: '.',
             name: 'new.txt',
-            uid: '3-71ddebcf9d25aab7c0849b3a96a5804f16d21bd6',
+            uid: Resource.pathHash('readwrite/new.txt'),
             path: 'readwrite/new.txt',
             type: 'file',
             mime: 'text/plain',
@@ -141,7 +143,7 @@ api("PUT /api/repo/:folder/path+", function (agent, test, as) {
             folder: 'readwrite',
             dirname: '.',
             name: 'replace.txt',
-            uid: '3-5e0e3b0db2344111e3eb830122ac4fb0c973ddd9',
+            uid: Resource.pathHash('readwrite/replace.txt'),
             path: 'readwrite/replace.txt',
             type: 'file',
             mime: 'text/plain',
@@ -152,6 +154,26 @@ api("PUT /api/repo/:folder/path+", function (agent, test, as) {
           });
         }),
       queryFile(agent, '/readwrite/replace.txt', "Replaced")
+    ]);
+
+    test("should save at a renamed location if file already exists", [
+      () => agent.put('/api/repo/readwrite/exist.txt')
+        .set('Content-Type', 'text/plain; charset=utf-8')
+        .send("Renamed").expect(200)
+        .expect(function (res) {
+          expect(res.body).toContain({
+            folder: 'readwrite',
+            dirname: '.',
+            name: '[#1] exist.txt',
+            uid: Resource.pathHash('readwrite/[#1] exist.txt'),
+            path: 'readwrite/[#1] exist.txt',
+            type: 'file',
+            mime: 'text/plain',
+            size: 7
+          });
+          expect(res.body).toNotContainKey('replaced');
+        }),
+      queryFile(agent, '/readwrite/'+encodeURIComponent('[#1] exist.txt'), "Renamed")
     ]);
 
     test("should get 403 response on read-only folder", [
@@ -178,28 +200,15 @@ api("PUT /api/repo/:folder/path+", function (agent, test, as) {
         .send("No access").expect(404)
     ]);
 
-    test("should get 409 response if file already exists", [
-      () => agent.put('/api/repo/readwrite/exist.txt')
-        .set('Content-Type', 'text/plain; charset=utf-8')
-        .send("Already exist").expect(409),
-      queryFile(agent, '/readwrite/exist.txt', "test")
-    ]);
-
     test("should get 409 response if parent is an existing file", [
       () => agent.put('/api/repo/readwrite/exist.txt/new.txt')
         .set('Content-Type', 'text/plain; charset=utf-8')
         .send("Parent is not a directory").expect(409)
     ]);
-
-    test("should get 409 response if target to replace is a directory", [
-      () => agent.put('/api/repo/readwrite/existdir')
-        .set('Content-Type', 'text/plain; charset=utf-8')
-        .send("Is directory").expect(409)
-    ]);
   });
 });
 
-api("DELETE /api/repo/:folder/path+", function (agent, test, as) {
+api("DELETE /api/repo/:folder/:path+", function (agent, test, as) {
   as('user', function () {
     function trashItemPayload(res) {
       expect(res.body).toContain({

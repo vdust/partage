@@ -11,6 +11,8 @@ var expect = require('expect');
 var api = require('./_common').api;
 var cleanTime = require('./_common').cleanTime;
 
+var Resource = require('../../lib/manager/resource');
+
 api("* /api/repo/:folder/path+/", function (agent, test, as) {
   test("should get 401 (unauthorized) response if unauthenticated", [
     () => agent.get('/api/repo/readonly/subdir/').expect(401),
@@ -48,7 +50,7 @@ api("GET /api/repo/:folder/path+/", function (agent, test, as) {
           folder: 'readonly',
           dirname: '.',
           name: 'subdir',
-          uid: '2-37db6403631f80ea309d8b6c30580c1b73f4b8a9',
+          uid: Resource.pathHash('readonly/subdir'),
           path: 'readonly/subdir',
           type: 'folder',
           mime: 'inode/directory',
@@ -57,7 +59,7 @@ api("GET /api/repo/:folder/path+/", function (agent, test, as) {
               folder: 'readonly',
               dirname: 'subdir',
               name: 'recursive',
-              uid: '2-1f346a55be8c06c757161209bae011d5130f44e3',
+              uid: Resource.pathHash('readonly/subdir/recursive'),
               path: 'readonly/subdir/recursive',
               type: 'folder',
               mime: 'inode/directory'
@@ -75,7 +77,7 @@ api("GET /api/repo/:folder/path+/", function (agent, test, as) {
           folder: 'readonly',
           dirname: '.',
           name: 'subdir',
-          uid: '2-37db6403631f80ea309d8b6c30580c1b73f4b8a9',
+          uid: Resource.pathHash('readonly/subdir'),
           path: 'readonly/subdir',
           type: 'folder',
           mime: 'inode/directory',
@@ -84,7 +86,7 @@ api("GET /api/repo/:folder/path+/", function (agent, test, as) {
               folder: 'readonly',
               dirname: 'subdir',
               name: 'recursive',
-              uid: '2-1f346a55be8c06c757161209bae011d5130f44e3',
+              uid: Resource.pathHash('readonly/subdir/recursive'),
               path: 'readonly/subdir/recursive',
               type: 'folder',
               mime: 'inode/directory',
@@ -153,7 +155,7 @@ api("PUT /api/repo/:folder/path+/", function (agent, test, as) {
           folder: 'readwrite',
           dirname: '.',
           name: 'newdir',
-          uid: '3-475e437cbb1da01a8ccf52ef3b1192c5bac9f165',
+          uid: Resource.pathHash('readwrite/newdir'),
           path: 'readwrite/newdir',
           type: 'folder',
           mime: 'inode/directory'
@@ -168,7 +170,7 @@ api("PUT /api/repo/:folder/path+/", function (agent, test, as) {
           folder: 'readwrite',
           dirname: 'newparent',
           name: 'newdir',
-          uid: '3-70ecb6e21cbb726bb8ba76e43a7a71783775e289',
+          uid: Resource.pathHash('readwrite/newparent/newdir'),
           path: 'readwrite/newparent/newdir',
           type: 'folder',
           mime: 'inode/directory'
@@ -182,7 +184,7 @@ api("PUT /api/repo/:folder/path+/", function (agent, test, as) {
           folder: 'readwrite',
           dirname: '.',
           name: 'existdir',
-          uid: '3-2786e35ff1796c2d7b9a1d4851ac245f6e481989',
+          uid: Resource.pathHash('readwrite/existdir'),
           path: 'readwrite/existdir',
           type: 'folder',
           mime: 'inode/directory'
@@ -228,7 +230,7 @@ api("PUT /api/repo/:folder/path+/", function (agent, test, as) {
           folder: 'adminonly',
           dirname: '.',
           name: 'newdir',
-          uid: '1-475e437cbb1da01a8ccf52ef3b1192c5bac9f165',
+          uid: Resource.pathHash('adminonly/newdir'),
           path: 'adminonly/newdir',
           type: 'folder',
           mime: 'inode/directory'
