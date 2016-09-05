@@ -15,7 +15,7 @@
   "dependencies": {
     "async": "^2.0.0-rc.5",
     "body-parser": "^1.15.0",
-    "crypt3": "^0.2.0",
+    "crypt3": "^1.0.0",
     "dateformat": "^1.0.12",
     "express": "^4.13.4",
     "express-session": "^1.13.0",
@@ -37,12 +37,12 @@
   "devDependencies": {
     "expect": "^1.18.0",
     "grunt": "^1.0.1",
-    "grunt-contrib-uglify": "^1.0.1",
+    "grunt-contrib-uglify": "^2.0.0",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-mocha-test": "^0.12.7",
     "grunt-sass": "^1.2.0",
-    "mocha": "^2.4.5",
-    "supertest": "^1.2.0",
+    "mocha": "^3.0.2",
+    "supertest": "^2.0.0",
     "uglify-js": "^2.6.2"
   }
 }
