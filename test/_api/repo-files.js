@@ -44,7 +44,8 @@ api("* /api/repo/:folder/:path+", function (agent, test, as) {
 function queryFile(agent, path, contents, type) {
   return () => agent.get('/api/repo'+path)
     .expect(200)
-    .expect('Content-Length', contents.length)
+    // supertest 2.0 requires a string as value
+    .expect('Content-Length', ''+contents.length)
     .expect(function (res) {
       expect(res.type).toBe(type || 'text/plain');
       expect(res.text).toBe(contents);

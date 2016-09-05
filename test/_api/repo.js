@@ -555,6 +555,76 @@ api("POST /api/repo/rename", { edit: true}, function (agent, test, as) {
         })
     ]);
 
+    test("should move sources to destination folder", [
+      () => agent.putFile('readwrite/tomove.txt'),
+      () => agent.putDir('readwrite/tomove/'),
+      () => agent.putDir('readwrite/movedest/'),
+      () => agent.post('/api/repo/rename')
+        .send({
+          src: [
+            'readwrite/tomove.txt',
+            'readwrite/tomove/'
+          ],
+          dest: 'readwrite/movedest'
+        })
+        .expect(200)
+        .expect(function (res) {
+          expect(res.body).toBeAn('array');
+          expect(res.body[0]).toContain({
+            dirname: 'movedest',
+            folder: 'readwrite',
+            mime: 'text/plain',
+            name: 'tomove.txt',
+            path: 'readwrite/movedest/tomove.txt',
+            type: 'file',
+            uid: Resource.pathHash('readwrite/movedest/tomove.txt'),
+          }).toContainKey('mtime').toNotContainKey('replaced');
+          expect(res.body[1]).toContain({
+            dirname: 'movedest',
+            folder: 'readwrite',
+            mime: 'inode/directory',
+            name: 'tomove',
+            path: 'readwrite/movedest/tomove',
+            type: 'folder',
+            uid: Resource.pathHash('readwrite/movedest/tomove'),
+          }).toContainKey('mtime').toNotContainKey('replaced');
+        }),
+      () => agent.delPath('readwrite/movedest/')
+    ]);
+
+    test("should return partial errors in 200 response array for batch rename", [
+      () => agent.putFile('readwrite/tomove.txt'),
+      () => agent.putDir('readwrite/movedest/'),
+      () => agent.post('/api/repo/rename')
+        .send({
+          src: [
+            'readwrite/tomove.txt',
+            'readwrite/unknown'
+          ],
+          dest: 'readwrite/movedest'
+        })
+        .expect(200)
+        .expect(function (res) {
+          expect(res.body).toBeAn('array');
+          expect(res.body[0]).toContain({
+            dirname: 'movedest',
+            folder: 'readwrite',
+            mime: 'text/plain',
+            name: 'tomove.txt',
+            path: 'readwrite/movedest/tomove.txt',
+            type: 'file',
+            uid: Resource.pathHash('readwrite/movedest/tomove.txt'),
+          }).toContainKey('mtime').toNotContainKey('replaced');
+
+          expect(res.body[1]).toContain({
+            error: 'Resource not found',
+            code: 'resource.notfound',
+            path: 'readwrite/unknown'
+          });
+        }),
+      () => agent.delPath('readwrite/movedest/')
+    ]);
+
     test("should get 400 response if src is missing in body", [
       () => agent.post('/api/repo/rename')
         .send({
@@ -633,6 +703,21 @@ api("POST /api/repo/rename", { edit: true}, function (agent, test, as) {
         .send({
           src: 'readwrite/test.txt',
           dest: 'unknown/renamed.txt'
+        })
+        .expect(403)
+    ]);
+
+    test("should get 403 response if batch target is not writable", [
+      () => agent.post('/api/repo/rename')
+        .send({
+          src: [ 'readwrite/test.txt' ],
+          dest: 'readonly'
+        })
+        .expect(403),
+      () => agent.post('/api/repo/rename')
+        .send({
+          src: [ 'readwrite/test.txt' ],
+          dest: 'adminonly'
         })
         .expect(403)
     ]);
