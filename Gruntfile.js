@@ -11,7 +11,7 @@ module.exports = function (grunt) {
       api: ['test/api.js']
     },
     sass: {
-      options: { sourceMap: false },
+      options: { sourceMap: true },
       dist: {
         files: {
           'dist/css/filehub.css': 'scss/filehub.scss',
@@ -21,7 +21,7 @@ module.exports = function (grunt) {
     },
     uglify: {
       options: {
-        sourceMap: false,
+        sourceMap: true,
         compress: {
           dead_code: true
         },
@@ -72,4 +72,29 @@ module.exports = function (grunt) {
   grunt.registerTask('dist', [ 'uglify', 'sass' ]);
 
   grunt.registerTask('default', [ 'uglify', 'sass', 'test' ]);
+
+  grunt.registerTask('devinit', 'Bootstrap development environment', function (clean) {
+    var done = this.async();
+
+    var setupEnv = require('./scripts/dev-env');
+
+    setupEnv(clean === 'clean', (err) => {
+      if (err) {
+        console.error('%s', err);
+        return done(false);
+      }
+      console.error("Development environment ready.");
+      done();
+    });
+  });
+
+  grunt.registerTask('serve', 'Run Filehub server', function (env) {
+    var done = this.async();
+    process.env.NODE_ENV = env || 'production';
+    grunt.task.requires('dist');
+    require('./lib').run(true, done);
+  });
+
+  grunt.registerTask('run', [ 'dist', 'serve' ]);
+  grunt.registerTask('dev', [ 'dist', 'devinit', 'serve:development' ]);
 };

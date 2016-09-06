@@ -16,5 +16,8 @@ npm-debug*
 
 *.missing.json
 
+# files generated at run time
+dist
+
 # dev env files
 _dev*
