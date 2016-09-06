@@ -530,6 +530,7 @@
           if (!row.hasClass(ROW_SEL)) {
             self.getRows().removeClass(ROW_SELC);
             row.addClass(ROW_SELC);
+            self.trigger('select', [ row ]);
           }
 
           if (!self._contextIsInit) {

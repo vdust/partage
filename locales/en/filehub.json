@@ -54,7 +54,8 @@
   },
   "folder": {
     "access": "Edit access list",
-    "archive": "Download (.zip)",
+    "archive": "Download folder (.zip)",
+    "archiveAll": "Download selected (.zip)",
     "delete": "Delete",
     "description": "Description",
     "download": "Download",
@@ -68,7 +69,6 @@
     "new": "New",
     "newFolder": "New folder",
     "rename": "Rename",
-    "restore": "Restore",
     "size": "File size",
     "upload": "Upload file(s)"
   },
@@ -98,6 +98,7 @@
     "t": "TB"
   },
   "trash": {
+    "empty": "Empty trash",
     "label": "Trash",
     "remove": "Delete forever",
     "restore": "Restore resource"

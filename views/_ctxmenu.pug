@@ -50,7 +50,7 @@ div#context-menu.context-menu.dropdown(style="display: none")
       span.fa-stack.ctx-stack
         span.fa.fa-stack-1x.fa-folder-o
         span.fa.fa-stack-1x.fa-download
-      span= t('folder.archive')
+      span= t('folder.archiveAll')
 
     li(
       data-select='multi',
@@ -75,7 +75,7 @@ div#context-menu.context-menu.dropdown(style="display: none")
     )
       span.fa-stack
         span.fa.fa-stack-1x.fa-undo
-      span= t('folder.restore')
+      span= t('trash.restore')
     li(
       data-select='multi',
       data-target='trash||#l-trash',
@@ -85,3 +85,11 @@ div#context-menu.context-menu.dropdown(style="display: none")
       span.fa-stack
         span.fa.fa-stack-1x.fa-trash-o
       span= t('trash.remove')
+    li(
+      data-check='menuTrashCheck',
+      data-action='trashEmpty'
+    )
+      span.fa-stack
+        span.fa.fa-stack-1x.fa-trash
+        span.fa.fa-inverse.fa-stack-1x.fa-remove
+      span= t('trash.empty')

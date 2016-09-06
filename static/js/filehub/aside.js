@@ -114,8 +114,6 @@
         return;
       }
 
-      console.log(items);
-
       if (!tree.length) {
         tree = $('<div class="tree"/>').insertAfter(root).hide();
         root.children('.tree-expand')
