@@ -48,7 +48,7 @@ module.exports = function bootstrap(options, done) {
     var _q = rl.question;
     rl.question = function (q, cb) {
       process.stdout.write(q);
-      _q.call(rl, q, (answer) => {
+      _q.call(rl, '', (answer) => {
         process.stdout.write("\n");
         cb(answer);
       });
@@ -228,7 +228,10 @@ module.exports = function bootstrap(options, done) {
     actions.push((config, next) => next());
   }
 
-  async.waterfall(actions, done);
+  async.waterfall(actions, (err) => {
+    if (rl) rl.close();
+    done(err);
+  });
 }
 
 function usage(full, exit) {
