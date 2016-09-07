@@ -14,8 +14,8 @@ module.exports = function (grunt) {
       options: { sourceMap: true },
       dist: {
         files: {
-          'dist/css/filehub.css': 'scss/filehub.scss',
-          'dist/css/filehub-admin.css': 'scss/filehub-admin.scss'
+          '_dist/css/filehub.css': 'scss/filehub.scss',
+          '_dist/css/filehub-admin.css': 'scss/filehub-admin.scss'
         }
       }
     },
@@ -23,7 +23,8 @@ module.exports = function (grunt) {
       options: {
         sourceMap: true,
         compress: {
-          dead_code: true
+          dead_code: true,
+          global_defs: { PROD: true } // Removes inclusion sequence checks
         },
         banner: [
           "/* filehub",
@@ -33,11 +34,10 @@ module.exports = function (grunt) {
       },
       filehub: {
         files: {
-          'dist/js/filehub.min.js': [
-            'static/js/_defines.js',
+          '_dist/js/filehub.min.js': [
             'static/js/filehub.js',
             'static/js/filehub/*.js' ],
-          'dist/js/filehub-admin.min.js': 'static/js/filehub-admin/*.js'
+          '_dist/js/filehub-admin.min.js': 'static/js/filehub-admin/*.js'
         }
       }
     },

@@ -32,5 +32,6 @@
       "path": "_dev/sessions"
     }
   },
+  "static": true,
   "usersFile": "_dev/users.pwd"
 }
