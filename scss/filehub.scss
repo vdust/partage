@@ -380,11 +380,16 @@ form.profile-form {
           padding: 0 6px;
           border: 1px solid transparent;
           border-radius: 2px;
-          &.act {
+          &.act, &.menu-last {
             cursor: pointer;
             &:hover {
               border-color: rgba(0, 0, 0, 0.3);
             }
+          }
+          .fa { display: none; }
+          &.menu-last .fa {
+            display: inline-block;
+            margin-right: 0px;
           }
         }
       }

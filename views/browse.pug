@@ -58,14 +58,14 @@ block contents
           div.nav-wrap
             ul#nav-path
               -var pp = path||[]
-              +navitem(t(istrash ? 'trash.label' : 'folders'), istrash ? 'trash' : '0', true, !!folder)
+              +navitem(t(istrash ? 'trash.label' : 'folders'), istrash ? 'trash' : '0', true, !!folder, !folder)
               if folder
-                +navitem(folder.name, folder._.uid, false, pp.length > 0)
+                +navitem(folder.name, folder._.uid, false, pp.length > 0, pp.length == 0)
                 - var p = []
                 each d,i in pp
                   - p.push(d);
                   - var r = folder.resource(p.join('/'))
-                  +navitem(d, r.uid, false, i < (pp.length - 1))
+                  +navitem(d, r.uid, false, i < (pp.length - 1), i == pp.length - 1)
                   - r.unref()
           div.nav-toolbox
             div.view-tools#nav-tools
@@ -79,7 +79,7 @@ block contents
         div.view
           div.view-aside#view-aside(style='width:0')
             - var cond = req.user.is('admin') ? ':not(#f-trash)' : ':not(#f-trash,#f-0,.read-only)'
-            - var canadd = req.user.is('admin') || (folder && folder.canwrite(req.user))
+            - var canadd = !istrash && (req.user.is('admin') || (folder && folder.canwrite(req.user)))
             div.button-box
               button(type="button", disabled=!canadd, data-action='contextMenu')
                 span.fa.fa-plus

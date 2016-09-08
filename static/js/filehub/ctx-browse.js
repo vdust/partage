@@ -235,6 +235,10 @@
       } while (0);
 
       el.toggle(visible);
+    },
+    menuTrashCheck: function (el, selected) {
+      var visible = this.viewActive.is('#l-trash') && (!selected || !selected.length);
+      el.toggle(visible);
     }
   };
 
@@ -296,7 +300,7 @@
       do {
         navlist.unshift({
           label: item.children('.tree-label').text(),
-          cls: 'subdir'+(last?'':' act'),
+          cls: 'subdir'+(last?' menu-last':' act'),
           data: { uid: item.data('uid') }
         });
         last = false;
@@ -369,6 +373,8 @@
         browse.getSendQueue().queue(files, { path: path });
         browse.contextMenu.contextMenu('hide');
       });
+    }).on('navmenu', function (navitem) {
+      this.trigger('action', [ 'contextMenu', navitem ]);
     }).on('viewmenu', function (menu, selected) {
       var self = this;
 

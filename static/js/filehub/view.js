@@ -205,6 +205,8 @@
       self.nav = new filehub.Nav(options.nav);
       self.nav.on('activate', function (uid) {
         self.sidePanel.select(uid);
+      }).on('menu', function (navitem) {
+        self.trigger('navmenu', [ navitem ]);
       }).on('action', function () {
         self.trigger('action', arguments);
       });

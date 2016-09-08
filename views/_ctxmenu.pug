@@ -83,13 +83,13 @@ div#context-menu.context-menu.dropdown(style="display: none")
       data-action='trashRemove'
     )
       span.fa-stack
-        span.fa.fa-stack-1x.fa-trash-o
+        span.fa.fa-stack-1x.fa-remove
       span= t('trash.remove')
     li(
       data-check='menuTrashCheck',
       data-action='trashEmpty'
     )
-      span.fa-stack
-        span.fa.fa-stack-1x.fa-trash
-        span.fa.fa-inverse.fa-stack-1x.fa-remove
+      span.fa-stack.ctx-stack
+        span.fa.fa-stack-1x.fa-trash-o
+        span.fa.fa-stack-1x.fa-remove
       span= t('trash.empty')

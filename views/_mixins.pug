@@ -1,9 +1,10 @@
-mixin navitem(name, uid, first, activatable)
+mixin navitem(name, uid, first, activatable, menuLast)
   li
     if !first
       span.fa.fa-chevron-right
-    span.navitem.subdir(data-uid=uid, class=activatable&&'act')
+    span.navitem.subdir(data-uid=uid, class={ act: activatable, 'menu-last': menuLast })
       = name
+      span.fa.fa-caret-down
 
 mixin action(select, target, action, i18n, icon, display)
   div.view-action(data-select=select, data-target=target, data-action=action, title=t(i18n), style=display ? "display: "+display : false)

@@ -36,8 +36,10 @@
         evt.stopPropagation();
 
         var uid = navitem.data('uid');
-        if (uid != null) {
+        if (uid != null && navitem.hasClass('act')) {
           self.trigger('activate', [''+uid, navitem]);
+        } else if (navitem.hasClass('menu-last')) {
+          self.trigger('menu', [ navitem ]);
         }
       });
 
@@ -111,6 +113,7 @@
       .addClass(cls || '')
       .data(data || {})
       .text(label || '')
+      .append('<span class="fa fa-caret-down"/>')
       .appendTo(this);
 
     return this;
