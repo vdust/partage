@@ -52,11 +52,12 @@ div#context-menu.context-menu.dropdown(style="display: none")
         span.fa.fa-stack-1x.fa-download
       span= t('folder.archiveAll')
 
-    li(
+    li.divider(
+      role="separator",
       data-select='multi',
       data-target='*|w|:not(#l-trash)',
-      data-check='menuItemCheck'
-    ).divider(role="separator")
+      data-check='menuItemCheck')
+
     li(
       data-select='multi',
       data-target='*|w|:not(#l-trash)',

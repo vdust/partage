@@ -36,6 +36,24 @@
     "ok": "Ok",
     "save": "Save"
   },
+  "confirm": {
+    "trash": {
+      "empty": "Empty trash ?",
+      "emptybtn": "Empty trash",
+      "emptymsg": "You are about to empty the trash folder. This action is irreversible.",
+      "emptyprg": "Emptying trash...",
+      "remove": "Remove forever ?",
+      "removebtn": "Remove forever",
+      "removemsg": "You are about to remove selected items from the trash folder. This action is irreversible.",
+      "removeprg": "Removing selected items..."
+    },
+    "account": {
+      "remove": "Remove account(s) ?",
+      "removebtn": "Remove account(s)",
+      "removemsg": "You are about to remove selected accounts. This action is irreversible.",
+      "removeprg": "Removing selected accounts..."
+    }
+  },
   "contact": "Contact Us",
   "date-format": "mmm d, yyyy",
   "error": {

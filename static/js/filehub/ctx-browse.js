@@ -175,6 +175,44 @@
     trashRestore: function (items) {
     },
     trashRemove: function (items) {
+      var self = this;
+
+      if (!items || !items.length) return;
+
+      items = items.toArray();
+
+      function next(done) {
+        var item = items.shift();
+
+        if (!item) {
+          if (typeof done === 'function') done();
+          // TODO: User feedback.
+          self.reloadActive();
+          return;
+        }
+
+        item = $(item);
+
+        if (!item.data('trash-id')) return next(done);
+
+        self.api.trashDel(item.data('trash-id'))
+          .complete(function () { next(done); });
+      }
+
+      self.showConfirm('trash.remove', next);
+    },
+    trashEmpty: function (items) {
+      var self = this;
+
+      self.showConfirm('trash.empty', function (done) {
+        self.api.trashEmpty().done(function () {
+          if (self.viewActive.data('uid') === 'trash') {
+            self.reloadActive();
+          }
+        }).error(function () {
+          // TODO: error feedback
+        }).complete(done);
+      });
     }
   };
 
@@ -250,15 +288,7 @@
 
     var browse = new View({
       contextMenu: '#context-menu',
-      dropzone: true,
-      shortcuts: {
-        "46": {
-          "0": {
-            eventname: 'action',
-            args: [ 'itemDelete' ]
-          }
-        }
-      }
+      dropzone: true
     });
 
     browse.ACTIONS = ACTIONS;
@@ -326,6 +356,8 @@
       }).fail(function (jqxhr, textStatus, error) {
         callback({ statusCode: jqxhr.statusCode(), textStatus: textStatus, error: error });
       });
+    }).on('releaseview', function (view) {
+      view.remove(); // Don't keep views in cache.
     }).on('activate', function (listrow) {
       switch (listrow.data('type')) {
         case 'folder':
@@ -375,6 +407,12 @@
       });
     }).on('navmenu', function (navitem) {
       this.trigger('action', [ 'contextMenu', navitem ]);
+    }).on('delete', function (items) {
+      if (this.viewActive.data('uid') !== 'trash') {
+        this.trigger('action', [ 'itemDelete', items ]);
+      } else {
+        this.trigger('action', [ 'trashRemove', items ]);
+      }
     }).on('viewmenu', function (menu, selected) {
       var self = this;
 

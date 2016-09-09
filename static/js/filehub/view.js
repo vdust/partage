@@ -152,6 +152,7 @@
       listExpire: 300, // 5 minutes
       viewResize: '#view-resize',
       viewContents: '#view-contents',
+      confirmDialog: '#confirm_dialog',
       dropzone: false,
       // ctrl = 1, alt = 2, shift = 4
       // { 'keyCode': { 'ctrl|alt|shift': 'eventname' } }
@@ -223,6 +224,8 @@
         if (!self.contextMenu.length) delete self.contextMenu;
       }
 
+      self.confirmDialog = $(options.confirmDialog).confirmDialog();
+
       self._initResize();
       self._initShortcuts();
       self._initLists();
@@ -249,6 +252,9 @@
           win.off('.resize');
         });
       });
+    },
+    showConfirm: function (context, cb) {
+      this.confirmDialog.confirmDialog('confirm', context, cb);
     },
     getRows: function (filter) {
       var rows = this.viewActive
@@ -606,7 +612,7 @@
       var self = this,
           uid = self.viewActive.data('uid');
 
-      if (!uid) return;
+      if (uid == null) return;
 
       if (self._reloading) {
         if (self._reloadPending) return;
@@ -630,17 +636,17 @@
           list = $('#'+id),
           _r = self._reloading;
 
-      if (_r && self._loadPendingUid && self._loadPendingUid !== _r) return;
+      if (_r != null && self._loadPendingUid && self._loadPendingUid !== _r) return;
 
-      if (self.viewActive.data('uid') === uid && !_r) return;
+      if (self.viewActive.data('uid') === uid && _r == null) return;
 
       self.trigger('unselectall');
 
       self.viewActive.fadeOut('fast', function () {
-        if (_r) $(this).remove();
+        self.trigger('releaseview', [ $(this) ]);
       });
 
-      if (list.length && !_r) {
+      if (list.length && _r == null) {
         self.viewActive = list.fadeIn('fast');
         self.trigger('view', [ self.viewActive ]);
         self.trigger('select', [ $() ]);

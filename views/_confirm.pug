@@ -1,0 +1,58 @@
+div#confirm_dialog.modal.fade(tabindex=-1, data-backdrop="static", style="display:none")
+  div.modal-dialog.modal-sm
+    div.modal-content
+      div.modal-header
+        button.close(type="button", data-dismiss="modal")
+          span.fa.fa-close
+        case menuCtx
+          when "browse"
+            h4.modal-title(data-context='trash.remove')
+              = t('confirm.trash.remove')
+            h4.modal-title(data-context='trash.empty')
+              = t('confirm.trash.empty')
+          when "accounts"
+            h4.modal-title(data-context='account.remove')
+              = t('confirm.account.remove')
+      div.modal-body
+        div.confirm-progress
+          span.fa.fa-spin.fa-circle-o-notch
+          case menuCtx
+            when "browse"
+              span(data-context='trash.remove')= t('confirm.trash.removeprg')
+              span(data-context='trash.empty')= t('confirm.trash.emptyprg')
+            when "accounts"
+              span(data-context='account.remove')= t('account.removeprg')
+        div.confirm-msg
+          case menuCtx
+            when "browse"
+              p(data-context='trash.remove')
+                = t('confirm.trash.removemsg')
+              p(data-context='trash.empty')
+                = t('confirm.trash.emptymsg')
+            when "accounts"
+              p(data-context='account.remove')
+                = t('confirm.account.removemsg')
+      div.modal-footer
+        div.confirm-buttons
+          button.btn.btn-default.cancel(
+            type="button",
+            data-dismiss="modal"
+          )= t('button.cancel')
+          case menuCtx
+            when "browse"
+              button.btn.btn-danger.continue(
+                type="button",
+                data-action="confirm",
+                data-context='trash.remove'
+              )= t('confirm.trash.removebtn')
+              button.btn.btn-danger.continue(
+                type="button",
+                data-action="confirm",
+                data-context='trash.empty'
+              )= t('confirm.trash.emptybtn')
+            when "accounts"
+              button.btn.btn-danger.continue(
+                type="button",
+                data-action="confirm",
+                data-context='account.remove'
+              )= t('confirm.account.removebtn')

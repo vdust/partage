@@ -66,7 +66,7 @@
       return this.aside.width();
     },
     getItem: function (uid) {
-      if (!uid) {
+      if (uid == null) {
         return this.treeBox.children('.tree').children().first();
       }
       return $('#'+this.options.idPrefix + uid);
@@ -103,7 +103,7 @@
     update: function (rootUid, items) {
       var self = this,
           opts = self.options,
-          root = $('#' + opts.idPrefix + rootUid),
+          root = this.getItem(rootUid),
           tree = root.next('.tree'),
           expand = opts.expandClasses.split(/ +/),
           depth, stack = [], current;
@@ -126,8 +126,10 @@
       stack.push({ items: items, i: 0, tree: tree });
       while (stack.length) {
         current = stack.pop();
-        for (; current.i < current.items.length; current.i++) {
+
+        while (current.i < current.items.length) {
           var item = current.items[current.i];
+
           var el = $('<div/>').treeItem({
             label: item.label,
             icon: item.icon,
@@ -140,6 +142,8 @@
             'class': item['class'],
             data: item.data
           }).appendTo(current.tree);
+
+          current.i++;
 
           if (item.subtree && item.subtree.length) {
             stack.push(current);
@@ -169,13 +173,13 @@
    *   data: null
    * });
    */
-  $.fn.treeItem = function (options) {
-    var icon = options.icon;
+  $.fn.treeItem = function (opts) {
+    var icon = opts.icon;
 
     this.empty()
       .addClass('tree-item')
-      .toggleClass('tree-item-subtree', options.subtree)
-      .addClass(options['class'] || '');
+      .toggleClass('tree-item-subtree', opts.subtree)
+      .addClass(opts['class'] || '');
 
     if (typeof icon === 'string') {
       icon = { off: icon, on: icon };
@@ -187,7 +191,7 @@
         append: [
           {
             tag: 'span',
-            addClass: (options.subtree && options.expand) ? options.expand.off : ''
+            addClass: (opts.subtree && opts.expand) ? 'fa ' + opts.expand.off : ''
           }
         ]
       },
@@ -202,34 +206,34 @@
       },
       {
         addClass: 'tree-label',
-        text: options.label || ''
+        text: opts.label || ''
       }
     ]));
 
-    if (options.depth > 0) {
-      for (var i = 0; i < options.depth; i++) {
+    if (opts.depth > 0) {
+      for (var i = 0; i < opts.depth; i++) {
         this.prepend('<div class="tree-pad"/>');
       }
     }
 
-    if (options.uid) {
-      this.attr('id', options.idPrefix + options.uid);
-      this.data('uid', options.uid);
+    if (opts.uid) {
+      this.attr('id', opts.idPrefix + opts.uid);
+      this.data('uid', opts.uid);
     }
 
-    if (typeof options.icon === 'object') {
+    if (typeof opts.icon === 'object') {
       this.data({
-        'ico-on': options.icon.on,
-        'ico-off': options.icon.off
+        'ico-on': opts.icon.on,
+        'ico-off': opts.icon.off
       });
     }
 
-    this.data(options.data||{});
+    this.data(opts.data||{});
 
-    if (options.active) this.treeItemActive();
+    if (opts.active) this.treeItemActive();
 
     return this;
-  }
+  };
 
   $.fn.treeItemActive = function (active) {
     active = arguments === 0 ? true : !!active;
