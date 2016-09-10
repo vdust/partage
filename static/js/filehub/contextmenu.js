@@ -55,7 +55,7 @@
             // Delay required to allow clicks on buttons to trigger the context
             // menu
             setTimeout(function () {
-              win.on('click'+data._ns+' contextmenu'+data._ns, function (e) {
+              win.on('mousedown'+data._ns+' contextmenu'+data._ns, function (e) {
                 if ($(e.target).closest(el).length) return;
                 el.contextMenu('hide');
               });

@@ -44,6 +44,15 @@
         font-weight: inherit;
         cursor: pointer;
       }
+      &.disabled {
+        opacity: 0.6;
+        cursor: default;
+        &:hover {
+          background-color: transparent;
+          &:before { display: none; }
+        }
+        label { cursor: default; }
+      }
     }
     .ctx-stack .fa {
       font-size: 1.3em;

@@ -23,6 +23,18 @@
         }
       }
     }
+    $(document).ajaxSend(function (evt, jqxhr, settings) {
+      // Handling of this header is implemented server-side to prevent
+      // implicit redirect to login page in some ajax requests when the
+      // session has expired.
+      jqxhr.setRequestHeader('X-Filehub-Redirect', 'disabled');
+      console.log(evt);
+    }).ajaxError(function (evt, jqxhr) {
+      if (jqxhr.status === 401) {
+        // Handle this case globally (occur when the session expires)
+        location.assign(window['FILEHUB_BASEURL']+'/login');
+      }
+    });
   };
 
   if (typeof console !== 'undefined' && console.log && window['FILEHUB_DEBUG']) {

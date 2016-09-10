@@ -198,19 +198,18 @@
             next.status = 'error';
             next.row.addClass('error');
             next.pg.hide();
-            next.pgl.text(self.tl.progress.aborted || 'error');
+            next.pgl.text(self.tl.progress.error || 'error');
             self.trigger('error', [ next, xhr ]);
           }
 
-          self.startNext();
-        },
+          if (!next.preventNext) self.startNext();
+        }
       });
 
       next.update(0);
 
       var url = self.api.sendFileUrl(next.options.path, next.file, next.options.replace);
       xhr.open('PUT', url, true);
-      /* xhr.setRequestHeader('Content-Type', 'application/octet-stream'); */
       xhr.send(next.file);
     },
     queue: function (files, options) {

@@ -217,15 +217,16 @@
   };
 
   var MENUCHECK = {
-    menuFolderCheck: function (el, selected) {
+    menuFolderCheck: function (el, selected, noroot) {
       var list = this.viewActive,
-          disable = (list.data('flags')||'').indexOf('w') < 0,
+          flags = list.data('flags') || '',
+          disable = flags.indexOf('w') < 0 || (noroot && flags.indexOf('c') >= 0),
           visible = !(selected && selected.length) && !list.is('#l-trash');
 
-      el.toggle(visible);
+      el.toggle(!!visible);
 
-      el.toggleClass('disabled', disable)
-        .children('input').prop('disabled', disable);
+      el.toggleClass('disabled', !!disable)
+        .children('input').prop('disabled', !!disable);
     },
     menuItemCheck: function (el, selected) {
       var list = this.viewActive,
@@ -305,6 +306,11 @@
         var pendingPaths = {};
         self.sendQueue.on('uploaded', function (up, ctx) {
           pendingPaths[up.options.path] = true;
+        }).on('error', function (qinfos, xhr) {
+          if (xhr.status === 401) {
+            qinfos.preventNext = true;
+            location.assign(window['FILEHUB_BASEURL']+'/login');
+          }
         }).on('complete', function () {
           if (pendingPaths[self.viewActive.data('path')]) {
             self.reloadActive();
@@ -346,7 +352,8 @@
       self.sidePanel.enable(false);
 
       $.get(item.data('url')+'?list-only=1', function (html) {
-        var list = $('<div/>').html(html).children('.list-box');
+        var dom = $('<div/>').html(html),
+            list = dom.children('.list-box');
 
         if (list.length) {
           callback(null, list);
@@ -421,10 +428,15 @@
       // update visibility status of context items.
       menu.children('li').each(function () {
         var el = $(this),
-            check = el.data('check');
+            check = el.data('check'),
+            args = check.split(':');
+
+        check = args[0];
+        args = args.slice(1);
 
         if (MENUCHECK[check]) {
-          MENUCHECK[check].call(self, el, selected);
+          args.unshift(el, selected);
+          MENUCHECK[check].apply(self, args);
         }
       });
     }).on('button', function (button) {
