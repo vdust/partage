@@ -60,7 +60,24 @@ div#context-menu.context-menu.dropdown(style="display: none")
     )
       span.fa-stack
         span.fa.fa-stack-1x.fa-edit
-      span= t('folder.rename')
+      span= t('folder.renamedots')
+
+    if req.user.is('admin')
+      li.divider(
+        role="separator",
+        data-select='single',
+        data-target='folder||#l-0',
+        data-check='menuItemCheck')
+
+      li(
+        data-select='single',
+        data-target='folder||#l-0',
+        data-action='folderAccessList'
+        data-check='menuItemCheck'
+      )
+        span.fa-stack
+          span.fa.fa-stack-1x.fa-user-plus
+        span= t('folder.access')
 
     li.divider(
       role="separator",
