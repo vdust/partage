@@ -28,7 +28,6 @@
       // implicit redirect to login page in some ajax requests when the
       // session has expired.
       jqxhr.setRequestHeader('X-Filehub-Redirect', 'disabled');
-      console.log(evt);
     }).ajaxError(function (evt, jqxhr) {
       if (jqxhr.status === 401) {
         // Handle this case globally (occur when the session expires)
