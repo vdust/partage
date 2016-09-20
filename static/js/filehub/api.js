@@ -127,6 +127,21 @@
       return this.put("/repo" + path.replace(/\/*$/, '/') + (recursive ? "?parents=1" : ""));
     },
 
+    rename: function (path, dest, options) {
+      var array = $.isArray(path),
+          data = {
+            src: path,
+            dest: ''+dest,
+            rename: (array && typeof options.rename === 'boolean')
+                  ? options.rename
+                  : (array || undefined),
+            parents: !!(options.parents),
+            replace: !!(options.replace)
+          };
+
+      return this.post("/repo/rename", data);
+    },
+
     trashList: function () {
       return this.get("/trash");
     },
