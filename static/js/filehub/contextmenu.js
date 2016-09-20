@@ -94,7 +94,7 @@
       }
 
       el.on('click.'+NS, 'li', function (e) {
-        if (!$(this).data('action')) return;
+        if (!$(this).data('action') || $(this).hasClass('disabled')) return;
 
         if (typeof opts.click === 'function') {
           e.preventDefault();

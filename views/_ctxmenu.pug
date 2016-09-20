@@ -36,7 +36,7 @@ div#context-menu.context-menu.dropdown(style="display: none")
       data-target='folder||:not(#l-trash)',
       data-check='menuItemCheck',
       data-action='menuArchive'
-    )
+    ).disabled
       span.fa-stack.ctx-stack
         span.fa.fa-stack-1x.fa-folder-o
         span.fa.fa-stack-1x.fa-download
@@ -46,11 +46,21 @@ div#context-menu.context-menu.dropdown(style="display: none")
       data-target='*||:not(#l-trash)',
       data-check='menuItemCheck',
       data-action='menuArchive'
-    )
+    ).disabled
       span.fa-stack.ctx-stack
         span.fa.fa-stack-1x.fa-folder-o
         span.fa.fa-stack-1x.fa-download
       span= t('folder.archiveAll')
+
+    li(
+      data-select='single',
+      data-target='*|w|:not(#l-trash)',
+      data-check='menuItemCheck',
+      data-action='menuRename'
+    )
+      span.fa-stack
+        span.fa.fa-stack-1x.fa-edit
+      span= t('folder.rename')
 
     li.divider(
       role="separator",
