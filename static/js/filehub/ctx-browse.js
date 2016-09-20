@@ -10,6 +10,8 @@
   var filehub = window['filehub'];
   if (!PROD && !filehub) throw Error("filehub is not defined.");
 
+  var _TRIM = /^\s*|\s*$/g;
+
   function updateUrl(url, state) {
     if (filehub.support.pushState) {
       window.history.pushState(state, "", url);
@@ -70,7 +72,7 @@
               break;
           }
         });
-      } 
+      }
 
       r_modal.find('.modal-footer').children('button[data-type]').each(function () {
         var el = $(this);
@@ -106,11 +108,11 @@
           flags = self.viewActive.data('flags'),
           path = self.viewActive.data('path');
 
-      if (!flags.indexOf('w') < 0) return;
+      if (flags.indexOf('w') < 0) return;
 
       renameDialog('create', function (type, done, name, desc) {
-        name = (name || '').replace(/^ +| +$/g, '');
-        desc = (desc || '').replace(/^ +| +$/g, '');
+        name = (name || '').replace(_TRIM, '');
+        desc = (desc || '').replace(_TRIM, '');
 
         if (!name || name.indexOf('/') >= 0) {
           return done('name');
@@ -136,6 +138,70 @@
             });
         }
       }, '', flags.indexOf('c') >= 0 ? '' : null);
+    },
+    menuRename: function (items) {
+      var self = this,
+        act = self.viewActive,
+        flags = act.data('flags'),
+        path = act.data('path'),
+        o_path = items.data('path'),
+        o_name, o_desc;
+
+      if (!o_path || flags.indexOf('w') < 0 || items.length !== 1) return;
+
+      o_name = decodeURIComponent(o_path.split('/').slice(-1)[0]);
+      o_desc = flags.indexOf('c') >= 0
+             ? items.find('.folder-desc').text() || ''
+             : null;
+
+      renameDialog('rename', function (type, done, name, desc) {
+        name = (name || '').replace(_TRIM, '');
+        desc = (desc || '').replace(_TRIM, '');
+
+        if (!name || name.indexOf('/') >= 0) {
+          return done('name');
+        }
+
+        function _rename() {
+          var n_path;
+
+          if (name === o_name) {
+            done();
+            if (o_desc != null && o_desc !== desc) {
+              self.reloadActive();
+            }
+            return;
+          }
+
+          n_path = o_path.split('/').slice(0, -1).join('/') +'/'+ name;
+
+          self.api.rename(decodeURI(o_path), decodeURI(n_path).replace(/^\//, ''), {
+            /* no options */
+          }).done(function () {
+            done();
+            self.reloadActive();
+          }).error(function () {
+            // TODO: proper error reporting
+            done('name');
+          });
+        }
+
+        if (o_desc != null && o_desc !== desc) {
+          self.api.updateFolder(o_path, {
+            description: desc
+          }).done(function () {
+            _rename();
+
+            // Ensure we don't redo this request if error on renaming
+            o_desc = desc;
+          }).error(function () {
+            // TODO: proper error reporting
+            done('desc');
+          });
+        } else {
+          _rename();
+        }
+      }, o_name, o_desc);
     },
     menuDownload: function (items) {
       if (items.length !== 1 || items.data('type') === 'folder' || !items.data('path')) {
