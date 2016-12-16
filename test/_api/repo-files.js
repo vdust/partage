@@ -1,7 +1,6 @@
-/*!
- *
+/* partage
  * Copyright (c) 2016 Raphaël Bois Rousseau
- * MIT Licensed
+ * ISC Licensed
  */
 
 'use strict';
@@ -24,19 +23,19 @@ api("* /api/repo/:folder/:path+", function (agent, test, as) {
   test("should get 400 response on files with illegal characters in path", [
     () => agent.get('/api/repo/.trash/target.txt').expect(400),
     () => agent.get('/api/repo/illegal\nname/target.txt').expect(400),
-    () => agent.get('/api/repo/readwrite/.fhconfig').expect(400),
+    () => agent.get('/api/repo/readwrite/.ptconfig').expect(400),
     () => agent.get('/api/repo/readwrite/illegal\nname.txt').expect(400),
     () => agent.head('/api/repo/.trash/target.txt').expect(400),
     () => agent.head('/api/repo/illegal\nname/target.txt').expect(400),
-    () => agent.head('/api/repo/readwrite/.fhconfig').expect(400),
+    () => agent.head('/api/repo/readwrite/.ptconfig').expect(400),
     () => agent.head('/api/repo/readwrite/illegal\nname.txt').expect(400),
     () => agent.put('/api/repo/.trash/target.txt').expect(400),
     () => agent.put('/api/repo/illegal\nname/target.txt').expect(400),
-    () => agent.put('/api/repo/readwrite/.fhconfig').expect(400),
+    () => agent.put('/api/repo/readwrite/.ptconfig').expect(400),
     () => agent.put('/api/repo/readwrite/illegal\nname.txt').expect(400),
     () => agent.del('/api/repo/.trash/target.txt').expect(400),
     () => agent.del('/api/repo/illegal\nname/target.txt').expect(400),
-    () => agent.del('/api/repo/readwrite/.fhconfig').expect(400),
+    () => agent.del('/api/repo/readwrite/.ptconfig').expect(400),
     () => agent.del('/api/repo/readwrite/illegal\nname.txt').expect(400)
   ]);
 });

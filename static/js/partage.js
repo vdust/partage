@@ -1,22 +1,19 @@
-/**
- * filehub
+/* partage
  * Copyright (c) 2016 Raphaël Bois Rousseau
- * @license MIT
+ * ISC Licensed
  */
 
 (function ($, window, undefined) {
   "use strict";
 
-  var baseUrl = window['FILEHUB_BASEURL'] || '';
-
-  var filehub = window['filehub'] = function () {
-    var ctx = window['FILEHUB_CTX'],
+  var partage = window['partage'] = function () {
+    var ctx = window['PARTAGE_CTX'],
         obj, post;
-    filehub.setup(); /* Ensure the core objects are registered */
-    if (ctx && typeof (filehub['ctx:' + ctx]) === 'function') {
-      obj = window['FILEHUB_OBJ'] = filehub['ctx:' + ctx]();
+    partage.setup(); /* Ensure the core objects are registered */
+    if (ctx && typeof (partage['ctx:' + ctx]) === 'function') {
+      obj = window['PARTAGE_OBJ'] = partage['ctx:' + ctx]();
       obj.context = ctx;
-      post = filehub['post:'+ctx] || [];
+      post = partage['post:'+ctx] || [];
       for (var i = 0; i < post.length; i++) {
         if (post[i] && typeof post[i] === 'function') {
           post[i].call(obj);
@@ -27,26 +24,26 @@
       // Handling of this header is implemented server-side to prevent
       // implicit redirect to login page in some ajax requests when the
       // session has expired.
-      jqxhr.setRequestHeader('X-Filehub-Redirect', 'disabled');
+      jqxhr.setRequestHeader('X-Partage-Redirect', 'disabled');
     }).ajaxError(function (evt, jqxhr) {
       if (jqxhr.status === 401) {
         // Handle this case globally (occur when the session expires)
-        location.assign(window['FILEHUB_BASEURL']+'/login');
+        location.assign((window['PARTAGE_BASEURL']||'')+'/login');
       }
     });
   };
 
-  if (typeof console !== 'undefined' && console.log && window['FILEHUB_DEBUG']) {
-    filehub.debug = console.log.bind(console);
+  if (typeof console !== 'undefined' && console.log && window['PARTAGE_DEBUG']) {
+    partage.debug = console.log.bind(console);
   } else {
-    filehub.debug = function () {};
+    partage.debug = function () {};
   }
-  var debug = filehub.debug;
+  var debug = partage.debug;
 
 
   var _postCount=0;
-  // filehub.register([post,] ctx, fn [, setupFn])
-  filehub.register = function (post, ctx, fn, setupFn) {
+  // partage.register([post,] ctx, fn [, setupFn])
+  partage.register = function (post, ctx, fn, setupFn) {
     var target;
 
     if (typeof post !== 'boolean') {
@@ -70,22 +67,22 @@
       if (post) {
         // Register a function for post context initialization.
         // Used for admin-specific features, not required by regular users.
-        if (!filehub[target]) filehub[target] = [];
-        filehub[target].push(fn);
+        if (!partage[target]) partage[target] = [];
+        partage[target].push(fn);
         _postCount++;
       } else {
-        if (fn) filehub[target] = fn;
+        if (fn) partage[target] = fn;
       }
     }
 
     if (typeof setupFn === 'function') {
-      filehub.setup._load[post ? 'post'+_postCount : ctx] = setupFn;
+      partage.setup._load[post ? 'post'+_postCount : ctx] = setupFn;
     }
     return fn;
   };
 
   var _isSetup;
-  filehub.setup = function () {
+  partage.setup = function () {
     if (_isSetup) return;
     _isSetup = true;
 
@@ -94,7 +91,7 @@
     debug("Running setup functions...");
 
     function loadOrPush(ctx, fn, array) {
-      if (fn.call(filehub) === false) {
+      if (fn.call(partage) === false) {
         array.push({ ctx: ctx, fn: fn });
       } else {
         debug("  '%s' loaded", ctx);
@@ -102,8 +99,8 @@
     }
 
     // Setup as much as possible in the initial lookup
-    for (var k in filehub.setup._load) {
-      loadOrPush(k, filehub, needDeps);
+    for (var k in partage.setup._load) {
+      loadOrPush(k, partage, needDeps);
     }
 
     // Now try to run remaining setup functions that returned false
@@ -134,9 +131,9 @@
 
     debug("done.");
   };
-  filehub.setup._load = {};
+  partage.setup._load = {};
 
-  filehub.support = {
+  partage.support = {
     /* Picked up from answer to http://stackoverflow.com/questions/7263590/ */
     pointerEvents: (function () {
       var element = document.createElement('x'),
@@ -159,7 +156,7 @@
     })()
   };
 
-  filehub.ease = {
+  partage.ease = {
     inOutQuad: function (t, p, dp, d) {
       if (!(d > 0)) return p + dp; /* end position immediately */
       t /= d/2;
@@ -204,7 +201,7 @@
    *   // ...
    * ]
    */
-  filehub.build = function (tree) {
+  partage.build = function (tree) {
     var coll = [],
         spec, elem;
 
@@ -226,10 +223,10 @@
       _callIfSet('prop', spec, elem, 'object');
       _callIfSet('css', spec, elem, 'object');
       if ($.isArray(spec.append)) {
-        elem.append(filehub.build(spec.append));
+        elem.append(partage.build(spec.append));
       }
       if ($.isArray(spec.prepend)) {
-        elem.prepend(filehub.build(spec.prepend));
+        elem.prepend(partage.build(spec.prepend));
       }
       if (spec.on) {
         elem.on(spec.on);
@@ -241,20 +238,20 @@
     return $(coll);
   }
 
-  filehub.modMask = function (evt) {
+  partage.modMask = function (evt) {
     // ctrl = 1, alt = 2, shift = 4
     return (evt.ctrlKey ? 1 : 0)
          + (evt.altKey ? 2 : 0)
          + (evt.shiftKey ? 4 : 0);
   };
 
-  filehub.messageBox = function (div, infos, prefix) {
+  partage.messageBox = function (div, infos, prefix) {
     var title, wrap;
     prefix = prefix || 'message';
     div.addClass(prefix + '-box');
 
     if (!div.children().length) {
-      div.append(filehub.build([
+      div.append(partage.build([
         { addClass: prefix+'-wrap',
           append: [
             { addClass: 'padding-box1' },
@@ -280,8 +277,8 @@
     return div;
   }
 
-  filehub.errorBox = function (div, err) {
-    return filehub.messageBox(div, {
+  partage.errorBox = function (div, err) {
+    return partage.messageBox(div, {
       title: (err && err.title) || 'Unexpected error',
       message: (err && err.message) || 'An unexpected error occured.'
     }, 'error');
@@ -289,14 +286,14 @@
 
   /** createClass(name [, proto])
    *
-   * Filehub class initializer
+   * Partage class initializer
    *
    * Returned constructors accept an optional 'options' object which
    * is merged with proto.options on instanciation.
    *
-   * Filehub classes also implement .on(), .off() and .trigger()
+   * Partage classes also implement .on(), .off() and .trigger()
    */
-  filehub.createClass = function (name, proto) {
+  partage.createClass = function (name, proto) {
     if (!name) throw Error("class name required");
 
     proto = proto || {};
@@ -309,7 +306,7 @@
       if (typeof this._init === 'function') this._init();
     }, Cproto = Constructor.prototype;
 
-    filehub[name] = Constructor;
+    partage[name] = Constructor;
 
     Cproto._getAction = function (action) {
       if (!this._actions[action]) {
@@ -376,5 +373,5 @@
   };
 
   // Load active context once DOM is ready
-  $(filehub);
+  $(partage);
 })(jQuery, window);

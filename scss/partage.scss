@@ -19,7 +19,7 @@ body {
   }
 }
 
-.filehub-icon {
+.partage-icon {
   font-size: 1.3em;
   line-height: 1.2;
   display: inline-block;
@@ -42,7 +42,7 @@ body {
   margin-right: 0.5em;
 }
 
-#filehub_container {
+#partage_container {
   @include flexbox;
   @include flexdir(column);
   height: 100%;
@@ -61,7 +61,7 @@ nav {
   background-color: $nav-bg-color;
   color: $nav-color;
   border-bottom: 2px solid $nav-bg-hl-color;
-  .filehub-icon {
+  .partage-icon {
     font-size: 2em;
     vertical-align: middle;
     > span.fa-file {

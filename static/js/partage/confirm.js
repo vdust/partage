@@ -1,16 +1,15 @@
-/**
- * filehub
+/* partage
  * Copyright (c) 2016 Raphaël Bois Rousseau
- * License: MIT
+ * ISC Licensed
  */
 
 (function ($, window, undefined) {
   'use strict';
 
-  var filehub = window['filehub'];
-  if (!PROD && !filehub) throw new Error("filehub is not defined.");
+  var partage = window['partage'];
+  if (!PROD && !partage) throw new Error("partage is not defined.");
 
-  var NS = 'fh-confirm';
+  var NS = 'pt-confirm';
 
   $.fn.confirmDialog = function (options) {
     if (typeof options === 'string') {

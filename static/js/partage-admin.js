@@ -1,7 +1,6 @@
-/**
- * filehub
+/* partage
  * Copyright (c) 2016 Raphaël Bois Rousseau
- * @license MIT
+ * ISC Licensed
  */
 
 (function ($, window, undefined) {

@@ -1,16 +1,15 @@
-/*!
- * filehub
+/* partage
  * Copyright (c) 2016 Raphaël Bois Rousseau
- * MIT Licensed
+ * ISC Licensed
  */
 
 (function ($, window, undefined) {
   'use strict';
 
-  var filehub = window['filehub'];
-  if (!PROD && !filehub) throw Error("filehub is not defined.");
+  var partage = window['partage'];
+  if (!PROD && !partage) throw Error("partage is not defined.");
 
-  var Loader = filehub.createClass('ListLoader', {
+  var Loader = partage.createClass('ListLoader', {
     options: {
       container: null
     },

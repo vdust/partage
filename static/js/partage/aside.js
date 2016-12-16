@@ -1,16 +1,15 @@
-/*!
- * filehub
+/* partage
  * Copyright (c) 2016 Raphaël Bois Rousseau
- * MIT Licensed
+ * ISC Licensed
  */
 
 (function ($, window, undefined) {
   'use strict';
 
-  var filehub = window['filehub'];
-  if (!PROD && !filehub) throw Error("filehub is not defined.");
+  var partage = window['partage'];
+  if (!PROD && !partage) throw Error("partage is not defined.");
 
-  var Aside = filehub.createClass('Aside', {
+  var Aside = partage.createClass('Aside', {
     options: {
       idPrefix: 't-',
       aside: '#view-aside',
@@ -185,7 +184,7 @@
       icon = { off: icon, on: icon };
     }
 
-    this.append(filehub.build([
+    this.append(partage.build([
       {
         addClass: 'tree-expand',
         append: [

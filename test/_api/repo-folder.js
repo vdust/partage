@@ -1,7 +1,6 @@
-/*!
- *
+/* partage
  * Copyright (c) 2016 Raphaël Bois Rousseau
- * MIT Licensed
+ * ISC Licensed
  */
 
 'use strict';

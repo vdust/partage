@@ -1,17 +1,17 @@
-/**
- * filehub
+/* partage
  * Copyright (c) 2016 Raphaël Bois Rousseau
- * License: MIT
+ * ISC Licensed
  */
 
 (function ($, window, undefined) {
   'use strict';
 
-  var filehub = window['filehub'];
-  if (!PROD && !filehub) throw Error("filehub is not defined.");
+  var partage = window['partage'];
+  if (!PROD && !partage) throw Error("partage is not defined.");
 
   var aJoin = Array.prototype.join,
-      aSlice = Array.prototype.slice;
+      aSlice = Array.prototype.slice,
+      jsonMime = 'application/json';
 
   function normPath(args, opts) {
     opts = opts || {};
@@ -19,9 +19,9 @@
     return (opts.prefix + args.join("/") + opts.suffix).replace(/\/+/g, "/");
   }
 
-  var Api = filehub.createClass('Api', {
+  var Api = partage.createClass('Api', {
     options: {
-      apiUrl: (window.FILEHUB_BASEURL || "") + "/api"
+      apiUrl: (window.PARTAGE_BASEURL || "") + "/api"
     },
     _init: function () {
       this.FILE_RE = new RegExp('^/[^/]+/.*[^/]$');
@@ -30,7 +30,7 @@
     get: function (path, data) {
       return $.ajax(this.options.apiUrl + (path||''), {
         method: 'GET',
-        accepts: { json: "application/json" },
+        accepts: { json: jsonMime },
         cache: false,
         data: data,
         dataType: 'json'
@@ -50,8 +50,8 @@
 
       return $.ajax(this.options.apiUrl + (path||''), {
         method: 'POST',
-        accepts: { json: "application/json" },
-        contentType: 'application/json',
+        accepts: { json: jsonMime },
+        contentType: jsonMime,
         cache: false,
         data: data || "{}",
         dataType: 'json'
@@ -64,8 +64,8 @@
 
       return $.ajax(this.options.apiUrl + (path||''), {
         method: 'PUT',
-        accepts: { json: "application/json" },
-        contentType: 'application/json',
+        accepts: { json: jsonMime },
+        contentType: jsonMime,
         cache: false,
         data: data || "{}",
         dataType: 'json'
@@ -74,7 +74,7 @@
     del: function (path) {
       return $.ajax(this.options.apiUrl + (path||''), {
         method: 'DELETE',
-        accepts: { json: "application/json" },
+        accepts: { json: jsonMime },
         cache: false,
         dataType: 'json'
       });

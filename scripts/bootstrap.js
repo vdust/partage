@@ -1,9 +1,8 @@
 #!/usr/bin/node
 
-/*!
- * filehub
+/* partage
  * Copyright (c) 2016 Raphaël Bois Rousseau
- * MIT Licensed
+ * ISC Licensed
  */
 
 'use strict';
@@ -65,7 +64,7 @@ module.exports = function bootstrap(options, done) {
   }
 
   if (options.env) process.env.NODE_ENV = options.env;
-  if (options.config) process.env.FILEHUB_CONFIG = options.config;
+  if (options.config) process.env.PARTAGE_CONFIG = options.config;
 
   function input(config, prompted, opts, next) {
     var validate = typeof opts.validate === 'function' ? opts.validate : (v) => v;
@@ -241,7 +240,7 @@ function usage(full, exit) {
   ];
   var infos = [
     '',
-    'Bootstrap filehub environment (Will prompt for missing configuration)',
+    'Bootstrap \'partage\' environment (Will prompt for missing configuration)',
     '',
     'Options:',
     '    Arguments required for long options apply to short options as well',

@@ -1,14 +1,13 @@
-/*!
- * filehub
+/* partage
  * Copyright (c) 2016 Raphaël Bois Rousseau
- * MIT Licensed
+ * ISC Licensed
  */
 
 (function ($, window, undefined) {
   'use strict';
 
-  var filehub = window['filehub'];
-  if (!PROD && !filehub) throw Error("filehub is not defined.");
+  var partage = window['partage'];
+  if (!PROD && !partage) throw Error("partage is not defined.");
 
   var abs = Math.abs,
       max = Math.max,
@@ -17,7 +16,7 @@
       win = $(window),
       doc = $(window.document),
 
-      DZCTX = '.fh-dropzone',
+      DZCTX = '.pt-dropzone',
 
       ROW = 'list-row',
       ROW_SEL = ROW + '-selected',
@@ -68,13 +67,13 @@
     } else {
       // because of all the nasty corner-cases, we do this check even though
       // if should not happen (doesn't cost much).
-      win.off('.fhdragdetect');
+      win.off('.ptdragdetect');
     }
   }
 
   function _leave(evt, skipLeave) {
     if (!_onDrag) return;
-    win.off('.fhdragdetect');
+    win.off('.ptdragdetect');
     if (!skipLeave) {
       _onDrag.view.trigger('dragleave', [ evt, _onDrag ]);
     }
@@ -84,7 +83,7 @@
     _leave(evt);
     _updateCtx(evt, onDrag);
     if (evt.buttons != null) { // Detection require MouseEvent.buttons
-      win.on('mouseover.fhdragdetect', _dragendDetect);
+      win.on('mouseover.ptdragdetect', _dragendDetect);
     }
     onDrag.view.trigger('dragenter', [ evt, onDrag ]);
   }
@@ -146,7 +145,7 @@
     _globalDnDInitialized = true;
   }
 
-  var View = filehub.createClass('View', {
+  var View = partage.createClass('View', {
     options: {
       listIdPrefix: 'l-',
       listExpire: 300, // 5 minutes
@@ -195,7 +194,7 @@
 
       self._body = $(window.document.body);
 
-      self.sidePanel = new filehub.Aside(options.aside);
+      self.sidePanel = new partage.Aside(options.aside);
       self.sidePanel.on('select', function () {
         self.trigger('refresh', arguments);
         self.loadTarget.apply(self, arguments);
@@ -203,7 +202,7 @@
         self.trigger('button', arguments);
       });
 
-      self.nav = new filehub.Nav(options.nav);
+      self.nav = new partage.Nav(options.nav);
       self.nav.on('activate', function (uid) {
         self.sidePanel.select(uid);
       }).on('menu', function (navitem) {
@@ -215,7 +214,7 @@
       self.viewResize = $(options.viewResize);
       self.viewContents = $(options.viewContents);
       self.viewActive = self.viewContents.children('.list-box:visible');
-      self.loader = new filehub.ListLoader({
+      self.loader = new partage.ListLoader({
         container: self.viewContents
       });
 
@@ -351,9 +350,9 @@
       var self = this;
 
       self._scDisabled = 0;
-      doc.on('shown.bs.modal shown.fhcontextmenu', function (e) {
+      doc.on('shown.bs.modal shown.ptcontextmenu', function (e) {
         self._scDisabled++;
-      }).on('hidden.bs.modal hidden.fhcontextmenu', function (e) {
+      }).on('hidden.bs.modal hidden.ptcontextmenu', function (e) {
         self._scDisabled = Math.max(0, self._scDisabled - 1);
       }).on('keydown.list-shortcuts', function (evt) {
         if (self._scDisabled) return; // needed for overlay operations.
@@ -361,7 +360,7 @@
         if ($(evt.target).closest('a,button,input,textarea,.dialog').length) return;
 
         var shortcuts = self.options.shortcuts,
-            mod = filehub.modMask(evt),
+            mod = partage.modMask(evt),
             key = evt.keyCode || evt.which,
             action, args = [], group;
 
@@ -412,7 +411,7 @@
 
         var row = $(this),
             rowWasSelected = row.hasClass(ROW_SEL),
-            mod = filehub.modMask(evt),
+            mod = partage.modMask(evt),
             orig_i = -1, prev_i = -1, row_i = -1,
             uStart_i , uEnd_i,
             sStart_i, sEnd_i,
@@ -526,7 +525,7 @@
         });
 
         self.viewContents.on('contextmenu', function (evt) {
-          var mod = filehub.modMask(evt),
+          var mod = partage.modMask(evt),
               row = $(evt.target).closest('.list-row'),
               menu = self._contextMenu;
 
@@ -576,7 +575,7 @@
           'left': evt.pageX + 1 + (other ? 3 : 0),
           'top': evt.pageY + 1 + (other ? 3 : 0)
         };
-        if (!filehub.support.pointerEvents) newOff.left += 20; // IE9- hack
+        if (!partage.support.pointerEvents) newOff.left += 20; // IE9- hack
         dragRow.offset(newOff);
       }).get(0);
     },

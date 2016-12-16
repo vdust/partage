@@ -1,17 +1,16 @@
-/**
- * filehub
+/* partage
  * Copyright (c) 2016 Raphaël Bois Rousseau
- * License: MIT
+ * ISC Licensed
  */
 
 (function ($, window, undefined) {
   'use strict';
 
-  var filehub = window['filehub'];
-  if (!PROD && !filehub) throw Error("filehub is not defined.");
+  var partage = window['partage'];
+  if (!PROD && !partage) throw Error("partage is not defined.");
 
   // post init of browse context for admin features
-  filehub.register(true, 'browse', function () {
+  partage.register(true, 'browse', function () {
     var ACTIONS = this.ACTIONS;
 
     ACTIONS['folderAccessList'] = function(folder) {
@@ -22,7 +21,7 @@
       }
 
       if (!self.accessListDialog) {
-        self.accessListDialog = new filehub.AccessList({
+        self.accessListDialog = new partage.AccessList({
           api: self.api
         });
         self.accessListDialog.dialog.on('show.bs.modal', function (evt) {

@@ -1,7 +1,6 @@
-/*!
- *
+/* partage
  * Copyright (c) 2016 Raphaël Bois Rousseau
- * MIT Licensed
+ * ISC Licensed
  */
 
 'use strict';
@@ -387,7 +386,7 @@ api("GET /api/repo/stat", function (agent, test, as) {
     ]);
 
     test("should get 400 response with dotted names in path", [
-      () => agent.get('/api/repo/stat?path=readonly/.fhconfig').expect(400),
+      () => agent.get('/api/repo/stat?path=readonly/.ptconfig').expect(400),
       () => agent.get('/api/repo/stat?path=readonly/subdir/.unknown').expect(400),
       () => agent.get('/api/repo/stat?path=readonly/.unknown/unknown.txt').expect(400),
       () => agent.get('/api/repo/stat?path=.trash').expect(400)
@@ -650,7 +649,7 @@ api("POST /api/repo/rename", { edit: true}, function (agent, test, as) {
         .expect(400),
       () => agent.post('/api/repo/rename')
         .send({
-          src: 'readwrite/.fhconfig',
+          src: 'readwrite/.ptconfig',
           dest: 'readwrite/renamed.txt'
         })
         .expect(400),
@@ -663,7 +662,7 @@ api("POST /api/repo/rename", { edit: true}, function (agent, test, as) {
       () => agent.post('/api/repo/rename')
         .send({
           src: 'readwrite/to-rename.txt',
-          dest: 'readwrite/.fhconfig'
+          dest: 'readwrite/.ptconfig'
         })
         .expect(400)
     ]);

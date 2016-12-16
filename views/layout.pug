@@ -15,24 +15,24 @@ html
     link(rel="stylesheet", type="text/css", href=staticUrl+'/css/font-awesome.css')
     link(rel="stylesheet", type="text/css", href=bsUrl+'/css/bootstrap.min.css')
     link(rel="stylesheet", type="text/css", href=bsUrl+'/css/bootstrap-theme.min.css')
-    link(rel="stylesheet", type="text/css", href=staticUrl+'/css/filehub.css')
+    link(rel="stylesheet", type="text/css", href=staticUrl+'/css/partage.css')
     if req.isAuthenticated() && req.user.is("admin")
-      link(rel="stylesheet", type="text/css", href=staticUrl+'/css/filehub-admin.css')
+      link(rel="stylesheet", type="text/css", href=staticUrl+'/css/partage-admin.css')
     script(type"text/javascript").
       (function(w){
-        w.FILEHUB_BASEURL="#{baseUrl}";
-        w.FILEHUB_CTX="#{menuCtx}";
+        w.PARTAGE_BASEURL="#{baseUrl}";
+        w.PARTAGE_CTX="#{menuCtx}";
       })(window);
     if app.get('env') === 'development'
       script(type="text/javascript").
         var PROD=false;
 
   body
-    div#filehub_container
+    div#partage_container
       nav
         ul#menu
           li
-            include ./filehub_ico.pug
+            include ./partage_ico.pug
           if req.isAuthenticated()
             block menuAuth
               li(class=menuCtx === "browse" ? "active" : "")
@@ -73,13 +73,13 @@ html
     script(type="text/javascript", src=staticUrl+'/js/jquery-2.2.4.min.js')
     script(type="text/javascript", src=bsUrl+'/js/bootstrap.min.js')
     if app.get('env') === 'development'
-      script(type="text/javascript", src=staticUrl+'/js/filehub.js')
+      script(type="text/javascript", src=staticUrl+'/js/partage.js')
       each f in devScripts.common
-        script(type="text/javascript", src=staticUrl+'/js/filehub/'+f)
+        script(type="text/javascript", src=staticUrl+'/js/partage/'+f)
       if req.isAuthenticated() && req.user.is("admin")
         each f in devScripts.admin
-          script(type="text/javascript", src=staticUrl+'/js/filehub-admin/'+f)
+          script(type="text/javascript", src=staticUrl+'/js/partage-admin/'+f)
     else
-      script(type="text/javascript", src=staticUrl+'/js/filehub.min.js')
+      script(type="text/javascript", src=staticUrl+'/js/partage.min.js')
       if req.isAuthenticated() && req.user.is("admin")
-        script(type="text/javascript", src=staticUrl+'/js/filehub-admin.min.js')
+        script(type="text/javascript", src=staticUrl+'/js/partage-admin.min.js')

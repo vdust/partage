@@ -1,9 +1,8 @@
 #!/usr/bin/node
 
-/**
- * filehub
+/* partage
  * Copyright (c) 2016 Raphaël Bois Rousseau
- * License: MIT
+ * ISC Licensed
  */
 
 'use strict';
@@ -21,9 +20,9 @@ var sass = require('node-sass');
 var utils = require('../lib/utils');
 
 var banner = [
-  "/* filehub",
+  "/* partage",
   " * Copyright (c) 2016 Raphaël Bois Rousseau",
-  " * MIT Licensed",
+  " * ISC Licensed",
   " */\n" ].join("\n");
 
 module.exports = function saveStatic(path, options, done) {
@@ -32,7 +31,7 @@ module.exports = function saveStatic(path, options, done) {
     staticPath: 'static',
     // thoses files are bundled by uglify later and are not needed in production
     // regexp matches path relative to staticPath
-    prodExclude: /^js\/(?:filehub|_defines.js$)/,
+    prodExclude: /^js\/(?:partage|_defines.js$)/,
     scssPath: 'scss'
   };
 
@@ -122,20 +121,20 @@ module.exports = function saveStatic(path, options, done) {
       });
     },
     (next) => {
-      log("\nMinifying filehub scripts...");
+      log("\nMinifying 'partage' scripts...");
       var files = [
         {
-          dest: 'js/filehub.min.js',
+          dest: 'js/partage.min.js',
           src: [
-            'js/filehub.js',
-            'js/filehub/*.js'
+            'js/partage.js',
+            'js/partage/*.js'
           ]
         },
         {
-          dest: 'js/filehub-admin.js',
+          dest: 'js/partage-admin.js',
           src: [
-            'js/filehub-admin.js',
-            'js/filehub-admin/*.js'
+            'js/partage-admin.js',
+            'js/partage-admin/*.js'
           ]
         }
       ];
@@ -182,12 +181,12 @@ module.exports = function saveStatic(path, options, done) {
       log("\nRendering css file...");
       var files = [
         {
-          dest: 'css/filehub.css',
-          src: pJoin(opts.scssPath, 'filehub.scss')
+          dest: 'css/partage.css',
+          src: pJoin(opts.scssPath, 'partage.scss')
         },
         {
-          dest: 'css/filehub-admin.css',
-          src: pJoin(opts.scssPath, 'filehub-admin.scss')
+          dest: 'css/partage-admin.css',
+          src: pJoin(opts.scssPath, 'partage-admin.scss')
         }
       ];
 

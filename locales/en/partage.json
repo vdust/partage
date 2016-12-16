@@ -97,7 +97,7 @@
   },
   "loading": "Loading...",
   "login-failure": "User name and password don't match.",
-  "powered-by": "Powered by FileHub",
+  "powered-by": "Powered by Partage",
   "profile": "Profile",
   "queue": {
     "complete": "File upload complete",

@@ -11,13 +11,13 @@
       "loadPath": "locales/{{lng}}/{{ns}}.json"
     },
     "debug": false,
-    "defaultNS": "filehub",
+    "defaultNS": "partage",
     "detection": {
       "caches": false,
       "order": [ "header" ]
     },
     "fallbackLng": "en",
-    "ns": [ "filehub" ],
+    "ns": [ "partage" ],
     "saveMissing": false
   },
   "log": {
@@ -27,7 +27,7 @@
     "port": 8080
   },
   "session": {
-    "name": "fhconnect.sid",
+    "name": "ptconnect.sid",
     "resave": false,
     "saveUninitialized": false,
     "store": {}
@@ -47,5 +47,5 @@
       "sizeLimit": 104857600
     }
   },
-  "title": "File Hub"
+  "title": "Partage"
 }

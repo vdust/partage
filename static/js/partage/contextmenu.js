@@ -1,13 +1,12 @@
-/**
- * filehub
+/* partage
  * Copyright (c) 2016 Raphaël Bois Rousseau
- * License: MIT
+ * ISC
  */
 (function ($, window, undefined) {
   'use strict';
 
   var ctxNS = 0,
-      NS='fhcontextmenu';
+      NS='ptcontextmenu';
 
   $.fn.contextMenu = function (options) {
     if (typeof options === 'string') {

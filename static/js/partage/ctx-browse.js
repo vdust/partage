@@ -1,19 +1,18 @@
-/*!
- * filehub
+/* partage
  * Copyright (c) 2016 Raphaël Bois Rousseau
- * MIT Licensed
+ * ISC Licensed
  */
 
 (function ($, window, undefined) {
   'use strict';
 
-  var filehub = window['filehub'];
-  if (!PROD && !filehub) throw Error("filehub is not defined.");
+  var partage = window['partage'];
+  if (!PROD && !partage) throw Error("partage is not defined.");
 
   var _TRIM = /^\s*|\s*$/g;
 
   function updateUrl(url, state) {
-    if (filehub.support.pushState) {
+    if (partage.support.pushState) {
       window.history.pushState(state, "", url);
     } else {
       location.assign(url); // Should stop script execution
@@ -347,11 +346,11 @@
     }
   };
 
-  filehub.register('browse', function () {
-    var View = filehub.View;
+  partage.register('browse', function () {
+    var View = partage.View;
     var poppingState;
 
-    var api = new filehub.Api();
+    var api = new partage.Api();
 
     var browse = new View({
       contextMenu: '#context-menu',
@@ -365,7 +364,7 @@
       var self = this;
 
       if (!self.sendQueue) {
-        self.sendQueue = new filehub.SendQueue({
+        self.sendQueue = new partage.SendQueue({
           api: api
         });
 
@@ -375,7 +374,7 @@
         }).on('error', function (qinfos, xhr) {
           if (xhr.status === 401) {
             qinfos.preventNext = true;
-            location.assign(window['FILEHUB_BASEURL']+'/login');
+            location.assign(window['PARTAGE_BASEURL']+'/login');
           }
         }).on('complete', function () {
           if (pendingPaths[self.viewActive.data('path')]) {

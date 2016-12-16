@@ -1,9 +1,8 @@
-'use strict';
-/*!
- *
+/* partage
  * Copyright (c) 2016 Raphaël Bois Rousseau
- * MIT Licensed
+ * ISC Licensed
  */
+'use strict';
 
 var fs = require('fs-extra');
 var path = require('path');
@@ -11,7 +10,7 @@ var path = require('path');
 var async = require('async');
 var crypt = require('crypt3');
 
-var testRoot = '/tmp/filehub-tests-'+process.pid;
+var testRoot = '/tmp/partage-tests-'+process.pid;
 
 var makeTree = require('../lib/utils/fs').makeTree;
 var app = require('../lib/app');
@@ -28,7 +27,7 @@ module.exports = function _bootstrap(options) {
     i18n: { debug: false, saveMissing: true },
     log: process.env.DEBUG ? { format: 'dev' } : false,
     session: {
-      secret: 'filehub-123',
+      secret: 'partage-123',
       store: { path: path.join(testRoot, 'sessions') }
     },
     usersFile: path.join(testRoot, 'users.pwd')
@@ -62,13 +61,13 @@ module.exports = function _bootstrap(options) {
 
   before(function (done) {
     process.env.NODE_ENV = 'test';
-    var cnfile = process.env.FILEHUB_CONFIG = path.join(testRoot, 'config.json');
+    var cnfile = process.env.PARTAGE_CONFIG = path.join(testRoot, 'config.json');
 
     resetUidGenerator();
 
     var mtime = new Date('2016-01-01 00:00:00 GMT');
 
-    // Create test env under /tmp/filehub-test-NNN/
+    // Create test env under /tmp/partage-test-NNN/
     var tree = {
       'folders/': {
         'adminonly/': {
@@ -79,12 +78,12 @@ module.exports = function _bootstrap(options) {
           'subdir/': {
             'recursive/': {}
           },
-          '.fhconfig': roConf,
+          '.ptconfig': roConf,
           'test.txt': { mtime: mtime, data: 'test' }
         },
         'readwrite/': {
           'existdir/': {},
-          '.fhconfig': rwConf,
+          '.ptconfig': rwConf,
           'exist.txt': { mtime: mtime, data: 'test' }
         }
       },

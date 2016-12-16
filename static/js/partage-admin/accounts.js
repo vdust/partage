@@ -1,17 +1,16 @@
-/*!
- * filehub
+/* partage
  * Copyright (c) 2016 Raphaël Bois Rousseau
- * MIT Licensed
+ * ISC Licensed
  */
 
 (function ($, window, undefined) {
   'use strict';
 
-  var filehub = window['filehub'];
-  if (!filehub) throw Error("filehub is not defined.");
+  var partage = window['partage'];
+  if (!partage) throw Error("partage is not defined.");
 
-  filehub.register('accounts', function () {
-    var View = filehub.View;
+  partage.register('accounts', function () {
+    var View = partage.View;
 
     return new View({
     }).on('refresh', function (uid, item) {

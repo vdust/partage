@@ -1,14 +1,13 @@
-/**
- * filehub
+/* partage
  * Copyright (c) 2016 Raphaël Bois Rousseau
- * License: MIT
+ * ISC Licensed
  */
 
 (function ($, window, document, undefined) {
   'use strict';
 
-  var filehub = window['filehub'];
-  if (!PROD && !filehub) throw Error("filehub is not defined.");
+  var partage = window['partage'];
+  if (!PROD && !partage) throw Error("partage is not defined.");
 
   function prependSorted(container, list) {
     list.sort(function (a, b) {
@@ -19,9 +18,9 @@
     $.fn.prepend.apply(container, list);
   }
 
-  filehub.createClass('AccessList', {
+  partage.createClass('AccessList', {
     options: {
-      api: null, /* new filehub.Api() */
+      api: null, /* new partage.Api() */
       dialog: '#acl_dialog'
     },
     _init: function () {
@@ -29,7 +28,7 @@
           o = self.options,
           d, ld, lst, sel;
 
-      self.api = o.api || new filehub.Api();
+      self.api = o.api || new partage.Api();
       self.dialog = d = $(o.dialog);
       self.title = d.find('.modal-title');
 
@@ -82,7 +81,7 @@
         var action = $(this).data('action');
         switch (action) {
           case 'cancel':
-            d.trigger('abort.fh');
+            d.trigger('abort.pt');
             break;
           case 'cancel-select':
             self.aclAll.hide();
@@ -90,10 +89,10 @@
             d.modal('handleUpdate');
             break;
           case 'select':
-            d.trigger('select.fh');
+            d.trigger('select.pt');
             break;
           case 'update':
-            d.trigger('update.fh');
+            d.trigger('update.pt');
             break;
         }
       });
@@ -114,15 +113,15 @@
 
       d.modal('show');
 
-      d.one('abort.fh.fh'+uid, function (evt, err, jqxhr) {
-        d.off('.fh'+uid);
+      d.one('abort.pt.pt'+uid, function (evt, err, jqxhr) {
+        d.off('.pt'+uid);
         d.modal('hide');
 
         if (err) error(err, jqxhr);
-      }).on('select.fh.fh'+uid, function (evt) {
+      }).on('select.pt.pt'+uid, function (evt) {
         self._select();
-      }).one('update.fh.fh'+uid, function (evt) {
-        d.off('.fh'+uid);
+      }).one('update.pt.pt'+uid, function (evt) {
+        d.off('.pt'+uid);
         d.modal('hide');
         self._update(folderName, success, error);
       });
@@ -137,11 +136,11 @@
           self.populate(acl, usr);
         }).fail(function (jqxhr, st, err) {
           delete self.pendingAjax;
-          d.trigger('abort.fh', err !== 'abort' ? [ JSON.parse(err), jqxhr ] : []);
+          d.trigger('abort.pt', err !== 'abort' ? [ JSON.parse(err), jqxhr ] : []);
         });
       }).fail(function (jqxhr, st, err) {
         delete self.pendingAjax;
-        d.trigger('abort.fh', err !== 'abort' ? [ JSON.parse(err), jqxhr ] : []);
+        d.trigger('abort.pt', err !== 'abort' ? [ JSON.parse(err), jqxhr ] : []);
       });
     },
     populate: function (accessList, users) {

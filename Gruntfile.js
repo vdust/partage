@@ -14,8 +14,8 @@ module.exports = function (grunt) {
       options: { sourceMap: true },
       dist: {
         files: {
-          '_dist/css/filehub.css': 'scss/filehub.scss',
-          '_dist/css/filehub-admin.css': 'scss/filehub-admin.scss'
+          '_dist/css/partage.css': 'scss/partage.scss',
+          '_dist/css/partage-admin.css': 'scss/partage-admin.scss'
         }
       }
     },
@@ -27,17 +27,17 @@ module.exports = function (grunt) {
           global_defs: { PROD: true } // Removes inclusion sequence checks
         },
         banner: [
-          "/* filehub",
+          "/* partage",
           " * Copyright (c) 2016 Raphaël Bois Rousseau",
           " * MIT Licensed",
           " */" ].join("\n")
       },
-      filehub: {
+      partage: {
         files: {
-          '_dist/js/filehub.min.js': [
-            'static/js/filehub.js',
-            'static/js/filehub/*.js' ],
-          '_dist/js/filehub-admin.min.js': 'static/js/filehub-admin/*.js'
+          '_dist/js/partage.min.js': [
+            'static/js/partage.js',
+            'static/js/partage/*.js' ],
+          '_dist/js/partage-admin.min.js': 'static/js/partage-admin/*.js'
         }
       }
     },
@@ -48,9 +48,9 @@ module.exports = function (grunt) {
       },
       distjs: {
         files: [
-          'static/js/filehub.js',
-          'static/js/filehub/*.js',
-          'static/js/filehub-admin/*.js'
+          'static/js/partage.js',
+          'static/js/partage/*.js',
+          'static/js/partage-admin/*.js'
         ],
         tasks: [ 'uglify' ],
         options: {
@@ -88,7 +88,7 @@ module.exports = function (grunt) {
     });
   });
 
-  grunt.registerTask('serve', 'Run Filehub server', function (env) {
+  grunt.registerTask('serve', 'Run Partage server', function (env) {
     var done = this.async();
     process.env.NODE_ENV = env || 'production';
     grunt.task.requires('dist');

@@ -1,20 +1,19 @@
-/**
- * filehub
+/* partage
  * Copyright (c) 2016 Raphaël Bois Rousseau
- * License: MIT
+ * ISC Licensed
  */
 
 (function ($, window, undefined) {
   'use strict';
   
-  var filehub = window['filehub'];
-  if (!PROD && !filehub) throw Error("filehub is not defined.");
+  var partage = window['partage'];
+  if (!PROD && !partage) throw Error("partage is not defined.");
 
   var XHR = window.XMLHttpRequest;
 
-  var SendQueue = filehub.createClass('SendQueue', {
+  var SendQueue = partage.createClass('SendQueue', {
     options: {
-      api: null, // default to 'new filehub.Api()'
+      api: null, // default to 'new partage.Api()'
       container: '#send-queue'
     },
     _init: function () {
@@ -38,7 +37,7 @@
       self.body = container.children('.sq-body'),
       self.wrap = self.body.children('.sq-wrap'),
       self.template = self.wrap.children('.sq-row:eq(0)').remove().hide();
-      self.api = options.api || new filehub.Api();
+      self.api = options.api || new partage.Api();
 
       self.toggle.on('click', function () {
         self._bodySlide();
@@ -59,7 +58,7 @@
       }
       self.body.on('click', '.sq-abort', function () {
         var el = $(this).closest('.sq-row'),
-            data = el.data('fh-sq');
+            data = el.data('pt-sq');
 
         switch (data.status) {
           case 'pending':
@@ -235,7 +234,7 @@
 
 
       row.children('.sq-label').text(file.name);
-      row.appendTo(self.wrap).data('fh-sq', obj).slideDown();
+      row.appendTo(self.wrap).data('pt-sq', obj).slideDown();
 
       self._queue.push(obj);
 

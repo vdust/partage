@@ -1,5 +1,5 @@
 {
-  "name": "filehub",
+  "name": "partage",
   "version": "0.1.0",
   "description": "A web-based HTML 5 file sharing application with basic ACLs",
   "main": "lib/index.js",
@@ -11,7 +11,7 @@
     "watch": "grunt watch"
   },
   "author": "Raphaël Bois Rousseau <virtualdust@gmail.com>",
-  "license": "MIT",
+  "license": "ISC",
   "dependencies": {
     "async": "^2.0.0-rc.5",
     "body-parser": "^1.15.0",
